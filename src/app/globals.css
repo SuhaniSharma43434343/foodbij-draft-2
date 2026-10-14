@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+@theme static {
+  /* Placeholder tokens from the new logo. The look phase (W1) replaces this block. */
+  --color-navy: #0b1c2d;
+  --color-copper: #b87333;
+  --color-paper: #ffffff;
+}
+
+html {
+  background: var(--color-paper);
+  color: var(--color-navy);
+}
