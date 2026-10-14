@@ -100,7 +100,8 @@ export type EventStory = {
 };
 
 export type ServicePage = {
-  hero: { headline: string; line: string; image: Img };
+  /** cta: the hero button label; falls back to plan.cta. */
+  hero: { headline: string; line: string; image: Img; cta?: string };
   whatWeDo: { label: string; heading: string; formats: Format[] };
   howItWorks: { label: string; heading: string; steps: Step[] };
   stories: { label: string; heading: string; items: EventStory[]; linkLabel: string };
@@ -301,7 +302,7 @@ export const home: Home = {
     linkLabel: "Read our story",
     image: {
       src: `${IMG}/3-brand-launches-live-events/essentia/essentia-01.jpg`,
-      alt: "Six servers in black standing in a row, each holding a wooden tray of small bites, in a dark panelled room.",
+      alt: "Two servers in black holding wooden trays of small bites, in a dark panelled room.",
     },
   },
   stories: {
@@ -358,6 +359,7 @@ export const home: Home = {
 export const weddings: ServicePage = {
   hero: {
     headline: "Weddings",
+    cta: "Tell us about your wedding",
     line: "We plan the food around your family, then run every counter, so you can be a guest at your own wedding.",
     image: services[0].heroImage,
   },
