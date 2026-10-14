@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { photoStyle } from "@/components/media/photo-bg";
 import { useRef, type CSSProperties } from "react";
 import { ButtonLink } from "@/components/Button";
 import { Grain } from "@/components/motion/Grain";
@@ -32,6 +33,7 @@ export function ServiceHero({ id, headline, line, cta, href, image }: Props) {
               <div className="hero-zoom">
                 <Image
                   src={image.src}
+                  style={photoStyle(image.src)}
                   alt={image.alt}
                   fill
                   preload

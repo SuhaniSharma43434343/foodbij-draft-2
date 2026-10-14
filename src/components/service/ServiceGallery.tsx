@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { photoStyle, zoomSizes } from "@/components/media/photo-bg";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { Grain } from "@/components/motion/Grain";
 import { useScrollProgress } from "@/components/motion/useScrollProgress";
@@ -152,10 +153,10 @@ export function ServiceGallery({ id, label, heading, images, crops = {} }: Props
                         src={img.src}
                         alt={img.alt}
                         fill
-                        sizes={sizes[i % sizes.length]}
+                        sizes={zoomSizes(sizes[i % sizes.length], zoom)}
                         loading={near ? "eager" : "lazy"}
                         className="object-cover"
-                        style={crop?.position ? { objectPosition: crop.position } : undefined}
+                        style={photoStyle(img.src, crop?.position ? { objectPosition: crop.position } : undefined)}
                       />
                     </div>
                   </div>

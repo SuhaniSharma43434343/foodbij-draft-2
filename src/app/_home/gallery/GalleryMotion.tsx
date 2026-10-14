@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { photoStyle } from "@/components/media/photo-bg";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { Grain } from "@/components/motion/Grain";
 import { useScrollProgress } from "@/components/motion/useScrollProgress";
@@ -147,6 +148,7 @@ export function GalleryMotion({ label, heading, images }: Props) {
                 <div className="fg-media">
                   <Image
                     src={img.src}
+                    style={photoStyle(img.src)}
                     alt={img.alt}
                     fill
                     sizes={sizes[i % sizes.length]}

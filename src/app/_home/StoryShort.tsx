@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { photoStyle } from "@/components/media/photo-bg";
 import { ArrowLink } from "@/components/ArrowLink";
 import { Grain } from "@/components/motion/Grain";
 import { ScrollFocus } from "@/components/motion/ScrollFocus";
@@ -46,6 +47,7 @@ export function StoryShort() {
                 <div className="absolute inset-0 origin-[0%_76%] scale-[1.49]">
                   <Image
                     src={image.src}
+                    style={photoStyle(image.src)}
                     alt={image.alt}
                     fill
                     sizes="(min-width: 1320px) 910px, (min-width: 1024px) 72vw, 150vw"

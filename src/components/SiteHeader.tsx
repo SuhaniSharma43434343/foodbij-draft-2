@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { photoStyle } from "@/components/media/photo-bg";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -247,6 +248,7 @@ export function SiteHeader({ variant }: SiteHeaderProps) {
             <Image
               key={s.slug}
               src={s.heroImage.src}
+              style={photoStyle(s.heroImage.src)}
               alt=""
               fill
               sizes="100vw"

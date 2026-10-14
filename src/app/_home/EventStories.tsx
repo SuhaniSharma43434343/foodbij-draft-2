@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { photoStyle } from "@/components/media/photo-bg";
 import Link from "next/link";
 import { ArrowLink } from "@/components/ArrowLink";
 import { SectionHeading } from "@/components/SectionHeading";
@@ -31,6 +32,7 @@ function CardBody({ item, ring }: { item: StoryCard; ring?: boolean }) {
         <div className={`absolute inset-0 ${f.zoom ?? ""}`}>
           <Image
             src={item.image.src}
+            style={photoStyle(item.image.src)}
             alt={item.image.alt}
             fill
             sizes="(min-width: 1320px) 392px, (min-width: 1024px) 30vw, calc(100vw - 40px)"

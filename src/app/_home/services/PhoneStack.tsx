@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { photoStyle } from "@/components/media/photo-bg";
 import type { CSSProperties, Ref } from "react";
 import { ArrowLink } from "@/components/ArrowLink";
 import { Grain } from "@/components/motion/Grain";
@@ -20,6 +21,7 @@ export function PhoneStack({ items, ref }: { items: Service[]; ref?: Ref<HTMLOLi
             <div className="svc-card-tap" data-focus-scroll="norule">
               <Image
                 src={s.heroImage.src}
+                style={photoStyle(s.heroImage.src)}
                 alt={s.heroImage.alt}
                 fill
                 sizes="(min-width: 1024px) 50vw, 100vw"

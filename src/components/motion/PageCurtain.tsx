@@ -1,20 +1,23 @@
 "use client";
 
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 import "./motion-extras.css";
 
 /** Cover time before the route changes (spec: total delay before navigation <= ~400ms). */
-const COVER_MS = 360;
-const REVEAL_MS = 400;
+const COVER_MS = 300;
+const REVEAL_MS = 350;
 /** If the new route has not arrived by then, lift the curtain anyway (never strand the visitor). */
 const FAILSAFE_MS = 5000;
 
 type Phase = "idle" | "cover" | "covered" | "reveal";
 
 /**
- * Page curtain between routes (motion spec, Expressive pass item 8). A navy panel with the copper slash sweeps
- * up over the page, the route changes underneath, then it lifts away.
+ * Page curtain between routes (motion spec, Expressive pass item 8; restyled W10.1 to match the first-visit
+ * intro). A navy panel rises over the page (300ms) with the small white logo and a copper hairline drawing
+ * in under it, the route changes underneath, then the hairline runs out to the right and the panel lifts
+ * away (350ms).
  *
  * - Only plain internal clicks: same-origin <a href> to a different pathname, left button, no modifier keys,
  *   no target/download, not a file. A window capture-phase listener calls preventDefault (next/link then skips
@@ -115,9 +118,20 @@ export function PageCurtain() {
 
   return (
     <div ref={el} className="pc" data-phase="idle" aria-hidden="true">
-      <svg viewBox="0 0 16 30" className="pc-slash" focusable="false">
-        <line x1="1.5" y1="28.5" x2="14.5" y2="1.5" pathLength={1} />
-      </svg>
+      <div className="pc-mark">
+        {/* Same file and sizes as the header's white logo, so it is already in the cache. */}
+        <Image
+          src="/logos/foodbiz-2026-white-1200w.png"
+          alt=""
+          width={1200}
+          height={274}
+          loading="eager"
+          fetchPriority="low"
+          sizes="(min-width: 1024px) 170px, 132px"
+          className="pc-logo"
+        />
+        <span className="pc-line" />
+      </div>
     </div>
   );
 }

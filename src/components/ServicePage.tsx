@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { photoStyle } from "@/components/media/photo-bg";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { PLAN_HREF, type Service, type ServicePage as ServicePageContent } from "@/content/site";
@@ -127,6 +128,7 @@ export function ServicePage({ service, page, others, galleryCrops = {} }: Servic
                   <div className="absolute inset-0">
                     <Image
                       src={s.image.src}
+                      style={photoStyle(s.image.src)}
                       alt={s.image.alt}
                       fill
                       sizes={`(min-width: 1320px) 600px, (min-width: 1024px) 46vw, ${FULL_COL}`}
@@ -188,6 +190,7 @@ export function ServicePage({ service, page, others, galleryCrops = {} }: Servic
                     <div className="absolute inset-0">
                       <Image
                         src={s.heroImage.src}
+                        style={photoStyle(s.heroImage.src)}
                         alt=""
                         fill
                         sizes={`(min-width: 1320px) 400px, (min-width: 1024px) 30vw, ${FULL_COL}`}

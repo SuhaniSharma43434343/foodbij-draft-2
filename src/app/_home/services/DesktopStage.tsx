@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { photoStyle } from "@/components/media/photo-bg";
 import { useRef, type RefObject } from "react";
 import { ArrowLink } from "@/components/ArrowLink";
 import type { Service } from "@/content/site";
@@ -69,7 +70,7 @@ export function DesktopStage({ items, ref }: { items: Service[]; ref: RefObject<
             {items.map((s) => (
               <div key={s.slug} className="svc-layer">
                 <div className="svc-layer-img">
-                  <Image src={s.heroImage.src} alt={s.heroImage.alt} fill sizes="(min-width: 1320px) 600px, 46vw" className="object-cover" />
+                  <Image src={s.heroImage.src} style={photoStyle(s.heroImage.src)} alt={s.heroImage.alt} fill sizes="(min-width: 1320px) 600px, 46vw" className="object-cover" />
                 </div>
               </div>
             ))}

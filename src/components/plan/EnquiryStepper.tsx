@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { photoStyle } from "@/components/media/photo-bg";
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { enquiryForm, services } from "@/content/site";
 import {
@@ -260,7 +261,7 @@ export function EnquiryStepper({ values, setValues }: Props) {
                   invalid={!!errors.eventType}
                   onPick={pickType}
                 >
-                  <Image src={t.image.src} alt="" fill sizes="45vw" className="object-cover" />
+                  <Image src={t.image.src} style={photoStyle(t.image.src)} alt="" fill sizes="45vw" className="object-cover" />
                   <span aria-hidden="true" className="ps-tile-shade absolute inset-0" />
                   <span className="absolute inset-x-3 bottom-3 text-[17px] leading-[1.2] font-medium text-white">{t.label}</span>
                 </Tile>

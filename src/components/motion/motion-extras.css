@@ -97,7 +97,9 @@
   }
 }
 
-/* ---------- Page curtain (PageCurtain.tsx) ---------- */
+/* ---------- Page curtain (PageCurtain.tsx) ----------
+   Matches the first-visit intro (intro-loader.css): navy, the small white logo, a copper hairline under it.
+   Cover 300ms, reveal 350ms (PageCurtain COVER_MS / REVEAL_MS). */
 .pc {
   position: fixed;
   inset: 0;
@@ -113,32 +115,62 @@
   visibility: visible;
   pointer-events: auto;
   transform: none;
-  transition: transform 350ms var(--ease-in-out);
+  transition: transform 300ms var(--ease-in-out);
 }
 .pc[data-phase="reveal"] {
   visibility: visible;
   transform: translate3d(0, -100%, 0);
-  transition: transform 380ms var(--ease-in-out);
+  transition: transform 350ms var(--ease-in-out);
 }
-.pc-slash {
-  width: 28px;
-  height: 52px;
-  overflow: visible;
+.pc-mark {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 128px;
 }
-.pc-slash line {
-  fill: none;
-  stroke: var(--color-copper);
-  stroke-width: 1.5;
-  stroke-linecap: square;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
+@media (min-width: 1024px) {
+  .pc-mark {
+    width: 150px;
+  }
 }
-.pc[data-phase="cover"] .pc-slash line {
-  stroke-dashoffset: 0;
-  transition: stroke-dashoffset 420ms var(--ease-out) 120ms;
+.pc-logo {
+  display: block;
+  width: 100%;
+  height: auto;
+  opacity: 0;
+  transform: translate3d(0, 6px, 0);
 }
-.pc[data-phase="reveal"] .pc-slash line {
-  stroke-dashoffset: 0;
+.pc-line {
+  display: block;
+  width: 100%;
+  height: 1px;
+  margin-top: 18px;
+  background: var(--color-copper);
+  transform-origin: left center;
+  transform: scaleX(0);
+}
+.pc[data-phase="cover"] .pc-logo {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 260ms linear 90ms,
+    transform 420ms var(--ease-out) 90ms;
+}
+.pc[data-phase="cover"] .pc-line {
+  transform: scaleX(1);
+  transition: transform 520ms var(--ease-out) 140ms;
+}
+.pc[data-phase="reveal"] .pc-logo {
+  opacity: 0;
+  transform: translate3d(0, -10px, 0);
+  transition:
+    opacity 200ms linear,
+    transform 350ms var(--ease-in-out);
+}
+.pc[data-phase="reveal"] .pc-line {
+  transform-origin: right center;
+  transform: scaleX(0);
+  transition: transform 300ms var(--ease-in-out);
 }
 
 @media (prefers-reduced-motion: reduce) {

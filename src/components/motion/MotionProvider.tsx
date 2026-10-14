@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
 import type Lenis from "lenis";
+import { isInView, startImageLookahead, whenPhotoReady } from "@/components/media/lookahead";
 
 /**
  * The motion system's only JavaScript (spec: docs/design/motion-spec.md). Mounted once in the root layout;
@@ -16,6 +17,10 @@ import type Lenis from "lenis";
  * - One IntersectionObserver for the page; each element reveals once (`is-in`). The hidden start state only
  *   exists under `html.js-motion`, which is added here, so content is visible without JS. Elements already
  *   on screen when the system starts are shown at once (no flash, LCP untouched).
+ * - Timing (W10.2): text reveals start once an element is 5% inside the bottom edge, photo reveals (wipes and
+ *   fade-ups that hold a photo) 10% of a screen before it; all run 500ms. A wipe frame waits
+ *   for its photo to load and decode before it unveils (800ms at most), so it never opens onto an empty box.
+ *   Lazy photos start loading 1.5 screens ahead (src/components/media/lookahead.ts, started here).
  *
  * Smooth scroll (Lenis)
  * - Desktop pointer only (`(hover: hover) and (pointer: fine)`), never under reduced motion; loaded after
@@ -27,11 +32,37 @@ const STAGGER_MAX = 5; // --i 0..5 = 6 steps
 const REVEAL_SELECTOR = "[data-reveal]";
 
 let observer: IntersectionObserver | null = null;
+/**
+ * Photo reveals (wipes, and fade-ups that hold a photo) start 10% of a screen before they reach the bottom edge,
+ * so a frame never slides in still hidden; the bottom-up wipe leads the scroll and is still seen finishing.
+ */
+let photoObserver: IntersectionObserver | null = null;
+const holdsPhoto = (el: Element) => el.getAttribute("data-reveal") === "wipe" || el.querySelector("img") !== null;
+const unobserve = (el: Element) => {
+  observer?.unobserve(el);
+  photoObserver?.unobserve(el);
+};
 let lenis: Lenis | null = null;
 let poppedState = false;
 
+/**
+ * Photo reveals: a wipe waits for its photo to decode (whenPhotoReady: capped, and never past the moment the
+ * frame is 10% into the screen). A photo reveal that is already in view when it fires (a fast scroll or a jump)
+ * is shown at once without animating, so it never sits clipped or half-transparent in view.
+ */
 function revealNow(el: Element) {
-  el.classList.add("is-in");
+  if (!holdsPhoto(el)) {
+    el.classList.add("is-in");
+    return;
+  }
+  const wait = el.getAttribute("data-reveal") === "wipe" ? whenPhotoReady(el) : Promise.resolve(!isInView(el));
+  wait.then((animate) => {
+    if (!animate) {
+      el.classList.add("reveal-instant");
+      requestAnimationFrame(() => requestAnimationFrame(() => el.classList.remove("reveal-instant")));
+    }
+    el.classList.add("is-in");
+  });
 }
 
 /** Children of stagger parents become reveal items. */
@@ -55,7 +86,7 @@ function onIntersect(entries: IntersectionObserverEntry[]) {
       perParent.set(parent, n + 1);
     }
     revealNow(el);
-    observer?.unobserve(el);
+    unobserve(el);
   }
 }
 
@@ -72,7 +103,7 @@ function scan(initial: boolean) {
         continue;
       }
     }
-    observer?.observe(el);
+    (holdsPhoto(el) ? photoObserver : observer)?.observe(el);
   }
   if (initial) {
     // Drop the no-transition marker after the first frame so later hovers etc. animate normally.
@@ -143,7 +174,8 @@ export function MotionProvider() {
   useEffect(() => {
     const html = document.documentElement;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
-    observer = new IntersectionObserver(onIntersect, { rootMargin: "0px 0px -15% 0px", threshold: 0 });
+    observer = new IntersectionObserver(onIntersect, { rootMargin: "0px 0px -5% 0px", threshold: 0 });
+    photoObserver = new IntersectionObserver(onIntersect, { rootMargin: "0px 0px 10% 0px", threshold: 0 });
     scan(true);
     html.classList.add("js-motion");
 
@@ -156,8 +188,8 @@ export function MotionProvider() {
       document.querySelectorAll(REVEAL_SELECTOR).forEach((el) => {
         if (el.classList.contains("is-in")) return;
         if (el.getBoundingClientRect().top < vh) {
-          el.classList.add("is-in");
-          observer?.unobserve(el);
+          revealNow(el);
+          unobserve(el);
         }
       });
     };
@@ -166,6 +198,7 @@ export function MotionProvider() {
       settle = window.setTimeout(sweep, 160);
     };
     window.addEventListener("scroll", onScrollSettle, { passive: true });
+    const stopLookahead = startImageLookahead();
 
     const onPop = () => {
       poppedState = true;
@@ -204,9 +237,12 @@ export function MotionProvider() {
       window.removeEventListener("popstate", onPop);
       window.removeEventListener("scroll", onScrollSettle);
       window.clearTimeout(settle);
+      stopLookahead();
       stopLenis?.();
       observer?.disconnect();
       observer = null;
+      photoObserver?.disconnect();
+      photoObserver = null;
       html.classList.remove("js-motion");
     };
   }, []);

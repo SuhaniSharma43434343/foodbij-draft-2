@@ -165,8 +165,8 @@ body {
   opacity: 0;
   translate: 0 var(--reveal-y);
   transition:
-    opacity 700ms var(--ease-out),
-    translate 700ms var(--ease-out);
+    opacity 500ms var(--ease-out),
+    translate 500ms var(--ease-out);
   transition-delay: calc(var(--i, 0) * 90ms);
 }
 .js-motion [data-reveal].is-in,
@@ -176,17 +176,18 @@ body {
 }
 
 /* data-reveal="wipe": a photo frame unveils from the bottom; its first child (a wrapper, not the img
-   when the img needs its own scale) settles from 1.12 to 1. */
+   when the img needs its own scale) settles from 1.12 to 1. MotionProvider adds is-in only once the photo
+   has decoded (800ms cap), so the 500ms wipe always opens onto the photo. */
 .js-motion [data-reveal="wipe"] {
   opacity: 1;
   translate: none;
   clip-path: inset(100% 0 0 0);
-  transition: clip-path 700ms var(--ease-out);
+  transition: clip-path 500ms var(--ease-out);
   transition-delay: calc(var(--i, 0) * 90ms);
 }
 .js-motion [data-reveal="wipe"] > * {
   scale: 1.12;
-  transition: scale 1100ms var(--ease-out);
+  transition: scale 800ms var(--ease-out);
   transition-delay: calc(var(--i, 0) * 90ms);
 }
 .js-motion [data-reveal="wipe"].is-in {
@@ -202,7 +203,7 @@ body {
   translate: none;
   scale: 0 1;
   transform-origin: left center;
-  transition: scale 700ms var(--ease-out);
+  transition: scale 500ms var(--ease-out);
   transition-delay: calc(var(--i, 0) * 90ms);
 }
 .js-motion [data-reveal="rule"].is-in {
@@ -496,9 +497,8 @@ textarea:focus {
 }
 
 /* ---------------------------------------------------------------------------
-   W9.4 shared block: film grain + scroll focus + press states (phone first).
-   - .grain: <Grain /> (src/components/motion/Grain.tsx). One 160px SVG noise tile, static, blended
-     (overlay) over navy bands so warm night photos glow. Parent must be positioned.
+   W9.4 shared block: scroll focus + press states (phone first).
+   - (W10.1: the film grain that lived here was removed; the owner read it as scratches. <Grain /> renders nothing.)
    - [data-focus-scroll]: <ScrollFocus /> (src/components/motion/ScrollFocus.tsx) toggles .is-focus
      while the element crosses the middle of the viewport (touch screens / <1024px only). The image
      marked .focus-zoom or .media-zoom zooms 1 -> 1.05 and lifts; a copper rule draws along the bottom
@@ -506,22 +506,6 @@ textarea:focus {
    - .press: a clear :active state for links and cards on touch (scale 0.97, darker copper).
    All motion here is off under prefers-reduced-motion; without JS nothing is hidden or changed.
    --------------------------------------------------------------------------- */
-:root {
-  /* Overlay on navy is gentle: 0.2 gives about +-3 levels of noise, a fine film grain, mean colour unchanged. */
-  --grain-opacity: 0.2;
-  --grain-tile: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='linear' slope='4' intercept='-1.5'/%3E%3CfeFuncG type='linear' slope='4' intercept='-1.5'/%3E%3CfeFuncB type='linear' slope='4' intercept='-1.5'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-.grain {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  opacity: var(--grain-opacity, 0.2);
-  mix-blend-mode: overlay;
-  background-image: var(--grain-tile);
-  background-size: 160px 160px;
-}
-
 [data-focus-scroll]:not([data-focus-scroll="norule"])::after {
   content: "";
   position: absolute;
@@ -577,18 +561,4 @@ textarea:focus {
   [data-focus-scroll] .focus-zoom {
     scale: none !important;
   }
-}
-/* The navy plan band (PlanBand, id="plan") gets the same grain without touching its markup. */
-#plan.bg-navy {
-  position: relative;
-}
-#plan.bg-navy::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: var(--grain-opacity, 0.2);
-  mix-blend-mode: overlay;
-  background-image: var(--grain-tile);
-  background-size: 160px 160px;
 }

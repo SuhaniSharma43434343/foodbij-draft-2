@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { photoStyle } from "@/components/media/photo-bg";
 import { useEffect, useImperativeHandle, useRef, type Ref } from "react";
 import type { Service } from "@/content/site";
 
@@ -81,7 +82,7 @@ export function CursorPreview({ items, ref }: { items: Service[]; ref?: Ref<Curs
     <div ref={el} className="svc-preview" aria-hidden="true" style={{ width: W, height: H }}>
       {items.map((it) => (
         <div key={it.slug} className="svc-preview-img">
-          <Image src={it.heroImage.src} alt="" fill sizes={`${W}px`} className="object-cover" />
+          <Image src={it.heroImage.src} style={photoStyle(it.heroImage.src)} alt="" fill sizes={`${W}px`} className="object-cover" />
         </div>
       ))}
     </div>

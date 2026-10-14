@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Cormorant, Jost } from "next/font/google";
 import { CopperCursor } from "@/components/motion/CopperCursor";
+import { IntroLoader } from "@/components/motion/IntroLoader";
 import { MotionProvider } from "@/components/motion/MotionProvider";
 import { PageCurtain } from "@/components/motion/PageCurtain";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -43,6 +44,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${cormorant.variable} ${jost.variable}`}>
       <body>
+        <IntroLoader />
         <a
           href="#main"
           className="t-button sr-only fixed top-3 left-3 z-[60] bg-navy px-5 py-4 text-white focus:not-sr-only focus:outline-2 focus:outline-offset-2 focus:outline-copper"

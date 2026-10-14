@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { photoStyle, zoomSizes } from "@/components/media/photo-bg";
 import type { CroppedImg } from "@/content/pages";
 
 type CroppedPhotoProps = {
@@ -26,12 +27,12 @@ export function CroppedPhoto({ img, className = "", sizes, motion = false }: Cro
       src={img.src}
       alt={img.alt}
       fill
-      sizes={sizes}
+      sizes={zoomSizes(sizes, zoom)}
       className="object-cover"
-      style={{
+      style={photoStyle(img.src, {
         objectPosition: position,
         ...(zoom !== 1 ? { transform: `scale(${zoom})`, transformOrigin: position } : null),
-      }}
+      })}
     />
   );
   if (!motion) return <div className={`relative overflow-hidden bg-mist ${className}`.trim()}>{photo}</div>;

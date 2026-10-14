@@ -6,6 +6,7 @@ import { StoryViewerProvider } from "@/components/stories/StoryViewer";
 import { StoryCard } from "@/components/work/StoryCard";
 import { services, type ServiceSlug } from "@/content/site";
 import { stories, work, type EventStoryFull } from "@/content/stories";
+import { whenPhotoReady } from "@/components/media/lookahead";
 import "@/components/work/pages-motion.css";
 
 type Filter = ServiceSlug | "all";
@@ -185,11 +186,20 @@ export function WorkGridView({ active = "all", onSelect }: { active?: Filter; on
       (entries) => {
         for (const e of entries) {
           if (!e.isIntersecting) continue;
-          e.target.setAttribute("data-shown", "");
-          io.unobserve(e.target);
+          const el = e.target;
+          io.unobserve(el);
+          // Unveil once the photo has decoded, so the wipe never opens onto an empty frame (capped; see
+          // whenPhotoReady). A frame already in view by then (fast scroll) shows at once, without the wipe.
+          whenPhotoReady(el).then((animate) => {
+            if (!animate) {
+              el.setAttribute("data-instant", "");
+              requestAnimationFrame(() => requestAnimationFrame(() => el.removeAttribute("data-instant")));
+            }
+            el.setAttribute("data-shown", "");
+          });
         }
       },
-      { rootMargin: "0px 0px -10% 0px" },
+      { rootMargin: "0px 0px 10% 0px" },
     );
     later.forEach((el) => io.observe(el));
     return () => {

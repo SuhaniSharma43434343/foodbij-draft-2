@@ -1,0 +1,127 @@
+[
+  {
+    "run": 1,
+    "page": "/",
+    "loadMs": 1681,
+    "seen": 10,
+    "emptyOnce": 3,
+    "worstMs": 173,
+    "totalEmptyMs": 433,
+    "imgKB": 446,
+    "worstFrames": [
+      {
+        "key": "/images/2-celebrations-private-dining/playseum-set-ups/playseum-set-ups-03.jpg",
+        "everEmpty": true,
+        "worst": 173,
+        "total": 173,
+        "why": "reveal hidden"
+      },
+      {
+        "key": "/images/3-brand-launches-live-events/cartier/cartier-04.jpg",
+        "everEmpty": true,
+        "worst": 153,
+        "total": 153,
+        "why": "reveal hidden"
+      },
+      {
+        "key": "/images/1-weddings/bangalore-wedding/bangalore-wedding-02.jpg",
+        "everEmpty": true,
+        "worst": 107,
+        "total": 107,
+        "why": "reveal hidden"
+      }
+    ]
+  },
+  {
+    "run": 1,
+    "page": "/services/weddings",
+    "loadMs": 1961,
+    "seen": 7,
+    "emptyOnce": 3,
+    "worstMs": 456,
+    "totalEmptyMs": 923,
+    "imgKB": 382,
+    "worstFrames": [
+      {
+        "key": "/images/1-weddings/bayview-lawns-wedding/bayview-lawns-wedding-01.jpg",
+        "everEmpty": true,
+        "worst": 456,
+        "total": 456,
+        "why": "not loaded"
+      },
+      {
+        "key": "/images/1-weddings/bangalore-wedding/bangalore-wedding-01.jpg",
+        "everEmpty": true,
+        "worst": 331,
+        "total": 331,
+        "why": "reveal hidden"
+      },
+      {
+        "key": "/images/4-corporate-office-dining/motilal-oswal/motilal-oswal-01.jpg",
+        "everEmpty": true,
+        "worst": 136,
+        "total": 136,
+        "why": "reveal hidden"
+      }
+    ]
+  },
+  {
+    "run": 1,
+    "page": "/our-work",
+    "loadMs": 1478,
+    "seen": 13,
+    "emptyOnce": 12,
+    "worstMs": 471,
+    "totalEmptyMs": 5389,
+    "imgKB": 46,
+    "worstFrames": [
+      {
+        "key": "/images/2-celebrations-private-dining/ninja/ninja-04.jpg",
+        "everEmpty": true,
+        "worst": 471,
+        "total": 471,
+        "why": "not loaded"
+      },
+      {
+        "key": "/images/2-celebrations-private-dining/glasshouse-dessert-table/glasshouse-dessert-table-01.jpg",
+        "everEmpty": true,
+        "worst": 457,
+        "total": 457,
+        "why": "not loaded"
+      },
+      {
+        "key": "/images/4-corporate-office-dining/sbi/sbi-02.jpg",
+        "everEmpty": true,
+        "worst": 452,
+        "total": 452,
+        "why": "not loaded"
+      },
+      {
+        "key": "/images/3-brand-launches-live-events/crunchyroll/crunchyroll-02.jpg",
+        "everEmpty": true,
+        "worst": 451,
+        "total": 451,
+        "why": "not loaded"
+      }
+    ]
+  },
+  {
+    "run": 1,
+    "page": "/our-work/boutique-evening",
+    "loadMs": 2181,
+    "seen": 2,
+    "emptyOnce": 1,
+    "worstMs": 303,
+    "totalEmptyMs": 303,
+    "imgKB": 83,
+    "worstFrames": [
+      {
+        "key": "/images/3-brand-launches-live-events/cartier/cartier-03.jpg",
+        "everEmpty": true,
+        "worst": 303,
+        "total": 303,
+        "why": "reveal hidden"
+      }
+    ]
+  }
+]

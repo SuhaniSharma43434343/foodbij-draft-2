@@ -118,11 +118,11 @@
 @media (prefers-reduced-motion: no-preference) {
   html.js-motion .pm-grid[data-wipes] [data-pm-wipe] {
     clip-path: inset(0 0 0 0);
-    transition: clip-path 700ms var(--ease-out);
+    transition: clip-path 500ms var(--ease-out);
     transition-delay: calc(var(--wi, 0) * 90ms);
   }
   html.js-motion .pm-grid[data-wipes] [data-pm-wipe] > * {
-    transition: scale 1100ms var(--ease-out);
+    transition: scale 800ms var(--ease-out);
     transition-delay: calc(var(--wi, 0) * 90ms);
   }
   html.js-motion .pm-grid[data-wipes] [data-pm-wipe]:not([data-shown]) {

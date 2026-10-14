@@ -27,7 +27,7 @@
  * Behaviour
  * - Photos one at a time (object-cover, honouring each image's `crop`); one progress segment per photo; the
  *   current one fills over 5s and auto-advances. Paused while a pointer/finger is held down, while the tab is
- *   hidden, or with the Pause button. Only the current and the next photo are loaded.
+ *   hidden, or with the Pause button. Only the current photo, the next one and the next story's first are loaded.
  * - Tap/click the left third = previous photo, elsewhere = next photo. Swipe left/right = next/previous story
  *   (the panel follows the finger, then slides). Swipe down = close (follows the finger and fades).
  * - Keys: Esc closes, Left/Right = previous/next photo, Tab stays inside. Focus goes to the close button on
@@ -39,6 +39,7 @@
  */
 
 import Image from "next/image";
+import { photoStyle, zoomSizes } from "@/components/media/photo-bg";
 import Link from "next/link";
 import {
   createContext,
@@ -195,11 +196,11 @@ function Photo({ img, eager, hidden }: { img: StoryImage; eager: boolean; hidden
           src={img.src}
           alt={hidden ? "" : img.alt}
           fill
-          sizes="(min-width: 768px) 56vh, 100vw"
+          sizes={zoomSizes("(min-width: 768px) 56vh, 100vw", zoom)}
           loading={eager ? "eager" : "lazy"}
           draggable={false}
           className="object-cover"
-          style={img.crop?.position ? { objectPosition: img.crop.position } : undefined}
+          style={photoStyle(img.src, img.crop?.position ? { objectPosition: img.crop.position } : undefined)}
         />
       </div>
     </div>
@@ -453,9 +454,11 @@ function StoryViewer({
     resetDrag(true);
   };
 
-  // The photo after the current one (possibly the next story's first), preloaded; nothing else loads.
+  // The photo after the current one (possibly the next story's first), preloaded; plus the next story's first
+  // photo while inside a story, so a swipe to the next story lands on a loaded photo. Nothing else loads.
   const upcoming: StoryImage | undefined =
     pos.i < imgs.length - 1 ? imgs[pos.i + 1] : stories[pos.s + 1]?.images[0];
+  const nextStoryFirst: StoryImage | undefined = pos.i < imgs.length - 1 ? stories[pos.s + 1]?.images[0] : undefined;
 
   const label = serviceLabel(story.service);
   const href = storyHref(story.slug);
@@ -490,6 +493,9 @@ function StoryViewer({
         <div key={`${story.slug}-${pos.run}`} className="sv-story" data-enter={pos.enter ?? undefined}>
           <Photo key={imgs[pos.i].src} img={imgs[pos.i]} eager />
           {upcoming && <Photo key={`next-${upcoming.src}`} img={upcoming} eager hidden />}
+          {nextStoryFirst && nextStoryFirst.src !== upcoming?.src && (
+            <Photo key={`story-${nextStoryFirst.src}`} img={nextStoryFirst} eager hidden />
+          )}
 
           <div className="sv-top">
             <div className="sv-bars" aria-hidden="true">

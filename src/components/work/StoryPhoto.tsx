@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { photoStyle, zoomSizes } from "@/components/media/photo-bg";
 import type { StoryImage } from "@/content/stories";
 
 type StoryPhotoProps = {
@@ -23,9 +24,9 @@ export function StoryPhoto({ img, sizes, preload, className = "" }: StoryPhotoPr
         fill
         preload={preload}
         fetchPriority={preload ? "high" : undefined}
-        sizes={sizes}
+        sizes={zoomSizes(sizes, zoom)}
         className={`object-cover ${className}`.trim()}
-        style={img.crop?.position ? { objectPosition: img.crop.position } : undefined}
+        style={photoStyle(img.src, img.crop?.position ? { objectPosition: img.crop.position } : undefined)}
       />
     </div>
   );
