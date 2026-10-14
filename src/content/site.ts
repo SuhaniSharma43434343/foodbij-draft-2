@@ -73,8 +73,18 @@ export type Home = {
     linkLabel: string;
     image: Img;
   };
-  stories: { label: string; heading: string; linkLabel: string };
+  stories: { label: string; heading: string; linkLabel: string; items: StoryCard[] };
   plan: { heading: string; lead: string; cta: string; phoneLine: string };
+};
+
+/** A homepage event card: photo, service label, title and the brief in one line. */
+export type StoryCard = {
+  /** Service label shown above the title (one of the four service names). */
+  service: string;
+  title: string;
+  line: string;
+  image: Img;
+  href: string;
 };
 
 export type Format = { title: string; text: string };
@@ -132,14 +142,21 @@ const IMG = "/images";
 const PHONE = "[NEEDS CLIENT: phone]";
 const EMAIL = "[NEEDS CLIENT: email]";
 
+/** Where every "Plan your event" link goes unless the page has its own #plan band. */
+export const PLAN_HREF = "/plan-your-event";
+
+/** "What we made" line for the outdoor (Bayview Lawns) wedding: used on Home and Weddings. */
+const BAYVIEW_LINE =
+  "Chai and ice cream outdoors, earthen pots along a wooden counter, and a live wok counter cooking to order.";
+
 export const site: Site = {
   name: "Foodbiz",
   strapline: "Catering & hospitality | Mumbai",
   nav: [
-    { label: "Services", href: "/services" },
+    { label: "Services", href: "/#services" },
     { label: "Our work", href: "/our-work" },
     { label: "Our story", href: "/our-story" },
-    { label: "Plan your event", href: "/plan-your-event" },
+    { label: "Plan your event", href: PLAN_HREF },
   ],
   headerCta: "Plan your event",
   contact: {
@@ -291,6 +308,40 @@ export const home: Home = {
     label: "Our work",
     heading: "Every event starts with a brief.",
     linkLabel: "See the work",
+    // NEEDS CLIENT: name rights + briefs for these events (event names come from the photo folders;
+    // titles stay generic and no client logo shows until the client confirms).
+    items: [
+      {
+        service: "Brand launches & live events",
+        title: "A music festival",
+        line: "Service that had to run to the set times, not the other way round.",
+        image: {
+          src: `${IMG}/3-brand-launches-live-events/rolling-loud/rolling-loud-02.jpg`,
+          alt: "A long buffet counter lit by lamps against a black backdrop.",
+        },
+        href: "#",
+      },
+      {
+        service: "Weddings",
+        title: "An outdoor wedding",
+        line: BAYVIEW_LINE,
+        image: {
+          src: `${IMG}/1-weddings/bayview-lawns-wedding/bayview-lawns-wedding-01.jpg`,
+          alt: "An outdoor chai and ice-cream station in white and pale wood, framed by foliage.",
+        },
+        href: "#",
+      },
+      {
+        service: "Brand launches & live events",
+        title: "An anime launch party",
+        line: "A ramen counter cooking to order, with a queue in front of it all night.",
+        image: {
+          src: `${IMG}/3-brand-launches-live-events/crunchyroll/crunchyroll-02.jpg`,
+          alt: "A ramen counter with the kitchen team working behind it.",
+        },
+        href: "#",
+      },
+    ],
   },
   plan: {
     heading: "Tell us about your event.",
@@ -383,8 +434,7 @@ export const weddings: ServicePage = {
         folder: "bayview-lawns-wedding",
         title: "An outdoor wedding",
         brief: "[NEEDS CLIENT: the brief for the Bayview Lawns wedding]",
-        whatWeMade:
-          "Chai and ice cream outdoors, earthen pots along a wooden counter, and a live wok counter cooking to order.",
+        whatWeMade: BAYVIEW_LINE,
         image: {
           src: `${IMG}/1-weddings/bayview-lawns-wedding/bayview-lawns-wedding-01.jpg`,
           alt: "An outdoor chai and ice-cream station in white and pale wood, framed by foliage.",
