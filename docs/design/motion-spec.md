@@ -49,3 +49,37 @@ Nothing bounces, spins or flashes. Every effect is off under `prefers-reduced-mo
 - Total motion JS small (Lenis ~4 KB + our ~2 KB); no animation framework.
 - Respect `prefers-reduced-motion: reduce` everywhere: no transforms, no parallax, no smooth scroll,
   reveal elements simply visible.
+
+---
+
+# Expressive pass (W7, 2026-10-14) - supersedes the calm limits above where they conflict
+
+The owner found the site "too much simple", "way too plain" on mobile, and wants an "experience":
+raise motion from calm to **expressive, cinematic luxury**. Navigation stays simple; every brief rule
+stays (no invented facts, no sub-brands, pack photos only, phone first).
+
+Shared primitive: `src/components/motion/useScrollProgress.ts` writes `--p` (0..1) and optional
+`data-step` on a section; effects are CSS driven by `var(--p)`. Pins are `position: sticky`.
+
+1. Opening: copper slash (from the logo's "/") draws in; headline lines reveal through masks; photo
+   settles from 1.08. On scroll the photo scales down into a framed "plate" (inset with a navy margin,
+   slight radius 0) while the text drifts up and fades. Phone too.
+2. Services: phone = full-height cards that pin and stack over each other; desktop = pinned section,
+   the photo changes with a clip/wipe as each service comes into focus, plus a cursor-following image
+   preview on hover over the service list.
+3. Statement line(s): words light up as you scroll (scroll-scrubbed opacity 0.18 -> 1 per word).
+4. Food gallery: desktop pinned horizontal scroll with parallax inside each frame; phone swipe
+   carousel where the active photo scales up and the others dim.
+5. Marquee of occasion types in the large serif (sangeet, mehendi, reception, birthday, product launch,
+   store opening, concert, office lunch, offsite...) - no client names, no numbers. Slow, pausable
+   (pauses on hover/focus; static under reduced motion).
+6. Image reveals: clip-path wipes, scale-ins, inner parallax.
+7. Desktop: small copper cursor dot that grows into a "View" disc over images/cards; magnetic primary buttons.
+8. Page transitions: a short navy curtain with the copper slash between pages (only if it does not
+   break scroll restoration or focus; fall back to none).
+9. Keep: header hide/return, sliding sticky bar, Our work filter animation, hovers, Lenis on desktop.
+
+Guardrails: everything off under reduced motion; nothing hidden without JS; no layout shift; opening
+photo and headline never start hidden; text readable at 360px; Plan your event always one tap away;
+Lighthouse mobile performance >= ~70 locally. Durations may run longer for scroll-scrubbed effects
+(they follow the scroll); time-based animations stay 200-900ms except the ambient zoom and marquee.

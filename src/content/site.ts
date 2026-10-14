@@ -65,6 +65,8 @@ export type Home = {
   opening: { headline: string; lead: string; cta: string; image: Img };
   servicesIntro: { label: string; heading: string };
   food: { label: string; heading: string; images: Img[] };
+  /** Full-screen scroll-lit statement after the opening (the founders' own line). */
+  statement: { quote: string; quoteBy: string };
   storyShort: {
     label: string;
     quote: string;
@@ -295,11 +297,16 @@ export const home: Home = {
       },
     ],
   },
-  storyShort: {
-    label: "Our story",
+  statement: {
     quote: "We’re not just in the business of food. We’re in the business of food and experience.",
     quoteBy: "Amar Jog and Kushal Shetty, founders",
-    body: "Foodbiz is a catering and hospitality company in Mumbai. Our promise is simple: leave the stress to us, and be present at your own event.",
+  },
+  storyShort: {
+    label: "Our story",
+    // The founders' line now opens the page (Statement band), so this block leads with their other promise.
+    quote: "Leave the stress to us. Be present at your own event.",
+    quoteBy: "",
+    body: "Foodbiz is a catering and hospitality company in Mumbai, founded by Amar Jog and Kushal Shetty. We plan the food and the hosting around it, so you get to be a guest.",
     linkLabel: "Read our story",
     image: {
       src: `${IMG}/3-brand-launches-live-events/essentia/essentia-01.jpg`,

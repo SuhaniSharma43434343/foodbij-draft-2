@@ -324,65 +324,6 @@ body {
   }
 }
 
-/* Food gallery, desktop: the navy band pins and the photo row drifts sideways with scroll.
-   Section height = 100vh + the row's overflow; every size is in vh/vw so it is known before paint
-   (no layout shift). Row width = 315.5vh (photo widths) + 5 x 4vw (gaps) + 2 x side padding. */
-@keyframes food-drift {
-  to {
-    translate: calc(-100% + 100cqw) 0;
-  }
-}
-@media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
-  @supports (animation-timeline: view()) {
-    .food-gallery {
-      padding-block: 0;
-      height: max(100vh, calc(415.5vh - 80vw + max(96px, 100vw - 1224px)));
-      view-timeline: --gallery block;
-    }
-    .food-pin {
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      overflow: clip;
-      container-type: inline-size;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding-top: var(--header-h);
-      padding-bottom: 4vh;
-    }
-    .food-track {
-      max-width: none;
-      margin: 6vh 0 0;
-      padding: 0;
-    }
-    .food-gallery .food-row {
-      display: flex;
-      width: max-content;
-      align-items: flex-start;
-      gap: 4vw;
-      overflow: visible;
-      scroll-snap-type: none;
-      padding-inline: max(48px, calc((100cqw - 1320px) / 2 + 48px));
-      animation: food-drift linear both;
-      animation-timeline: --gallery;
-      animation-range: contain 0% contain 100%;
-    }
-    .food-gallery .food-row > li {
-      width: auto;
-      height: var(--h);
-      aspect-ratio: var(--a);
-      margin-top: var(--mt, 0);
-    }
-    .food-row > li:nth-child(6n + 1) { --h: 50vh; --a: 4 / 3; }
-    .food-row > li:nth-child(6n + 2) { --h: 40vh; --a: 3 / 4; --mt: 10vh; }
-    .food-row > li:nth-child(6n + 3) { --h: 38vh; --a: 3 / 2; --mt: 4vh; }
-    .food-row > li:nth-child(6n + 4) { --h: 50vh; --a: 4 / 3; }
-    .food-row > li:nth-child(6n + 5) { --h: 44vh; --a: 4 / 5; --mt: 6vh; }
-    .food-row > li:nth-child(6n + 6) { --h: 40vh; --a: 3 / 2; --mt: 2vh; }
-  }
-}
-
 /* Image zoom in card frames: put .media-zoom on the img and .group on the card/link. */
 .media-zoom {
   transition: scale 700ms var(--ease-out);

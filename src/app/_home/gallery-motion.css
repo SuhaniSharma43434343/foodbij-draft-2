@@ -1,0 +1,228 @@
+/* Food gallery (W7.3, docs/design/motion-spec.md "Expressive pass" item 4). Markup: gallery/GalleryMotion.tsx.
+   Unlayered on purpose (wins over Tailwind utilities). Replaces the .food-* drift rules in globals.css,
+   whose classes are no longer rendered.
+   States:
+   - phone (<1024px): native scroll-snap carousel; dim/scale of neighbours only once JS is ready
+     (section[data-ready]) and motion is allowed.
+   - desktop static (no JS / reduced motion): asymmetric 12-column grid, no pin.
+   - desktop motion (html.js-motion, motion allowed): pinned band, row translates with --p. */
+
+.fg {
+  position: relative;
+  padding-block: 72px 64px;
+}
+.fg-intro {
+  padding-inline: 20px;
+}
+
+/* ---- Phone: swipe carousel ---- */
+.fg-row {
+  display: flex;
+  gap: 6px;
+  margin: 40px 0 0;
+  padding: 0 11vw;
+  list-style: none;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.fg-row::-webkit-scrollbar {
+  display: none;
+}
+.fg-slide {
+  position: relative;
+  flex: 0 0 78vw;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+  background: rgb(255 255 255 / 0.04);
+}
+.fg-media {
+  position: absolute;
+  inset: 0;
+}
+
+.fg-ui {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20px;
+  padding-inline: 11vw;
+  color: var(--color-copper);
+}
+.fg-count {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.2em;
+}
+.fg-dots {
+  display: flex;
+  gap: 8px;
+}
+.fg-dots > span {
+  width: 6px;
+  height: 1px;
+  background: rgb(184 115 51 / 0.45);
+  transition:
+    width 350ms var(--ease-out),
+    background-color 350ms var(--ease-out);
+}
+.fg-dots > span.is-on {
+  width: 22px;
+  background: var(--color-copper);
+}
+/* Without JS the counter cannot follow the swipe: keep its space, hide it. */
+.fg:not([data-ready]) .fg-ui {
+  visibility: hidden;
+}
+.fg-progress {
+  display: none;
+}
+
+@media (max-width: 1023.98px) and (prefers-reduced-motion: no-preference) {
+  .fg[data-ready] .fg-slide {
+    transition:
+      scale 380ms var(--ease-out),
+      opacity 380ms var(--ease-out);
+  }
+  .fg[data-ready] .fg-slide:not(.is-active) {
+    scale: 0.9;
+    opacity: 0.45;
+  }
+}
+
+/* ---- Desktop static: asymmetric grid (no JS, reduced motion) ---- */
+@media (min-width: 1024px) {
+  .fg {
+    padding-block: 128px;
+  }
+  .fg-intro {
+    max-width: 1320px;
+    margin-inline: auto;
+    padding-inline: 48px;
+  }
+  .fg-title {
+    max-width: 22ch;
+  }
+  .fg-row {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    align-items: start;
+    gap: 64px 48px;
+    max-width: 1320px;
+    margin: 80px auto 0;
+    padding: 0 48px;
+    overflow: visible;
+    scroll-snap-type: none;
+  }
+  .fg-slide {
+    grid-column: var(--gc);
+    aspect-ratio: var(--ga);
+    margin-top: var(--gm, 0);
+  }
+  .fg-slide:nth-child(6n + 1) { --gc: 1 / span 7; --ga: 4 / 3; }
+  .fg-slide:nth-child(6n + 2) { --gc: 9 / span 4; --ga: 3 / 4; --gm: 8rem; }
+  .fg-slide:nth-child(6n + 3) { --gc: 2 / span 5; --ga: 3 / 2; }
+  .fg-slide:nth-child(6n + 4) { --gc: 8 / span 5; --ga: 4 / 3; --gm: 6rem; }
+  .fg-slide:nth-child(6n + 5) { --gc: 1 / span 4; --ga: 4 / 5; }
+  .fg-slide:nth-child(6n + 6) { --gc: 6 / span 7; --ga: 3 / 2; --gm: 10rem; }
+  .fg-ui {
+    display: none;
+  }
+}
+
+/* ---- Desktop motion: pinned horizontal travel ----
+   Frame sizes are in vh so the default height is known before JS measures (no shift on first paint):
+   track = 2 x 6vw padding + 30vw intro + 6 x 5vw gaps + 345.6vh of frames, so
+   travel = 345.6vh - 28vw and section height = 100vh + travel. JS then sets the exact px values. */
+@media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
+  .js-motion .fg {
+    --gap: 5vw;
+    padding-block: 0;
+    height: var(--fg-h, max(100vh, calc(445.6vh - 28vw)));
+  }
+  .js-motion .fg-pin {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: clip;
+  }
+  .js-motion .fg-track {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--gap);
+    width: max-content;
+    padding: 4vh 6vw 0;
+    translate: calc(var(--p, 0) * -1 * var(--travel, max(0px, calc(345.6vh - 28vw)))) 0;
+    will-change: translate;
+  }
+  .js-motion .fg-intro {
+    flex: 0 0 30vw;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+  }
+  .js-motion .fg-title {
+    max-width: 13ch;
+    font-size: clamp(3rem, 1.2rem + 3.4vw, 5.25rem);
+    line-height: 1.02;
+    letter-spacing: -0.01em;
+  }
+  .js-motion .fg-row {
+    display: flex;
+    align-items: center;
+    gap: var(--gap);
+    height: 72vh;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+  }
+  .js-motion .fg-slide {
+    flex: none;
+    grid-column: auto;
+    height: var(--h);
+    aspect-ratio: var(--a);
+    align-self: var(--al, center);
+    margin: 0;
+  }
+  /* Magazine rhythm: tall, small low, wide high, tall, square low, wide. (Frame 2 is a small source
+     file, so it stays the smallest frame.) */
+  .js-motion .fg-slide:nth-child(6n + 1) { --h: 70vh; --a: 4 / 5; }
+  .js-motion .fg-slide:nth-child(6n + 2) { --h: 40vh; --a: 3 / 4; --al: flex-end; }
+  .js-motion .fg-slide:nth-child(6n + 3) { --h: 52vh; --a: 3 / 2; --al: flex-start; }
+  .js-motion .fg-slide:nth-child(6n + 4) { --h: 72vh; --a: 4 / 5; }
+  .js-motion .fg-slide:nth-child(6n + 5) { --h: 44vh; --a: 1 / 1; --al: flex-end; }
+  .js-motion .fg-slide:nth-child(6n + 6) { --h: 60vh; --a: 4 / 3; }
+
+  /* Counter-parallax: the photo is 115% of its frame and drifts against the row's travel.
+     --c (set by JS; fallback by index) is the progress at which the frame is centred. */
+  .js-motion .fg-media {
+    inset: 0 -7.5%;
+    translate: clamp(-6.5%, calc((var(--p, 0) - var(--c, calc(var(--i) / 5))) * 22%), 6.5%) 0;
+    will-change: translate;
+  }
+
+  .js-motion .fg-progress {
+    display: block;
+    position: absolute;
+    left: 6vw;
+    right: 6vw;
+    bottom: 5vh;
+    height: 1px;
+    background: rgb(255 255 255 / 0.14);
+  }
+  .js-motion .fg-progress::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--color-copper);
+    transform-origin: left center;
+    scale: var(--p, 0) 1;
+  }
+}

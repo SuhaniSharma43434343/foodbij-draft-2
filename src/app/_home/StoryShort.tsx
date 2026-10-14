@@ -13,7 +13,7 @@ export function StoryShort() {
           <h2 id="story-title" className="t-display-m mt-4 italic">
             {quote}
           </h2>
-          <p className="mt-4 text-[14px] leading-[1.5] text-navy/72">{quoteBy}</p>
+          {quoteBy ? <p className="mt-4 text-[14px] leading-[1.5] text-navy/72">{quoteBy}</p> : null}
           <span aria-hidden="true" data-reveal="rule" className="copper-rule mt-8" />
           <p className="t-body mt-8">{body}</p>
           <div className="mt-4">
