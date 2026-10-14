@@ -15,6 +15,8 @@ type SectionHeadingProps = {
   className?: string;
   /** Extra classes for the heading itself (e.g. a max-width like "max-w-[22ch]"). */
   headingClassName?: string;
+  /** Scroll reveal: label and heading fade up in a short cascade (data-reveal-stagger). */
+  reveal?: boolean;
 };
 
 const sizes = { m: "t-display-m", l: "t-display-l", xl: "t-display-xl" } as const;
@@ -29,10 +31,11 @@ export function SectionHeading({
   id,
   className = "",
   headingClassName = "",
+  reveal = false,
 }: SectionHeadingProps) {
   const dark = tone === "dark";
   return (
-    <div className={className || undefined}>
+    <div className={className || undefined} data-reveal-stagger={reveal ? "" : undefined}>
       {label ? <p className={`t-label ${dark ? "text-copper" : "text-copper-deep"}`}>{label}</p> : null}
       <Tag
         id={id}

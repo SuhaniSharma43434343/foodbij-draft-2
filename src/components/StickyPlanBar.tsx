@@ -48,7 +48,7 @@ export function StickyPlanBar() {
       data-sticky-plan-bar
       aria-hidden={!visible}
       tabIndex={visible ? undefined : -1}
-      className={`t-button fixed inset-x-0 bottom-0 z-30 flex h-[52px] items-center justify-center bg-copper text-white transition-[translate,visibility] duration-300 lg:hidden ${
+      className={`t-button fixed inset-x-0 bottom-0 z-30 flex h-[52px] items-center justify-center bg-copper text-white transition-[translate,visibility] duration-300 ease-(--ease-out) lg:hidden ${
         visible ? "translate-y-0" : "invisible translate-y-full"
       }`}
     >

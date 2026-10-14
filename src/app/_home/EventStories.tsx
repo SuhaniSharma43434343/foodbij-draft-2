@@ -26,7 +26,7 @@ function CardBody({ item }: { item: StoryCard }) {
             alt={item.image.alt}
             fill
             sizes="(min-width: 1320px) 392px, (min-width: 1024px) 30vw, calc(100vw - 40px)"
-            className={`object-cover ${f.img ?? ""} transition-transform duration-500 group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:group-hover:scale-100`}
+            className={`media-zoom object-cover ${f.img ?? ""}`}
           />
         </div>
       </div>
@@ -43,12 +43,12 @@ export function EventStories() {
   return (
     <section aria-labelledby="work-title" className="section-y bg-mist">
       <div className="site-container">
-        <SectionHeading id="work-title" label={label} heading={heading} />
-        <ul className="mt-12 grid grid-cols-1 gap-14 lg:mt-16 lg:grid-cols-3 lg:gap-12">
+        <SectionHeading reveal id="work-title" label={label} heading={heading} />
+        <ul data-reveal-stagger className="mt-12 grid grid-cols-1 gap-14 lg:mt-16 lg:grid-cols-3 lg:gap-12">
           {items.map((item) => (
             <li key={item.title}>
               {item.href && item.href !== "#" ? (
-                <Link href={item.href} className="group block">
+                <Link href={item.href} className="tap-scale group block">
                   <CardBody item={item} />
                 </Link>
               ) : (
@@ -59,9 +59,9 @@ export function EventStories() {
             </li>
           ))}
         </ul>
-        <ArrowLink href="/our-work" className="mt-10 lg:mt-14">
-          {linkLabel}
-        </ArrowLink>
+        <div data-reveal className="mt-10 lg:mt-14">
+          <ArrowLink href="/our-work">{linkLabel}</ArrowLink>
+        </div>
       </div>
     </section>
   );

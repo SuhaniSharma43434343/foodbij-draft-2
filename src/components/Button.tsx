@@ -14,9 +14,10 @@ type ButtonLinkProps = Omit<ComponentProps<typeof Link>, "className"> & {
 };
 
 const variants: Record<ButtonVariant, string> = {
-  solid: "bg-copper text-white hover:bg-copper-deep",
-  outline: "border border-copper text-navy hover:bg-copper hover:text-white",
-  "outline-light": "border border-white text-white hover:bg-white hover:text-navy",
+  // The hover/focus fill is a sweep from the left (.btn-sweep in globals.css, colour in --sweep).
+  solid: "bg-copper text-white [--sweep:#9E5F27]",
+  outline: "border border-copper text-navy [--sweep:var(--color-copper)] hover:text-white focus-visible:text-white",
+  "outline-light": "border border-white text-white [--sweep:#fff] hover:text-navy focus-visible:text-navy",
 };
 
 /** Square-cornered button link: at least 48px tall, 13px uppercase label. */
@@ -24,7 +25,7 @@ export function ButtonLink({ variant = "solid", className = "", children, ...res
   return (
     <Link
       {...rest}
-      className={`t-button inline-flex min-h-12 items-center justify-center px-7 text-center transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-copper ${variants[variant]} ${className}`.trim()}
+      className={`btn-sweep t-button inline-flex min-h-12 items-center justify-center px-7 text-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-copper ${variants[variant]} ${className}`.trim()}
     >
       {children}
     </Link>

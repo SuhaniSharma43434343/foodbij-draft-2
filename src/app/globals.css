@@ -17,8 +17,17 @@
 }
 
 :root {
+  /* Motion tokens (docs/design/motion-spec.md). */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --reveal-y: 20px;
   --header-h: 72px;
   --sticky-bar-h: 52px;
+}
+@media (min-width: 768px) {
+  :root {
+    --reveal-y: 28px;
+  }
 }
 @media (min-width: 1024px) {
   :root {
@@ -144,16 +153,402 @@ body {
 }
 
 /* ---------------------------------------------------------------------------
-   Motion: almost none, and nothing under reduced motion.
+   Motion (docs/design/motion-spec.md): slow, soft and sure. Transforms and opacity only.
+   These rules are unlayered on purpose: they win over Tailwind utilities on the same element, so put
+   reveal/zoom hooks on elements that carry no translate/scale utilities of their own (add a wrapper).
+   Everything here is switched off under prefers-reduced-motion (block at the end).
    --------------------------------------------------------------------------- */
 
+/* Scroll reveals. The hidden state exists only once MotionProvider has added .js-motion to <html>. */
+.js-motion [data-reveal] {
+  opacity: 0;
+  translate: 0 var(--reveal-y);
+  transition:
+    opacity 700ms var(--ease-out),
+    translate 700ms var(--ease-out);
+  transition-delay: calc(var(--i, 0) * 90ms);
+}
+.js-motion [data-reveal].is-in,
+.js-motion [data-reveal]:focus-within {
+  opacity: 1;
+  translate: none;
+}
+
+/* data-reveal="wipe": a photo frame unveils from the bottom; its first child (a wrapper, not the img
+   when the img needs its own scale) settles from 1.12 to 1. */
+.js-motion [data-reveal="wipe"] {
+  opacity: 1;
+  translate: none;
+  clip-path: inset(100% 0 0 0);
+  transition: clip-path 700ms var(--ease-out);
+  transition-delay: calc(var(--i, 0) * 90ms);
+}
+.js-motion [data-reveal="wipe"] > * {
+  scale: 1.12;
+  transition: scale 1100ms var(--ease-out);
+  transition-delay: calc(var(--i, 0) * 90ms);
+}
+.js-motion [data-reveal="wipe"].is-in {
+  clip-path: inset(0 0 0 0);
+}
+.js-motion [data-reveal="wipe"].is-in > * {
+  scale: 1;
+}
+
+/* data-reveal="rule": a copper rule draws in from the left. */
+.js-motion [data-reveal="rule"] {
+  opacity: 1;
+  translate: none;
+  scale: 0 1;
+  transform-origin: left center;
+  transition: scale 700ms var(--ease-out);
+  transition-delay: calc(var(--i, 0) * 90ms);
+}
+.js-motion [data-reveal="rule"].is-in {
+  scale: 1 1;
+}
+
+/* Elements already on screen when motion starts appear without animating. */
+.reveal-instant,
+.reveal-instant > * {
+  transition: none !important;
+}
+
+/* A fine copper rule (1px x 56px). Pair with data-reveal="rule" or .hero-rule. */
+.copper-rule {
+  display: block;
+  width: 56px;
+  height: 1px;
+  background: var(--color-copper);
+  transform-origin: left center;
+}
+
+/* Openings (home, service heroes, story heroes): pure CSS on first paint, no JS gate.
+   <h1><HeroLines text=... /></h1>; lead and button get .hero-fade (+ style --d for the delay);
+   the photo sits in .hero-zoom (14s ambient settle) inside .hero-parallax inside a .hero-scope section. */
+.hero-line {
+  display: block;
+  overflow: hidden;
+  /* Room for descenders inside the clip, cancelled so the line box does not grow. */
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+.hero-line-inner {
+  display: block;
+  text-wrap: balance;
+  animation: hero-line-rise 700ms var(--ease-out) both;
+  animation-delay: calc(var(--line, 0) * 80ms + 60ms);
+}
+.hero-fade {
+  animation: hero-fade-up 700ms var(--ease-out) both;
+  animation-delay: var(--d, 350ms);
+}
+.hero-rule {
+  animation: hero-rule-draw 700ms var(--ease-out) both;
+  animation-delay: var(--d, 500ms);
+}
+.hero-zoom {
+  position: absolute;
+  inset: 0;
+  animation: hero-zoom 14s var(--ease-out) both;
+}
+.hero-parallax {
+  position: absolute;
+  inset: 0;
+}
+@keyframes hero-line-rise {
+  from {
+    translate: 0 0.35em;
+  }
+}
+@keyframes hero-fade-up {
+  from {
+    opacity: 0;
+    translate: 0 16px;
+  }
+}
+@keyframes hero-rule-draw {
+  from {
+    scale: 0 1;
+  }
+}
+@keyframes hero-zoom {
+  from {
+    scale: 1.08;
+  }
+  to {
+    scale: 1;
+  }
+}
+
+/* Parallax: <div data-parallax class="relative overflow-hidden ..."><div class="parallax-layer"><Image fill/></div></div>.
+   Desktop only, scroll-driven CSS where supported; static everywhere else. */
+.parallax-layer {
+  position: absolute;
+  inset: 0;
+}
+@keyframes parallax-y {
+  from {
+    translate: 0 -6%;
+  }
+  to {
+    translate: 0 6%;
+  }
+}
+@keyframes hero-drift {
+  to {
+    translate: 0 14%;
+  }
+}
+@media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    [data-parallax] {
+      view-timeline: --plx block;
+    }
+    [data-parallax] .parallax-layer {
+      /* Oversized so the +-6% travel never shows an edge. */
+      inset: -8% 0;
+      animation: parallax-y linear both;
+      animation-timeline: --plx;
+      animation-range: cover;
+    }
+    /* Hero photo moves at ~85% of scroll while the opening leaves the screen. */
+    .hero-scope {
+      view-timeline: --hero block;
+    }
+    .hero-scope .hero-parallax {
+      animation: hero-drift linear both;
+      animation-timeline: --hero;
+      animation-range: exit 0% exit 100%;
+    }
+  }
+}
+
+/* Food gallery, desktop: the navy band pins and the photo row drifts sideways with scroll.
+   Section height = 100vh + the row's overflow; every size is in vh/vw so it is known before paint
+   (no layout shift). Row width = 315.5vh (photo widths) + 5 x 4vw (gaps) + 2 x side padding. */
+@keyframes food-drift {
+  to {
+    translate: calc(-100% + 100cqw) 0;
+  }
+}
+@media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .food-gallery {
+      padding-block: 0;
+      height: max(100vh, calc(415.5vh - 80vw + max(96px, 100vw - 1224px)));
+      view-timeline: --gallery block;
+    }
+    .food-pin {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: clip;
+      container-type: inline-size;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-top: var(--header-h);
+      padding-bottom: 4vh;
+    }
+    .food-track {
+      max-width: none;
+      margin: 6vh 0 0;
+      padding: 0;
+    }
+    .food-gallery .food-row {
+      display: flex;
+      width: max-content;
+      align-items: flex-start;
+      gap: 4vw;
+      overflow: visible;
+      scroll-snap-type: none;
+      padding-inline: max(48px, calc((100cqw - 1320px) / 2 + 48px));
+      animation: food-drift linear both;
+      animation-timeline: --gallery;
+      animation-range: contain 0% contain 100%;
+    }
+    .food-gallery .food-row > li {
+      width: auto;
+      height: var(--h);
+      aspect-ratio: var(--a);
+      margin-top: var(--mt, 0);
+    }
+    .food-row > li:nth-child(6n + 1) { --h: 50vh; --a: 4 / 3; }
+    .food-row > li:nth-child(6n + 2) { --h: 40vh; --a: 3 / 4; --mt: 10vh; }
+    .food-row > li:nth-child(6n + 3) { --h: 38vh; --a: 3 / 2; --mt: 4vh; }
+    .food-row > li:nth-child(6n + 4) { --h: 50vh; --a: 4 / 3; }
+    .food-row > li:nth-child(6n + 5) { --h: 44vh; --a: 4 / 5; --mt: 6vh; }
+    .food-row > li:nth-child(6n + 6) { --h: 40vh; --a: 3 / 2; --mt: 2vh; }
+  }
+}
+
+/* Image zoom in card frames: put .media-zoom on the img and .group on the card/link. */
+.media-zoom {
+  transition: scale 700ms var(--ease-out);
+}
+.group:focus-visible .media-zoom,
+.group:has(:focus-visible) .media-zoom {
+  scale: 1.04;
+}
+@media (hover: hover) {
+  .group:hover .media-zoom {
+    scale: 1.04;
+  }
+}
+
+/* ArrowLink: the arrow slides 6px and a copper underline draws in under the label. */
+.arrow-label {
+  background: linear-gradient(var(--color-copper), var(--color-copper)) no-repeat 0 100% / 0 1px;
+  padding-block: 4px;
+  transition: background-size 240ms var(--ease-out);
+}
+.arrow-icon {
+  transition: translate 240ms var(--ease-out);
+}
+.arrow-link:focus-visible .arrow-label {
+  background-size: 100% 1px;
+}
+.arrow-link:focus-visible .arrow-icon {
+  translate: 6px 0;
+}
+@media (hover: hover) {
+  .arrow-link:hover .arrow-label {
+    background-size: 100% 1px;
+  }
+  .arrow-link:hover .arrow-icon {
+    translate: 6px 0;
+  }
+}
+
+/* Buttons: a fill sweeps in from the left behind the label (solid: darker copper; outline: copper). */
+.btn-sweep {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  transition:
+    color 240ms var(--ease-out),
+    border-color 240ms var(--ease-out),
+    scale 120ms var(--ease-out);
+}
+.btn-sweep::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--sweep, #9e5f27);
+  scale: 0 1;
+  transform-origin: left center;
+  transition: scale 240ms var(--ease-out);
+}
+.btn-sweep:focus-visible::before {
+  scale: 1 1;
+}
+@media (hover: hover) {
+  .btn-sweep:hover::before {
+    scale: 1 1;
+  }
+}
+/* Phone tap feedback. */
+.btn-sweep:active,
+.tap-scale:active {
+  scale: 0.98;
+}
+.btn-sweep:active::before {
+  scale: 1 1;
+  transition-duration: 120ms;
+}
+.tap-scale {
+  transition: scale 120ms var(--ease-out);
+}
+
+/* Desktop nav links: an underline draws in; the current page keeps it. */
+.nav-link {
+  background: linear-gradient(currentColor, currentColor) no-repeat 0 calc(100% - 8px) / 0 1px;
+  transition: background-size 240ms var(--ease-out);
+}
+.nav-link[aria-current="page"],
+.nav-link:focus-visible {
+  background-size: 100% 1px;
+}
+@media (hover: hover) {
+  .nav-link:hover {
+    background-size: 100% 1px;
+  }
+}
+
+/* Header: slides away on scroll down, back on scroll up (SiteHeader sets data-hidden). */
+.site-header {
+  transition:
+    translate 300ms var(--ease-out),
+    background-color 300ms var(--ease-out),
+    border-color 300ms var(--ease-out),
+    color 300ms var(--ease-out);
+}
+.site-header[data-hidden] {
+  translate: 0 -100%;
+}
+
+/* Form fields: a calm copper border on focus, on top of the focus ring. */
+input:not([type="checkbox"]):not([type="radio"]),
+select,
+textarea {
+  transition: border-color 200ms var(--ease-out);
+}
+input:not([type="checkbox"]):not([type="radio"]):focus,
+select:focus,
+textarea:focus {
+  border-color: var(--color-copper-deep);
+}
+
+/* Page transitions: a short cross-fade for cross-document navigations only (reloads, typed URLs).
+   Client navigations are not cross-faded: React <ViewTransition> around the page snapshotted the new page
+   at the old scroll position before Next scrolled to the top, which read as a jump (tried 2026-10-14). */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation-duration: 250ms;
+    animation-timing-function: var(--ease-in-out);
+  }
+}
+
+/* Reduced motion: everything visible and still. */
 @media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
   *,
   *::before,
   *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
+    animation: none !important;
     transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
     scroll-behavior: auto !important;
+  }
+  .js-motion [data-reveal] {
+    opacity: 1 !important;
+    translate: none !important;
+    clip-path: none !important;
+  }
+  .js-motion [data-reveal="wipe"] > *,
+  .js-motion [data-reveal="rule"],
+  .media-zoom,
+  .btn-sweep,
+  .tap-scale {
+    scale: none !important;
+  }
+  .arrow-icon,
+  .parallax-layer,
+  .hero-parallax,
+  .hero-zoom,
+  .hero-line-inner,
+  .site-header[data-hidden] {
+    translate: none !important;
   }
 }

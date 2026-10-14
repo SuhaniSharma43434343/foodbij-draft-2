@@ -18,17 +18,17 @@ type ArrowLinkProps = {
   className?: string;
 };
 
-/** Uppercase text link with a thin arrow ("See weddings ->"); 44px tap height. */
+/** Uppercase text link with a thin arrow ("See weddings ->"); 44px tap height. Hover/focus: the arrow slides 6px and a copper underline draws in (.arrow-link in globals.css). */
 export function ArrowLink({ href, children, tone = "light", className = "" }: ArrowLinkProps) {
   return (
     <Link
       href={href}
-      className={`group t-button inline-flex min-h-11 items-center gap-3 ${
+      className={`arrow-link t-button inline-flex min-h-11 items-center gap-3 ${
         tone === "dark" ? "text-white" : "text-copper-deep"
       } ${className}`.trim()}
     >
-      {children}
-      <span className="transition-transform duration-200 group-hover:translate-x-1">
+      <span className="arrow-label">{children}</span>
+      <span className="arrow-icon">
         <Arrow />
       </span>
     </Link>

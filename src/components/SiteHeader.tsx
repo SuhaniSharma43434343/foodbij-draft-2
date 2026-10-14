@@ -16,6 +16,8 @@ function variantFor(pathname: string): HeaderVariant {
 
 /** Past this scroll depth the overlay header turns solid white so it stays readable over content. */
 const SOLID_AFTER_PX = 80;
+/** Past this depth the header slides away on scroll down and returns on scroll up. */
+const HIDE_AFTER_PX = 120;
 
 const desktopLinks = site.nav.filter((n) => n.href !== PLAN_HREF);
 const phoneLinks = [
@@ -94,15 +96,29 @@ export function SiteHeader({ variant }: SiteHeaderProps) {
   const mode = variant ?? variantFor(pathname);
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [tucked, setTucked] = useState(false);
+  const [focusInside, setFocusInside] = useState(false);
   const menuButton = useRef<HTMLButtonElement>(null);
   const menuPanel = useRef<HTMLDivElement>(null);
   const closeButton = useRef<HTMLButtonElement>(null);
   const wasOpen = useRef(false);
 
-  // Overlay header turns solid once the page scrolls past the threshold.
+  // Overlay header turns solid once the page scrolls past the threshold; any header tucks away on
+  // scroll down past HIDE_AFTER_PX and comes back on scroll up (always shown near the top).
   useEffect(() => {
-    if (mode !== "overlay") return;
-    const onScroll = () => setScrolled(window.scrollY > SOLID_AFTER_PX);
+    let last = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      if (mode === "overlay") setScrolled(y > SOLID_AFTER_PX);
+      if (y <= HIDE_AFTER_PX) {
+        setTucked(false);
+        last = y;
+        return;
+      }
+      if (Math.abs(y - last) < 6) return;
+      setTucked(y > last);
+      last = y;
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -124,6 +140,8 @@ export function SiteHeader({ variant }: SiteHeaderProps) {
     wasOpen.current = true;
     const previous = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    // Tells the motion system (MotionProvider) to pause smooth scrolling.
+    document.documentElement.setAttribute("data-scroll-lock", "");
     closeButton.current?.focus();
 
     const onKey = (e: KeyboardEvent) => {
@@ -153,6 +171,7 @@ export function SiteHeader({ variant }: SiteHeaderProps) {
     desktop.addEventListener("change", onResize);
     return () => {
       document.body.style.overflow = previous;
+      document.documentElement.removeAttribute("data-scroll-lock");
       window.removeEventListener("keydown", onKey);
       desktop.removeEventListener("change", onResize);
     };
@@ -164,7 +183,13 @@ export function SiteHeader({ variant }: SiteHeaderProps) {
   return (
     <>
       <header
-        className={`${mode === "overlay" ? "fixed" : "sticky"} inset-x-0 top-0 z-40 border-b transition-colors duration-300 ${
+        data-hidden={tucked && !open && !focusInside ? "" : undefined}
+        // Keyboard focus inside keeps the header on screen (a mouse click on a link does not).
+        onFocus={(e) => setFocusInside(e.target.matches(":focus-visible"))}
+        onBlur={(e) => {
+          if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setFocusInside(false);
+        }}
+        className={`site-header ${mode === "overlay" ? "fixed" : "sticky"} inset-x-0 top-0 z-40 border-b ${
           transparent ? "border-transparent bg-transparent text-white" : "border-navy/12 bg-white text-navy"
         }`}
       >
@@ -189,7 +214,7 @@ export function SiteHeader({ variant }: SiteHeaderProps) {
                 key={l.href}
                 href={l.href}
                 aria-current={pathname === l.href ? "page" : undefined}
-                className="t-button py-3 transition-opacity hover:opacity-70"
+                className="nav-link t-button py-3"
               >
                 {l.label}
               </Link>
