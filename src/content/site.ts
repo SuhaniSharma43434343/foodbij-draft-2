@@ -193,9 +193,11 @@ export const services: Service[] = [
     blurb:
       "Sangeet, wedding day, reception. Live counters, the family dishes that must be there, and a team that runs the evening so your family gets to be guests.",
     linkLabel: "See weddings",
+    // Was randive-wedding-01 (chef's toques in the background, which the brief avoids; no crop removes
+    // them in every place this image is shown, e.g. the full-height homepage service card).
     heroImage: {
-      src: `${IMG}/1-weddings/randive-wedding/randive-wedding-01.jpg`,
-      alt: "A crescent-shaped gold canapé stand carried at shoulder height.",
+      src: `${IMG}/1-weddings/bangalore-wedding/bangalore-wedding-04.jpg`,
+      alt: "A tiered gold buffet structure lit by a row of brass lamps.",
     },
     enquiryValue: "weddings",
   },
@@ -321,34 +323,36 @@ export const home: Home = {
     // titles stay generic and no client logo shows until the client confirms).
     items: [
       {
+        // Homepage stories open the Instagram-style viewer, so these are the stories with the most
+        // cleared photos (5, 3 and 3), one per service type. NEEDS CLIENT: name rights + briefs.
         service: "Brand launches & live events",
-        title: "A music festival",
-        line: "Service that had to run to the set times, not the other way round.",
+        title: "An evening at a jewellery boutique",
+        line: "Canapés off slate, drinks built to order, and a floor team that kept moving all evening.",
         image: {
-          src: `${IMG}/3-brand-launches-live-events/rolling-loud/rolling-loud-02.jpg`,
-          alt: "A long buffet counter lit by lamps against a black backdrop.",
+          src: `${IMG}/3-brand-launches-live-events/cartier/cartier-04.jpg`,
+          alt: "A deep pink cocktail held up in a stemmed glass.",
         },
-        href: "/our-work/music-festival",
+        href: "/our-work/boutique-evening",
       },
       {
         service: "Weddings",
-        title: "An outdoor wedding",
-        line: BAYVIEW_LINE,
+        title: "A wedding in Bengaluru",
+        line: "A gold buffet built up in tiers, a chef finishing plates by hand, and dessert that arrived looking like it was grown.",
         image: {
-          src: `${IMG}/1-weddings/bayview-lawns-wedding/bayview-lawns-wedding-01.jpg`,
-          alt: "An outdoor chai and ice-cream station in white and pale wood, framed by foliage.",
+          src: `${IMG}/1-weddings/bangalore-wedding/bangalore-wedding-02.jpg`,
+          alt: "A pearl necklace displayed on a stand beside a grazing board, warm lights out of focus behind.",
         },
-        href: "/our-work/outdoor-wedding",
+        href: "/our-work/wedding-in-bengaluru",
       },
       {
-        service: "Brand launches & live events",
-        title: "An anime launch party",
-        line: "A ramen counter cooking to order, with a queue in front of it all night.",
+        service: "Celebrations & private dining",
+        title: "Counters for a children's party",
+        line: "A counter small people want to walk up to, with food they finish.",
         image: {
-          src: `${IMG}/3-brand-launches-live-events/crunchyroll/crunchyroll-02.jpg`,
-          alt: "A ramen counter with the kitchen team working behind it.",
+          src: `${IMG}/2-celebrations-private-dining/playseum-set-ups/playseum-set-ups-03.jpg`,
+          alt: "A pastel children's counter dressed with paper fans and painted signage.",
         },
-        href: "/our-work/anime-launch-party",
+        href: "/our-work/childrens-counters",
       },
     ],
   },
@@ -428,9 +432,10 @@ export const weddings: ServicePage = {
         brief: "[NEEDS CLIENT: the brief for the Bengaluru wedding]",
         whatWeMade:
           "A gold buffet built up in tiers, a chef finishing plates by hand, and dessert that arrived looking like it was grown.",
+        // bangalore-wedding-04 is now the Weddings hero, so the story card uses the dessert frame.
         image: {
-          src: `${IMG}/1-weddings/bangalore-wedding/bangalore-wedding-04.jpg`,
-          alt: "A tiered gold buffet structure lit by a row of brass lamps.",
+          src: `${IMG}/1-weddings/bangalore-wedding/bangalore-wedding-01.jpg`,
+          alt: "Domed yellow desserts set into a bed of dried beans on a service tray.",
         },
       },
       {

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useRef } from "react";
 import { ButtonLink } from "@/components/Button";
+import { Grain } from "@/components/motion/Grain";
 import { HeroLines } from "@/components/motion/HeroLines";
 import { useScrollProgress } from "@/components/motion/useScrollProgress";
 import { PLAN_HREF, home } from "@/content/site";
@@ -62,6 +63,7 @@ export function Opening() {
           aria-hidden="true"
           className="op-shade absolute inset-0 bg-[linear-gradient(to_bottom,rgba(11,28,45,0.5)_0%,rgba(11,28,45,0)_20%,rgba(11,28,45,0)_36%,rgba(11,28,45,0.85)_58%,#0B1C2D_72%)] lg:bg-[linear-gradient(to_bottom,rgba(11,28,45,0.5)_0%,rgba(11,28,45,0)_22%,rgba(11,28,45,0)_55%,rgba(11,28,45,0.7)_80%,#0B1C2D_90%),linear-gradient(to_right,#0B1C2D_0%,#0B1C2D_44%,rgba(11,28,45,0.75)_48%,rgba(11,28,45,0)_58%)]"
         />
+        <Grain />
         {/* Shown only while scrubbing: the dish, named under the framed plate (the photo's own alt text). */}
         <p aria-hidden="true" className="op-caption">
           <CopperSlash className="op-caption-slash" />

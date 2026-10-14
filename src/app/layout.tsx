@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Cormorant, Jost } from "next/font/google";
+import { CopperCursor } from "@/components/motion/CopperCursor";
 import { MotionProvider } from "@/components/motion/MotionProvider";
+import { PageCurtain } from "@/components/motion/PageCurtain";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { StickyPlanBar } from "@/components/StickyPlanBar";
@@ -54,6 +56,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SiteFooter />
         <StickyPlanBar />
         <MotionProvider />
+        <PageCurtain />
+        <CopperCursor />
       </body>
     </html>
   );

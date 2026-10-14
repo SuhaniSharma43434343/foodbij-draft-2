@@ -22,7 +22,8 @@
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
   --reveal-y: 20px;
   --header-h: 72px;
-  --sticky-bar-h: 52px;
+  /* Thumb dock (StickyPlanBar): 60px plus the phone's safe-area inset. */
+  --sticky-bar-h: calc(60px + env(safe-area-inset-bottom, 0px));
 }
 @media (min-width: 768px) {
   :root {
@@ -56,7 +57,7 @@ body {
   outline-offset: 2px;
 }
 
-/* Below 1024px the sticky "Plan your event" bar covers the bottom of the screen, so the page gets
+/* Below 1024px the thumb dock (Services + Plan your event) covers the bottom of the screen, so the page gets
    matching bottom padding. The padding is painted navy so it continues the footer. Pages without
    the bar (the plan page) get no padding. */
 @media (max-width: 1023.98px) {
@@ -492,4 +493,102 @@ textarea:focus {
   .site-header[data-hidden] {
     translate: none !important;
   }
+}
+
+/* ---------------------------------------------------------------------------
+   W9.4 shared block: film grain + scroll focus + press states (phone first).
+   - .grain: <Grain /> (src/components/motion/Grain.tsx). One 160px SVG noise tile, static, blended
+     (overlay) over navy bands so warm night photos glow. Parent must be positioned.
+   - [data-focus-scroll]: <ScrollFocus /> (src/components/motion/ScrollFocus.tsx) toggles .is-focus
+     while the element crosses the middle of the viewport (touch screens / <1024px only). The image
+     marked .focus-zoom or .media-zoom zooms 1 -> 1.05 and lifts; a copper rule draws along the bottom
+     edge (opt out with data-focus-scroll="norule"). Transforms/filter only: no layout shift.
+   - .press: a clear :active state for links and cards on touch (scale 0.97, darker copper).
+   All motion here is off under prefers-reduced-motion; without JS nothing is hidden or changed.
+   --------------------------------------------------------------------------- */
+:root {
+  /* Overlay on navy is gentle: 0.2 gives about +-3 levels of noise, a fine film grain, mean colour unchanged. */
+  --grain-opacity: 0.2;
+  --grain-tile: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='linear' slope='4' intercept='-1.5'/%3E%3CfeFuncG type='linear' slope='4' intercept='-1.5'/%3E%3CfeFuncB type='linear' slope='4' intercept='-1.5'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.grain {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: var(--grain-opacity, 0.2);
+  mix-blend-mode: overlay;
+  background-image: var(--grain-tile);
+  background-size: 160px 160px;
+}
+
+[data-focus-scroll]:not([data-focus-scroll="norule"])::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  z-index: 2;
+  width: 100%;
+  height: 2px;
+  background: var(--color-copper);
+  transform-origin: left center;
+  scale: 0 1;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  @media (hover: none), (max-width: 1023.98px) {
+    .js-motion [data-focus-scroll] .focus-zoom,
+    .js-motion [data-focus-scroll] .media-zoom {
+      transition:
+        scale 900ms var(--ease-out),
+        filter 900ms var(--ease-out);
+    }
+    .js-motion [data-focus-scroll]::after {
+      transition: scale 700ms var(--ease-out);
+    }
+    .js-motion [data-focus-scroll].is-focus .focus-zoom,
+    .js-motion [data-focus-scroll].is-focus .media-zoom {
+      scale: 1.05;
+      filter: brightness(1.06) saturate(1.12);
+    }
+    .js-motion [data-focus-scroll].is-focus::after {
+      scale: 1 1;
+    }
+  }
+}
+
+.press {
+  transition:
+    scale 120ms var(--ease-out),
+    color 120ms var(--ease-out);
+}
+.press:active {
+  scale: 0.97;
+  color: var(--press-color, #6f4119);
+}
+.press:active .arrow-label {
+  background-size: 100% 1px;
+}
+.press:active .arrow-icon {
+  translate: 6px 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .press:active,
+  [data-focus-scroll] .focus-zoom {
+    scale: none !important;
+  }
+}
+/* The navy plan band (PlanBand, id="plan") gets the same grain without touching its markup. */
+#plan.bg-navy {
+  position: relative;
+}
+#plan.bg-navy::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: var(--grain-opacity, 0.2);
+  mix-blend-mode: overlay;
+  background-image: var(--grain-tile);
+  background-size: 160px 160px;
 }

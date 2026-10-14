@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { PLAN_HREF, services, site } from "@/content/site";
 import { ButtonLink } from "./Button";
+import "./menu/menu.css";
 
 export type HeaderVariant = "overlay" | "solid";
 
@@ -20,8 +21,9 @@ const SOLID_AFTER_PX = 80;
 const HIDE_AFTER_PX = 120;
 
 const desktopLinks = site.nav.filter((n) => n.href !== PLAN_HREF);
-const phoneLinks = [
-  ...services.map((s) => ({ label: s.name, href: s.href })),
+/** Phone menu: the four services (short names, set large; each has a photo), then Our work and Our story. */
+const phoneLinks: { label: string; href: string; photo?: number }[] = [
+  ...services.map((s, i) => ({ label: s.shortName, href: s.href, photo: i })),
   ...desktopLinks.filter((n) => n.href !== "/#services"),
 ];
 
@@ -98,6 +100,8 @@ export function SiteHeader({ variant }: SiteHeaderProps) {
   const [open, setOpen] = useState(false);
   const [tucked, setTucked] = useState(false);
   const [focusInside, setFocusInside] = useState(false);
+  /** Index of the service whose photo shows behind the phone menu (null: the default, the first service). */
+  const [activePhoto, setActivePhoto] = useState<number | null>(null);
   const menuButton = useRef<HTMLButtonElement>(null);
   const menuPanel = useRef<HTMLDivElement>(null);
   const closeButton = useRef<HTMLButtonElement>(null);
@@ -132,6 +136,7 @@ export function SiteHeader({ variant }: SiteHeaderProps) {
   // Phone menu: lock scroll, Escape closes, keep Tab inside, focus in on open and back out on close,
   // and close if the screen grows to desktop width.
   useEffect(() => {
+    setActivePhoto(null);
     if (!open) {
       if (wasOpen.current) menuButton.current?.focus();
       wasOpen.current = false;
@@ -233,39 +238,76 @@ export function SiteHeader({ variant }: SiteHeaderProps) {
         aria-modal="true"
         aria-label="Menu"
         hidden={!open}
-        className="fixed inset-0 z-50 overflow-y-auto bg-navy text-white lg:hidden"
+        className="menu-panel fixed inset-0 z-50 bg-navy text-white lg:hidden"
       >
-        <div className="site-container flex h-[72px] items-center justify-between">
-          <Logo light onClick={close} />
-          <button
-            ref={closeButton}
-            type="button"
-            onClick={close}
-            className="t-button -mr-3 inline-flex min-h-11 min-w-11 items-center gap-3 px-3"
-          >
-            Close
-            <CloseIcon />
-          </button>
+        {/* Behind the list: the active service's photo, low opacity under a navy scrim. Lazy, so nothing loads
+            until the menu first opens. */}
+        <div className="menu-photos" aria-hidden="true">
+          {services.map((s, i) => (
+            <Image
+              key={s.slug}
+              src={s.heroImage.src}
+              alt=""
+              fill
+              sizes="100vw"
+              className="menu-photo"
+              data-on={(activePhoto ?? 0) === i ? "" : undefined}
+            />
+          ))}
+          <div className="menu-scrim" />
         </div>
-        <nav aria-label="Menu" className="site-container pt-8 pb-12">
-          <ul className="border-t border-white/12">
-            {phoneLinks.map((l) => (
-              <li key={l.href} className="border-b border-white/12">
-                <Link
-                  href={l.href}
-                  onClick={close}
-                  aria-current={pathname === l.href ? "page" : undefined}
-                  className="block py-4 font-display text-[1.75rem] leading-[1.15] font-medium"
-                >
-                  {l.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-          <ButtonLink href={PLAN_HREF} onClick={close} className="mt-10 w-full">
-            {site.headerCta}
-          </ButtonLink>
-        </nav>
+        <div className="menu-scroll">
+          <div className="site-container flex h-[72px] items-center justify-between">
+            <Logo light onClick={close} />
+            <button
+              ref={closeButton}
+              type="button"
+              onClick={close}
+              className="t-button -mr-3 inline-flex min-h-11 min-w-11 items-center gap-3 px-3"
+            >
+              Close
+              <CloseIcon />
+            </button>
+          </div>
+          <nav aria-label="Menu" className="site-container pt-6 pb-10">
+            <ul
+              className="menu-list"
+              data-active={activePhoto !== null ? "" : undefined}
+              onPointerLeave={(e) => {
+                if (e.pointerType === "mouse") setActivePhoto(null);
+              }}
+            >
+              {phoneLinks.map((l, i) => {
+                const activate = () => setActivePhoto(l.photo ?? null);
+                return (
+                  <li
+                    key={l.href}
+                    className={`menu-item ${l.photo === undefined && phoneLinks[i - 1]?.photo !== undefined ? "mt-5" : ""}`}
+                    style={{ "--i": i } as React.CSSProperties}
+                  >
+                    <Link
+                      href={l.href}
+                      onClick={close}
+                      onPointerEnter={activate}
+                      onTouchStart={activate}
+                      onFocus={activate}
+                      aria-current={pathname === l.href ? "page" : undefined}
+                      data-on={l.photo !== undefined && activePhoto === l.photo ? "" : undefined}
+                      className="menu-link"
+                    >
+                      {l.label}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+            <div className="menu-item mt-10" style={{ "--i": phoneLinks.length } as React.CSSProperties}>
+              <ButtonLink href={PLAN_HREF} onClick={close} className="w-full">
+                {site.headerCta}
+              </ButtonLink>
+            </div>
+          </nav>
+        </div>
       </div>
     </>
   );

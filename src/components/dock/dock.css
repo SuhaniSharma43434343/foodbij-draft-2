@@ -1,0 +1,139 @@
+/* Thumb dock + Services sheet (StickyPlanBar.tsx, dock/ServicesSheet.tsx). Phones and tablets only (<1024px).
+   Square corners (taste spec). Motion: dock slides (300ms), sheet rises 320ms ease-out; still under reduced motion. */
+
+/* ---------- Dock ---------- */
+.dock {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 30;
+  display: grid;
+  grid-template-columns: 2fr 3fr;
+  height: calc(60px + env(safe-area-inset-bottom, 0px));
+  transition:
+    translate 300ms var(--ease-out),
+    visibility 300ms;
+}
+.dock[data-visible="false"] {
+  translate: 0 100%;
+  visibility: hidden;
+}
+@media (min-width: 1024px) {
+  .dock {
+    display: none;
+  }
+}
+.dock-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 44px;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  transition: background-color 120ms var(--ease-out);
+}
+.dock-services {
+  background: var(--color-navy);
+  color: #fff;
+  border-right: 1px solid rgb(255 255 255 / 0.14);
+}
+.dock-services:active {
+  background: #13283d;
+}
+.dock-plan {
+  background: var(--color-copper);
+  color: #fff;
+}
+.dock-plan:active {
+  background: #9e5f27;
+}
+.dock-item:focus-visible {
+  outline-offset: -4px;
+  outline-color: #fff;
+}
+
+/* ---------- Services sheet ---------- */
+.sheet-root {
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+}
+.sheet-root[hidden] {
+  display: none;
+}
+.sheet-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgb(11 28 45 / 0.55);
+  opacity: 0;
+  transition: opacity 320ms var(--ease-out);
+}
+.sheet-panel {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  max-height: min(88dvh, 680px);
+  background: var(--color-paper, #fff);
+  color: var(--color-navy);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  translate: 0 100%;
+  transition: translate 320ms var(--ease-out);
+  overscroll-behavior: contain;
+}
+.sheet-root[data-open] .sheet-backdrop {
+  opacity: 1;
+}
+.sheet-root[data-open] .sheet-panel {
+  translate: 0 var(--drag, 0px);
+}
+.sheet-root[data-dragging] .sheet-panel {
+  transition: none;
+}
+.sheet-head {
+  flex: none;
+  touch-action: none;
+}
+.sheet-handle {
+  display: block;
+  width: 40px;
+  height: 4px;
+  margin: 10px auto 0;
+  background: rgb(11 28 45 / 0.22);
+}
+.sheet-list {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.sheet-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-height: 96px;
+  padding-block: 8px;
+  transition: background-color 120ms var(--ease-out);
+}
+.sheet-row:active {
+  background: var(--color-mist);
+}
+.sheet-row:focus-visible {
+  outline-offset: -2px;
+}
+.sheet-thumb {
+  flex: none;
+  width: 64px;
+  height: 80px;
+  object-fit: cover;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dock,
+  .sheet-backdrop,
+  .sheet-panel {
+    transition: none !important;
+  }
+  .dock[data-visible="false"] {
+    translate: none;
+  }
+}

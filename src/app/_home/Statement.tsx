@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import { Grain } from "@/components/motion/Grain";
 import { useScrollProgress } from "@/components/motion/useScrollProgress";
 import { home } from "@/content/site";
 import "./home-motion-a.css";
@@ -16,7 +17,8 @@ export function Statement() {
   const ref = useRef<HTMLElement>(null);
   useScrollProgress(ref, { mode: "view" });
   return (
-    <section ref={ref} aria-label="What we believe" className="stmt bg-navy text-white" style={{ "--n": words.length } as React.CSSProperties}>
+    <section ref={ref} aria-label="What we believe" className="stmt relative bg-navy text-white" style={{ "--n": words.length } as React.CSSProperties}>
+      <Grain />
       <figure className="site-container stmt-inner">
         <blockquote>
           <p className="stmt-text">

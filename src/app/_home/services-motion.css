@@ -348,3 +348,79 @@
     scale: none !important;
   }
 }
+
+/* ---- W9.4: giant italic names, scroll focus, grain (phone first) ---- */
+.svc-card-name {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  /* 54px at 360, up to 72px; long names wrap (Celebrations / & private / dining). */
+  font-size: clamp(3.25rem, 15vw, 4.5rem);
+  line-height: 0.96;
+  letter-spacing: -0.015em;
+  overflow-wrap: break-word;
+  transform-origin: left bottom;
+}
+.svc-card-rule {
+  display: block;
+  width: 56px;
+  height: 1px;
+  margin-top: 14px;
+  background: var(--color-copper);
+  transform-origin: left center;
+}
+@media (min-width: 1024px) {
+  .svc-card-name {
+    font-size: clamp(3.25rem, 1.5rem + 2.6vw, 4.5rem);
+  }
+}
+/* The shade reaches higher on phone so the taller name always sits on dark. */
+@media (max-width: 1023.98px) {
+  .svc-card-shade {
+    background: linear-gradient(
+      to top,
+      rgb(11 28 45 / 0.97) 0%,
+      rgb(11 28 45 / 0.9) 38%,
+      rgb(11 28 45 / 0.6) 58%,
+      rgb(11 28 45 / 0.15) 76%,
+      rgb(11 28 45 / 0) 88%
+    );
+  }
+}
+@media (max-width: 1023.98px) and (prefers-reduced-motion: no-preference) {
+  /* Cards 2-4: the name lands with its card. --e: 0 while the card is still low on the screen, 1 just
+     after it pins (scrubbed by the stack's --p, so it follows the finger). */
+  .js-motion .svc-card + .svc-card .svc-card-name {
+    --e: clamp(0, calc((var(--p, 0) * 3 - var(--i, 0) + 0.4) / 0.55), 1);
+    scale: calc(0.92 + 0.08 * var(--e));
+    translate: calc((1 - var(--e)) * 22%) 0;
+    opacity: calc(0.35 + 0.65 * var(--e));
+  }
+  /* Card 1 scrolls in before the stack pins: it settles when it reaches the middle of the screen. */
+  .js-motion .svc-card:first-child .svc-card-name {
+    scale: 0.92;
+    translate: 12% 0;
+    transition:
+      scale 900ms var(--ease-out),
+      translate 900ms var(--ease-out);
+  }
+  .js-motion .svc-card:first-child .is-focus .svc-card-name {
+    scale: 1;
+    translate: 0 0;
+  }
+  .js-motion .svc-card-rule {
+    scale: 0 1;
+    transition: scale 700ms var(--ease-out) 150ms;
+  }
+  .js-motion .is-focus .svc-card-rule {
+    scale: 1 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .svc-card-name,
+  .svc-card-rule {
+    scale: none !important;
+    translate: none !important;
+    opacity: 1 !important;
+  }
+}

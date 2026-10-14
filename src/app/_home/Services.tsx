@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { SectionHeading } from "@/components/SectionHeading";
+import { ScrollFocus } from "@/components/motion/ScrollFocus";
 import { useScrollProgress } from "@/components/motion/useScrollProgress";
 import { home, services } from "@/content/site";
 import { DesktopStage } from "./services/DesktopStage";
@@ -31,6 +32,7 @@ export function Services() {
       </div>
       <PhoneStack ref={stackRef} items={services} />
       <DesktopStage ref={deskRef} items={services} />
+      <ScrollFocus />
     </section>
   );
 }

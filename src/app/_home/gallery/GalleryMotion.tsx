@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { Grain } from "@/components/motion/Grain";
 import { useScrollProgress } from "@/components/motion/useScrollProgress";
 
 type Img = { src: string; alt: string };
@@ -126,6 +127,7 @@ export function GalleryMotion({ label, heading, images }: Props) {
       className="fg bg-navy text-white"
       data-ready={ready ? "" : undefined}
     >
+      <Grain />
       <div className="fg-pin">
         <div ref={trackRef} className="fg-track">
           <div className="fg-intro" data-reveal-stagger="">

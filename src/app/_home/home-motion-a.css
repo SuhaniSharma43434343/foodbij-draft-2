@@ -267,3 +267,12 @@
 @media (prefers-reduced-motion: reduce) {
   .mq-toggle { display: none; }
 }
+
+/* ----- Story short (W9.4) -------------------------------------------------- */
+/* Phone: the edge-to-edge photo settles (1.12 -> 1, crop-safe) without the clip wipe. A fully clipped
+   frame is a zero-area target for IntersectionObserver and can miss its reveal after a jump scroll. */
+@media (max-width: 1023.98px) {
+  .js-motion .story-photo[data-reveal="wipe"] {
+    clip-path: none;
+  }
+}

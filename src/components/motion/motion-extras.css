@@ -1,0 +1,152 @@
+/* W8.1 motion extras (spec: docs/design/motion-spec.md, Expressive pass items 7 and 8).
+   Copper cursor (.cc), magnetic solid buttons (.btn-magnetic / .btn-face) and the page curtain (.pc).
+   All of it is inert without JS and switched off under prefers-reduced-motion. */
+
+/* ---------- Copper cursor (CopperCursor.tsx) ----------
+   z 45: above the header (40), below the phone menu (50) and the curtain (70). */
+.cc {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 45;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  transition: opacity 200ms var(--ease-out);
+  will-change: transform;
+}
+.cc[data-hidden] {
+  opacity: 0;
+}
+.cc-dot,
+.cc-ring,
+.cc-disc {
+  position: absolute;
+  border-radius: 9999px;
+  transition:
+    opacity 240ms var(--ease-out),
+    scale 320ms var(--ease-out);
+}
+.cc-dot {
+  left: -4px;
+  top: -4px;
+  width: 8px;
+  height: 8px;
+  background: var(--color-copper);
+}
+.cc-ring {
+  left: -14px;
+  top: -14px;
+  width: 28px;
+  height: 28px;
+  border: 1.5px solid var(--color-copper);
+  opacity: 0;
+  scale: 0.3;
+}
+.cc-disc {
+  left: -42px;
+  top: -42px;
+  width: 84px;
+  height: 84px;
+  display: grid;
+  place-items: center;
+  /* copper-deep keeps the small white "View" label above 4.5:1 */
+  background: color-mix(in srgb, var(--color-copper-deep) 94%, transparent);
+  color: #fff;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  /* Optical centring: letter-spacing adds space after the last letter. */
+  text-indent: 0.18em;
+  opacity: 0;
+  scale: 0.1;
+}
+.cc[data-state="link"] .cc-dot,
+.cc[data-state="view"] .cc-dot {
+  opacity: 0;
+  scale: 0.5;
+}
+.cc[data-state="link"] .cc-ring {
+  opacity: 1;
+  scale: 1;
+}
+.cc[data-state="view"] .cc-disc {
+  opacity: 1;
+  scale: 1;
+}
+
+/* ---------- Magnetic solid buttons (Button.tsx + useMagnetic.ts) ----------
+   The link keeps its box (hit area, focus outline); only the inner face moves. */
+.btn-magnetic {
+  -webkit-tap-highlight-color: transparent;
+}
+.btn-face {
+  transition:
+    color 240ms var(--ease-out),
+    scale 120ms var(--ease-out),
+    transform 420ms var(--ease-out);
+}
+.btn-magnetic:focus-visible > .btn-sweep::before {
+  scale: 1 1;
+}
+@media (hover: hover) {
+  .btn-magnetic:hover > .btn-sweep::before {
+    scale: 1 1;
+  }
+}
+
+/* ---------- Page curtain (PageCurtain.tsx) ---------- */
+.pc {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: grid;
+  place-items: center;
+  background: var(--color-navy, #0b1c2d);
+  transform: translate3d(0, 100%, 0);
+  visibility: hidden;
+  pointer-events: none;
+}
+.pc[data-phase="cover"] {
+  visibility: visible;
+  pointer-events: auto;
+  transform: none;
+  transition: transform 350ms var(--ease-in-out);
+}
+.pc[data-phase="reveal"] {
+  visibility: visible;
+  transform: translate3d(0, -100%, 0);
+  transition: transform 380ms var(--ease-in-out);
+}
+.pc-slash {
+  width: 28px;
+  height: 52px;
+  overflow: visible;
+}
+.pc-slash line {
+  fill: none;
+  stroke: var(--color-copper);
+  stroke-width: 1.5;
+  stroke-linecap: square;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+.pc[data-phase="cover"] .pc-slash line {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 420ms var(--ease-out) 120ms;
+}
+.pc[data-phase="reveal"] .pc-slash line {
+  stroke-dashoffset: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cc,
+  .pc {
+    display: none !important;
+  }
+  .btn-face {
+    transform: none !important;
+  }
+}

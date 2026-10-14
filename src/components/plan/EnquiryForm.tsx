@@ -1,57 +1,26 @@
 "use client";
 
-import { useRef, useState, type FormEvent, type ReactNode } from "react";
-import { planPage } from "@/content/pages";
+import { useEffect, useRef, useState, useSyncExternalStore, type FormEvent } from "react";
 import { enquiryForm, type ServiceSlug } from "@/content/site";
+import { EnquiryStepper } from "./EnquiryStepper";
+import {
+  control,
+  controlBorder,
+  copy,
+  describedBy,
+  emptyValues,
+  errorClass,
+  fields,
+  hintClass,
+  labelClass,
+  Marker,
+  validate,
+  type ErrorKey,
+  type Errors,
+  type Values,
+} from "./enquiry-shared";
 
-const { fields } = enquiryForm;
-const copy = planPage.form;
-
-type Values = {
-  name: string;
-  phone: string;
-  email: string;
-  eventType: string;
-  date: string;
-  guests: string;
-  city: string;
-  brief: string;
-};
-
-type ErrorKey = "name" | "contact" | "eventType";
-type Errors = Partial<Record<ErrorKey, string>>;
-
-const SERVICE_SLUGS: ServiceSlug[] = ["weddings", "celebrations", "brand-launches", "corporate-dining"];
-
-/** Returns the slug if `value` is one of the four services, otherwise "". */
-export function presetFrom(value: string | null | undefined): ServiceSlug | "" {
-  return SERVICE_SLUGS.includes(value as ServiceSlug) ? (value as ServiceSlug) : "";
-}
-
-function validate(v: Values): Errors {
-  const errors: Errors = {};
-  if (!v.name.trim()) errors.name = copy.errors.name;
-  const phone = v.phone.trim();
-  const email = v.email.trim();
-  if (!phone && !email) errors.contact = copy.errors.contact;
-  else if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.contact = copy.errors.email;
-  else if (phone && phone.replace(/\D/g, "").length < 7) errors.contact = copy.errors.phone;
-  if (!v.eventType) errors.eventType = copy.errors.eventType;
-  return errors;
-}
-
-// Shared control styles: 16px text (no iOS zoom), 48px tall, square corners, 1px navy/30 border,
-// copper focus ring.
-const control =
-  "block w-full rounded-none border bg-white px-4 text-[16px] leading-[1.4] text-navy outline-none transition-colors focus:border-copper focus:outline-2 focus:outline-offset-0 focus:outline-copper";
-const controlBorder = (invalid: boolean) => (invalid ? "border-[#9e2a1e]" : "border-navy/30");
-const labelClass = "flex flex-wrap items-baseline gap-x-3 text-[15px] leading-[1.4] font-medium text-navy";
-const hintClass = "mt-1 text-[14px] leading-[1.45] text-navy/68";
-const errorClass = "mt-2 text-[14px] leading-[1.45] font-medium text-[#9e2a1e]";
-
-function Marker({ children }: { children: ReactNode }) {
-  return <span className="text-[12px] font-medium tracking-[0.12em] text-copper-deep uppercase">{children}</span>;
-}
+export { presetFrom } from "./enquiry-shared";
 
 function Chevron() {
   return (
@@ -68,10 +37,49 @@ function Chevron() {
   );
 }
 
-/** ids for the hint and error lines of a field, joined for aria-describedby. */
-function describedBy(...ids: (string | false | undefined)[]) {
-  const list = ids.filter(Boolean).join(" ");
-  return list || undefined;
+/**
+ * Field reveal (W8.3, CSS .pm-fields in components/work/pages-motion.css). Calm and short: ~480ms in all.
+ * - Desktop: the form is in the first screen, so the cascade runs in CSS on first paint.
+ * - Phone: only the fields still below the fold at mount are held back (data-wait; off screen, so nothing
+ *   visible blinks) and they rise in as the form scrolls into view. Focus inside the form shows every field at
+ *   once, so typing never waits on the animation.
+ * - Once per visit: a later mount (the Suspense swap that applies ?service=, or coming back) renders static,
+ *   so the cascade never replays. Under reduced motion nothing moves.
+ */
+let fieldsPhase: "init" | "done" = "init";
+
+function useFieldReveal(formRef: React.RefObject<HTMLFormElement | null>) {
+  useEffect(() => {
+    const form = formRef.current;
+    if (!form || fieldsPhase === "done") return;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const vh = window.innerHeight;
+    const wait = Array.from(form.children).filter((c) => c.getBoundingClientRect().top > vh - 24);
+    if (reduced || window.matchMedia("(min-width: 1024px)").matches || wait.length === 0) {
+      fieldsPhase = "done";
+      return;
+    }
+    wait.forEach((c) => c.setAttribute("data-wait", ""));
+    form.dataset.fields = "pending";
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((e) => e.isIntersecting)) return;
+        form.dataset.fields = "in";
+        fieldsPhase = "done";
+        io.disconnect();
+      },
+      { rootMargin: "0px 0px -6% 0px" },
+    );
+    io.observe(wait[0]);
+    return () => {
+      io.disconnect();
+      // Unmounted before it was seen: leave the fields visible.
+      if (form.dataset.fields === "pending") {
+        delete form.dataset.fields;
+        wait.forEach((c) => c.removeAttribute("data-wait"));
+      }
+    };
+  }, [formRef]);
 }
 
 type EnquiryFormProps = {
@@ -79,26 +87,49 @@ type EnquiryFormProps = {
   preset?: ServiceSlug | "";
 };
 
+// Phones (< 768px) get the step-by-step form once hydrated. The server render and the first client render use the
+// single-page form (getServerSnapshot = false), so without JS the whole form is there and works.
+const PHONE_QUERY = "(max-width: 767.98px)";
+function subscribePhone(cb: () => void) {
+  const mq = window.matchMedia(PHONE_QUERY);
+  mq.addEventListener("change", cb);
+  return () => mq.removeEventListener("change", cb);
+}
+function usePhoneStepper() {
+  return useSyncExternalStore(
+    subscribePhone,
+    () => window.matchMedia(PHONE_QUERY).matches,
+    () => false,
+  );
+}
+
 /**
  * The Plan your event form. There is no backend yet, so submitting never pretends to send: a valid
  * submit shows an honest "cannot send" panel with the phone and email, and keeps what was typed.
+ * Desktop/tablet (and no JS): one page with every field. Phones: one question per screen (EnquiryStepper).
+ * The answers live here, so they survive a switch between the two (e.g. rotating a tablet).
  */
 export function EnquiryForm({ preset = "" }: EnquiryFormProps) {
-  const [values, setValues] = useState<Values>({
-    name: "",
-    phone: "",
-    email: "",
-    eventType: preset,
-    date: "",
-    guests: "",
-    city: "",
-    brief: "",
-  });
+  const [values, setValues] = useState<Values>(() => emptyValues(preset));
+  const phone = usePhoneStepper();
+  return phone ? (
+    <EnquiryStepper values={values} setValues={setValues} />
+  ) : (
+    <FullEnquiryForm values={values} setValues={setValues} />
+  );
+}
+
+type FormStateProps = { values: Values; setValues: (v: Values) => void };
+
+function FullEnquiryForm({ values, setValues }: FormStateProps) {
   const [errors, setErrors] = useState<Errors>({});
   const [triedSubmit, setTriedSubmit] = useState(false);
   const [showStatus, setShowStatus] = useState(false);
   const statusRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
+  // A form mounted after the first one has been revealed renders static (see useFieldReveal).
+  const [fieldsStatic] = useState(() => fieldsPhase === "done");
+  useFieldReveal(formRef);
 
   const set = (key: keyof Values) => (e: { target: { value: string } }) => {
     const next = { ...values, [key]: e.target.value };
@@ -138,7 +169,14 @@ export function EnquiryForm({ preset = "" }: EnquiryFormProps) {
   const emailBad = !!errors.contact && errors.contact !== copy.errors.phone;
 
   return (
-    <form ref={formRef} noValidate onSubmit={onSubmit} aria-labelledby="enquiry-title" className="space-y-7">
+    <form
+      ref={formRef}
+      noValidate
+      onSubmit={onSubmit}
+      aria-labelledby="enquiry-title"
+      data-fields={fieldsStatic ? "static" : undefined}
+      className="pm-fields space-y-7"
+    >
       <h2 id="enquiry-title" className="sr-only">
         {copy.heading}
       </h2>
@@ -347,18 +385,27 @@ export function EnquiryForm({ preset = "" }: EnquiryFormProps) {
             {copy.errors.summary}
           </p>
         ) : null}
+        {/* Same structure and feedback as the shared solid ButtonLink: the button keeps its box, hit area and focus
+            outline; the inner face carries the copper fill with the darker sweep and leans toward the pointer on
+            desktop (data-magnetic, handled by the shared useMagnetic). */}
         <button
           type="submit"
-          className="t-button inline-flex min-h-12 w-full items-center justify-center bg-copper px-7 text-center text-white transition-colors duration-200 hover:bg-copper-deep md:w-auto"
+          data-magnetic=""
+          className="btn-magnetic t-button inline-flex min-h-12 w-full items-center justify-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-copper md:w-auto"
         >
-          {enquiryForm.submit}
+          <span
+            data-magnetic-face=""
+            className="btn-sweep btn-face flex min-h-12 w-full items-center justify-center bg-copper px-7 text-center text-white [--sweep:#9E5F27]"
+          >
+            {enquiryForm.submit}
+          </span>
         </button>
       </div>
 
       {/* Honest status: always in the DOM so screen readers hear the change. */}
       <div ref={statusRef} role="status" aria-live="polite" className="scroll-mb-24">
         {showStatus ? (
-          <div className="border-l-2 border-copper bg-mist px-5 py-5 lg:px-6">
+          <div className="pm-status-in border-l-2 border-copper bg-mist px-5 py-5 lg:px-6">
             <p className="t-label text-copper-deep">{copy.status.heading}</p>
             <p className="mt-3 text-[16px] leading-[1.55] text-navy">{copy.status.message}</p>
             <p className="mt-2 text-[15px] leading-[1.5] text-navy/72">{copy.status.kept}</p>

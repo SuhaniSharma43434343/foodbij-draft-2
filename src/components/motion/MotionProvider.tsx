@@ -147,6 +147,26 @@ export function MotionProvider() {
     scan(true);
     html.classList.add("js-motion");
 
+    // Safety net: after a fast jump (anchor, End key, scrollbar drag) the observer can miss elements that
+    // were skipped over, and a fully clipped wipe frame may never report as intersecting. Once scrolling
+    // settles, reveal anything that is now above the bottom of the viewport, so nothing stays hidden.
+    let settle = 0;
+    const sweep = () => {
+      const vh = window.innerHeight;
+      document.querySelectorAll(REVEAL_SELECTOR).forEach((el) => {
+        if (el.classList.contains("is-in")) return;
+        if (el.getBoundingClientRect().top < vh) {
+          el.classList.add("is-in");
+          observer?.unobserve(el);
+        }
+      });
+    };
+    const onScrollSettle = () => {
+      window.clearTimeout(settle);
+      settle = window.setTimeout(sweep, 160);
+    };
+    window.addEventListener("scroll", onScrollSettle, { passive: true });
+
     const onPop = () => {
       poppedState = true;
     };
@@ -182,6 +202,8 @@ export function MotionProvider() {
       else window.clearTimeout(idle);
       reduce.removeEventListener("change", onReduce);
       window.removeEventListener("popstate", onPop);
+      window.removeEventListener("scroll", onScrollSettle);
+      window.clearTimeout(settle);
       stopLenis?.();
       observer?.disconnect();
       observer = null;

@@ -153,3 +153,32 @@ drafts.
 **Photos and assets (6)** - sit-down dinner photos (C2); daily office dining photos; food close-ups
 (C7); founders' photos (C6: left out, no stock or AI faces); usable event video (C8); brand
 guidelines and the black logo (C1).
+
+## Motion and phone experience (added after review, 2026-10-14)
+
+The owner asked for interactions, scroll effects and an "experience", especially on phones. The static
+version is kept as the git tag `v1-static`. Spec: `docs/design/motion-spec.md`. Recordings (animated
+WebP, about 12 fps): `docs/design/motion/`.
+
+- **Everywhere:** Lenis smooth scroll (desktop mouse/trackpad only), scroll reveals, clip-path photo wipes,
+  desktop parallax, header that hides on scroll down, a copper "View" cursor and magnetic primary buttons
+  (desktop pointer only), a short navy page curtain with the copper slash between pages.
+- **Homepage:** cinematic opening (copper slash, masked headline from a visible state, photo framing
+  itself like a plate on scroll), a scroll-lit statement of the founders' line, services as pinned
+  stacking photo cards (phone) or a pinned diagonal-wipe stage with a cursor preview (desktop), a slow
+  occasions marquee with a pause button, a pinned horizontal food gallery (desktop) or active-scale
+  carousel (phone), Instagram-style story viewer for event stories.
+- **Phone-first:** thumb dock (Services sheet + Plan your event), menu with staggered serif links and
+  photo crossfades, full-bleed photos, navy bands with fine static film grain, giant italic service
+  names that move with scroll, scroll-focus (the item mid-screen zooms and lights up instead of hover),
+  press states, and a step-by-step Plan your event (one question per screen, honest "not sent" result).
+- **Other pages:** service template (cinematic hero, pinned steps, gallery), Our work (animated filter,
+  story viewer), story pages, Our story (pinned values), Plan your event (calm reveals).
+- **Libraries:** `lenis` only; everything else is CSS and a small shared `useScrollProgress` hook.
+- **Reduced motion / no JavaScript:** every pin, scrub and hidden state only applies with JavaScript and
+  motion allowed; otherwise each page renders the static design, fully visible. The marquee has a pause
+  control; the story viewer does not auto-advance under reduced motion.
+- **Checks (production build, local):** a11y script passes on all pages; CLS 0 at 360 and 1440; no
+  sideways scroll at 360; Lighthouse mobile home 87 / 85 / 73 (median 85), Weddings 83.
+- **Photo change:** the Weddings image is now `bangalore-wedding-04` (the earlier frame showed chef's
+  hats in the background).

@@ -1,0 +1,290 @@
+/* ---------------------------------------------------------------------------
+   Service pages, expressive pass W8.2 (docs/design/motion-spec.md, "Expressive pass").
+   Imported by src/components/ServicePage.tsx. Markup: ./ServiceHero.tsx (.sh-*), ./StepsMotion.tsx (.ss-*),
+   ./DriftWord.tsx (.sv-drift). The food band reuses the homepage .fg-* styles (gallery-motion.css).
+   Scroll effects read var(--p) / data-step from useScrollProgress and are gated on html.js-motion +
+   prefers-reduced-motion: no-preference; without JS or under reduced motion the static layout shows.
+   Transforms, opacity and clip-path only.
+   --------------------------------------------------------------------------- */
+
+/* ----- Hero --------------------------------------------------------------- */
+
+/* Copper slash above the service name: draws in on first paint (resting state is drawn). */
+.sh-slash {
+  display: block;
+  width: 13px;
+  height: 24px;
+  margin-bottom: 16px;
+  overflow: visible;
+  fill: none;
+  stroke: var(--color-copper);
+  stroke-width: 2;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  animation: sh-slash-draw 700ms var(--ease-out) both;
+}
+@media (min-width: 1024px) {
+  .sh-slash {
+    width: 17px;
+    height: 32px;
+    margin-bottom: 24px;
+  }
+}
+@keyframes sh-slash-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+
+/* Photo settles from 1.08 in 2.4s (the shared .hero-zoom default is 14s). */
+.sh .hero-zoom {
+  animation-duration: 2.4s;
+}
+
+.sh-caption {
+  display: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html.js-motion .sh {
+    height: 150svh;
+  }
+  html.js-motion .sh-stage {
+    position: sticky;
+    top: 0;
+  }
+  /* Text drifts up and out (gone by --p ~0.45). */
+  html.js-motion .sh-text {
+    translate: 0 calc(var(--p, 0) * -12svh);
+    opacity: calc(1 - var(--p, 0) * 2.3);
+  }
+  /* The photo frames itself into a plate on navy. */
+  html.js-motion .sh-frame {
+    clip-path: inset(calc(var(--p, 0) * 14%) calc(var(--p, 0) * 7%) calc(var(--p, 0) * 6%));
+    translate: 0 calc(var(--p, 0) * 10svh);
+  }
+  html.js-motion .sh-plate {
+    scale: calc(1 - var(--p, 0) * 0.06);
+  }
+  html.js-motion .sh-shade {
+    opacity: clamp(0, calc(1.7 - var(--p, 0) * 2.3), 1);
+  }
+  html.js-motion .sh-caption {
+    display: flex;
+    position: absolute;
+    left: 20px;
+    right: 20px;
+    bottom: 10%;
+    align-items: baseline;
+    gap: 12px;
+    margin: 0;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 1.375rem;
+    line-height: 1.25;
+    color: rgb(255 255 255 / 0.88);
+    opacity: clamp(0, calc((var(--p, 0) - 0.6) * 3.2), 1);
+    translate: 0 calc((1 - var(--p, 0)) * 14px);
+    pointer-events: none;
+  }
+  html.js-motion .sh-caption-slash {
+    flex: none;
+    width: 9px;
+    height: 17px;
+    fill: none;
+    stroke: var(--color-copper);
+    stroke-width: 1.7;
+  }
+
+  @media (min-width: 1024px) {
+    html.js-motion .sh {
+      height: 170vh;
+    }
+    /* Desktop: the photo (right 70% of the band) slides to the centre once the text has cleared. */
+    html.js-motion .sh-frame {
+      clip-path: inset(calc(var(--p, 0) * 16%) calc(var(--p, 0) * 12%) calc(var(--p, 0) * 14%) calc(var(--p, 0) * 4%));
+      translate: calc(clamp(0, (var(--p, 0) - 0.2) * 1.25, 1) * -19vw) calc(var(--p, 0) * 3vh);
+    }
+    html.js-motion .sh-text {
+      translate: 0 calc(var(--p, 0) * -28vh);
+      opacity: calc(1 - var(--p, 0) * 2.6);
+    }
+    html.js-motion .sh-caption {
+      left: 0;
+      right: 0;
+      bottom: 5vh;
+      justify-content: center;
+      font-size: 1.625rem;
+    }
+  }
+}
+
+/* ----- What we do: oversized outline word (desktop, decorative) ----------- */
+
+.sv-drift {
+  display: none;
+}
+@media (min-width: 1024px) {
+  .sv-drift {
+    display: block;
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    user-select: none;
+  }
+  .sv-drift > span {
+    position: absolute;
+    right: 2vw;
+    top: 96px;
+    font-family: var(--font-display);
+    font-weight: 500;
+    /* Right half only, long names wrap to two lines, so the word never sits under the heading. */
+    width: 46vw;
+    font-size: clamp(6rem, 9.5vw, 11rem);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    text-align: right;
+    color: transparent;
+    -webkit-text-stroke: 1px rgb(184 115 51 / 0.2);
+  }
+}
+@media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
+  html.js-motion .sv-drift > span {
+    translate: calc((0.5 - var(--p, 0.5)) * 10vw) 0;
+    will-change: translate;
+  }
+}
+
+/* ----- How it works -------------------------------------------------------- */
+
+.ss-track {
+  display: none;
+}
+
+/* Phone: a copper line from under each numeral down to the next one (static without JS). */
+.ss-vline {
+  position: absolute;
+  left: 0.7rem;
+  top: calc(28px + 1.75rem + 10px);
+  bottom: 0;
+  width: 1px;
+  background: var(--color-copper);
+  transform-origin: top center;
+}
+@media (min-width: 1024px) {
+  .ss-vline {
+    display: none;
+  }
+}
+@media (max-width: 1023.98px) and (prefers-reduced-motion: no-preference) {
+  html.js-motion .ss-step .ss-vline {
+    scale: 1 0;
+    transition: scale 900ms var(--ease-out) 350ms;
+  }
+  html.js-motion .ss-step.is-in .ss-vline {
+    scale: 1 1;
+  }
+}
+
+/* Desktop: pinned band that steps through the list. */
+@media (min-width: 1024px) and (min-height: 640px) and (prefers-reduced-motion: no-preference) {
+  html.js-motion .ss {
+    height: calc(100vh + var(--n, 4) * 40vh);
+  }
+  html.js-motion .ss-pin {
+    position: sticky;
+    top: 0;
+    display: flex;
+    align-items: center;
+    height: 100vh;
+    padding-block: calc(var(--header-h, 72px) * 0.5) 0;
+  }
+  html.js-motion .ss-track {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: rgb(11 28 45 / 0.14);
+  }
+  html.js-motion .ss-fill {
+    position: absolute;
+    inset: 0;
+    background: var(--color-copper);
+    transform-origin: left center;
+    /* From the middle of the first step to the full width at the end of the pin. */
+    scale: calc(1 / (2 * var(--n, 4)) + var(--p, 0) * (1 - 1 / (2 * var(--n, 4)))) 1;
+  }
+  html.js-motion .ss-step {
+    border-top-color: transparent;
+  }
+  html.js-motion .ss-body {
+    opacity: 0.34;
+    transition: opacity 500ms var(--ease-out);
+  }
+  html.js-motion .ss:not([data-step]) .ss-step:nth-child(1) .ss-body,
+  html.js-motion .ss[data-step="0"] .ss-step:nth-child(1) .ss-body,
+  html.js-motion .ss[data-step="1"] .ss-step:nth-child(2) .ss-body,
+  html.js-motion .ss[data-step="2"] .ss-step:nth-child(3) .ss-body,
+  html.js-motion .ss[data-step="3"] .ss-step:nth-child(4) .ss-body,
+  html.js-motion .ss[data-step="4"] .ss-step:nth-child(5) .ss-body,
+  html.js-motion .ss[data-step="5"] .ss-step:nth-child(6) .ss-body {
+    opacity: 1;
+  }
+  /* Steps already passed stay legible, a little brighter than the ones to come. */
+  html.js-motion .ss[data-step="1"] .ss-step:nth-child(-n + 1) .ss-body,
+  html.js-motion .ss[data-step="2"] .ss-step:nth-child(-n + 2) .ss-body,
+  html.js-motion .ss[data-step="3"] .ss-step:nth-child(-n + 3) .ss-body,
+  html.js-motion .ss[data-step="4"] .ss-step:nth-child(-n + 4) .ss-body,
+  html.js-motion .ss[data-step="5"] .ss-step:nth-child(-n + 5) .ss-body {
+    opacity: 0.55;
+  }
+}
+
+/* ----- W9.4 phone: edge-to-edge photos, the drifting service word ---------- */
+
+/* Photos that run edge to edge on phone (cancel the 20px container gutter). */
+@media (max-width: 1023.98px) {
+  .sv-bleed {
+    margin-inline: -20px;
+  }
+}
+
+/* The service name as a huge italic word drifting across "What we do" (phone only). */
+.sv-band {
+  display: none;
+}
+@media (max-width: 1023.98px) {
+  .sv-band {
+    display: block;
+    position: relative;
+    margin: 36px -20px 0;
+    overflow: hidden;
+    pointer-events: none;
+    user-select: none;
+  }
+  .sv-band > span {
+    display: block;
+    width: max-content;
+    padding: 0 20px 0.2em;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 500;
+    font-size: clamp(5.5rem, 29vw, 9rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+    color: var(--color-navy);
+  }
+}
+@media (max-width: 1023.98px) and (prefers-reduced-motion: no-preference) {
+  /* p 0 (band entering at the bottom): the word starts 40vw in from the right; p 1 (leaving at the top):
+     its end sits at 70vw. Readable through the middle of the travel. */
+  html.js-motion .sv-band > span {
+    translate: calc((1 - var(--p, 0.35)) * 40vw - var(--p, 0.35) * (100% - 70vw)) 0;
+    will-change: translate;
+  }
+}
