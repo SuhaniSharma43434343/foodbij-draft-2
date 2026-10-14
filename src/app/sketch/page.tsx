@@ -29,7 +29,7 @@ const services = [
     name: "Celebrations & private dining",
     text: "Birthdays, children's parties, family functions and sit-down dinners at home. Food people of every age finish, served without fuss.",
     link: "See celebrations",
-    src: `${IMG}/2-celebrations-private-dining/the-gummy-gourmet/the-gummy-gourmet-01.jpg`,
+    src: `${IMG}/2-celebrations-private-dining/glasshouse-dessert-table/glasshouse-dessert-table-01.jpg`,
     w: 2400,
     h: 1800,
     alt: "A grazing board of breads and cured meats dressed with purple blooms.",
