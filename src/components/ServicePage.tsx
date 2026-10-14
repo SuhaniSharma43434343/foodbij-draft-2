@@ -6,6 +6,13 @@ import { ArrowLink } from "./ArrowLink";
 import { ButtonLink } from "./Button";
 import { PlanBand } from "./PlanBand";
 import { SectionHeading } from "./SectionHeading";
+import { stories as allStories } from "@/content/stories";
+
+/** The Our work page for a service-page story, matched by its photo folder. */
+function storyHref(folder: string): string | undefined {
+  const match = allStories.find((st) => st.images.some((img) => img.src.includes(`/${folder}/`)));
+  return match ? `/our-work/${match.slug}` : undefined;
+}
 
 /**
  * Art direction for one gallery photo, keyed by its `src` (see the `note` on the image in
@@ -187,7 +194,15 @@ export function ServicePage({ service, page, others, galleryCrops = {} }: Servic
                         className="object-cover"
                       />
                     </div>
-                    <h3 className="t-display-m mt-6 text-[1.75rem] lg:text-[2.25rem]">{s.title}</h3>
+                    <h3 className="t-display-m mt-6 text-[1.75rem] lg:text-[2.25rem]">
+                      {storyHref(s.folder) ? (
+                        <Link href={storyHref(s.folder)!} className="underline-offset-4 hover:underline">
+                          {s.title}
+                        </Link>
+                      ) : (
+                        s.title
+                      )}
+                    </h3>
                     <p className="t-label mt-6 text-copper-deep">The brief</p>
                     <p className={`t-body mt-2 ${pending ? "text-navy/60 italic" : "text-navy/80"}`}>{s.brief}</p>
                     <p className="t-label mt-6 text-copper-deep">What we made</p>
@@ -198,7 +213,7 @@ export function ServicePage({ service, page, others, galleryCrops = {} }: Servic
             })}
           </ul>
           <div className="mt-10 lg:mt-14">
-            <ArrowLink href="/our-work">{stories.linkLabel}</ArrowLink>
+            <ArrowLink href={`/our-work?service=${service.slug}`}>{stories.linkLabel}</ArrowLink>
           </div>
         </div>
       </section>

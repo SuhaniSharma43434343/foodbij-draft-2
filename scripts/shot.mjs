@@ -42,6 +42,10 @@ if (fold) {
   }, height);
   await page.waitForTimeout(300);
 
+  // The phone sticky bar is fixed to the viewport: in a stitched capture it would be pasted into
+  // the middle of the page, so it is left out of full-page shots (use --fold to see it).
+  await page.addStyleTag({ content: "[data-sticky-plan-bar]{display:none!important}" });
+
   // Capture slice by slice and stitch.
   const outPng = new PNG({ width: width * scale, height: total * scale });
   for (let y = 0, slice = 0; y < total; y += height, slice++) {

@@ -19,8 +19,6 @@ export default function WeddingsPage() {
       galleryCrops={{
         // Chef at the live counter: keep the bottom of the frame (hands, plate, garnish), toque out.
         "/images/1-weddings/bangalore-wedding/bangalore-wedding-03.jpg": { zoom: 2, position: "50% 100%" },
-        // Live counter at night: keep the left of the frame so the cook in a tall white hat (far right) is cut.
-        "/images/1-weddings/bayview-lawns-wedding/bayview-lawns-wedding-04.jpg": { zoom: 1.5, position: "15% 100%" },
       }}
     />
   );

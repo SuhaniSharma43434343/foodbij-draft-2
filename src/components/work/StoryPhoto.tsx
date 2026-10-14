@@ -1,0 +1,31 @@
+import Image from "next/image";
+import type { StoryImage } from "@/content/stories";
+
+type StoryPhotoProps = {
+  img: StoryImage;
+  sizes: string;
+  preload?: boolean;
+  /** Extra classes on the <img> (e.g. a hover zoom). */
+  className?: string;
+};
+
+/**
+ * A story photo filling its (relative, overflow-hidden) parent. Applies the image's crop: `zoom`
+ * enlarges it from the bottom of the frame, `position` sets the object-position.
+ */
+export function StoryPhoto({ img, sizes, preload, className = "" }: StoryPhotoProps) {
+  const zoom = img.crop?.zoom ?? 1;
+  return (
+    <div className="absolute inset-x-0 bottom-0" style={{ height: `${zoom * 100}%` }}>
+      <Image
+        src={img.src}
+        alt={img.alt}
+        fill
+        preload={preload}
+        sizes={sizes}
+        className={`object-cover ${className}`.trim()}
+        style={img.crop?.position ? { objectPosition: img.crop.position } : undefined}
+      />
+    </div>
+  );
+}

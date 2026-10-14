@@ -13,7 +13,7 @@
 //   7. [NEEDS CLIENT: the brief for the Bayview Lawns wedding]  - weddings.stories[1]
 // Also flagged in code comments below (not visible on the page):
 //   - name rights for event names taken from photo folders (Bengaluru, Bayview Lawns)
-//   - that tastings are offered before a wedding (weddings.howItWorks step 3)
+//   - [NEEDS CLIENT: are tastings offered?] (no tasting step on the Weddings page until confirmed)
 
 // ---------------------------------------------------------------------------
 // Types
@@ -91,7 +91,7 @@ export type Format = { title: string; text: string };
 export type Step = { title: string; text: string };
 
 export type EventStory = {
-  /** Photo folder under public/images/1-weddings/ */
+  /** Photo folder name under the service's image folder, e.g. public/images/1-weddings/<folder>/ */
   folder: string;
   title: string;
   brief: string;
@@ -285,8 +285,9 @@ export const home: Home = {
         alt: "A slate tray of canapés finished with fresh flowers.",
       },
       {
-        src: `${IMG}/2-celebrations-private-dining/ninja/ninja-03.jpg`,
-        alt: "Small pizzas decorated with olive and mozzarella faces on a wooden board.",
+        // ninja-03 swapped out: an old sub-brand counter card is in frame.
+        src: `${IMG}/3-brand-launches-live-events/casio/casio-02.jpg`,
+        alt: "An evening buffet set under table lamps with a garden behind.",
       },
       {
         src: `${IMG}/3-brand-launches-live-events/cartier/cartier-08.jpg`,
@@ -320,7 +321,7 @@ export const home: Home = {
           src: `${IMG}/3-brand-launches-live-events/rolling-loud/rolling-loud-02.jpg`,
           alt: "A long buffet counter lit by lamps against a black backdrop.",
         },
-        href: "#",
+        href: "/our-work/music-festival",
       },
       {
         service: "Weddings",
@@ -330,7 +331,7 @@ export const home: Home = {
           src: `${IMG}/1-weddings/bayview-lawns-wedding/bayview-lawns-wedding-01.jpg`,
           alt: "An outdoor chai and ice-cream station in white and pale wood, framed by foliage.",
         },
-        href: "#",
+        href: "/our-work/outdoor-wedding",
       },
       {
         service: "Brand launches & live events",
@@ -340,7 +341,7 @@ export const home: Home = {
           src: `${IMG}/3-brand-launches-live-events/crunchyroll/crunchyroll-02.jpg`,
           alt: "A ramen counter with the kitchen team working behind it.",
         },
-        href: "#",
+        href: "/our-work/anime-launch-party",
       },
     ],
   },
@@ -397,11 +398,6 @@ export const weddings: ServicePage = {
       {
         title: "We write the menus",
         text: "Each ceremony gets its own menu, built around your family’s dishes and the dietary needs on both sides.",
-      },
-      {
-        // NEEDS CLIENT: confirm that a tasting is offered before every wedding
-        title: "We taste together",
-        text: "You eat the menu before your guests do, and we change what doesn’t land.",
       },
       {
         title: "We plan the days",
@@ -466,8 +462,8 @@ export const weddings: ServicePage = {
         alt: "Earthen pots and copper vessels arranged along a wooden counter with printed cards.",
       },
       {
-        src: `${IMG}/1-weddings/bayview-lawns-wedding/bayview-lawns-wedding-04.jpg`,
-        alt: "A live counter under warm lights with the team cooking to order.",
+        src: `${IMG}/1-weddings/bangalore-wedding/bangalore-wedding-02.jpg`,
+        alt: "Necklaces on dark display busts, set among tartlets, crisps and grapes on a buffet.",
       },
     ],
   },
