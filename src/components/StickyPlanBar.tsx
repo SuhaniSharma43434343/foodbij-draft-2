@@ -4,22 +4,20 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { PLAN_HREF, site } from "@/content/site";
-import { useIsSketch } from "./HideOnSketch";
 
 /**
  * Slim copper "Plan your event" bar fixed to the bottom of the screen below 1024px.
  * - Hidden while any element with the `data-hide-sticky` attribute is on screen (mark the hero
  *   and the plan band with it; <PlanBand> already has it).
  * - Links to "#plan" when the page has an element with id="plan", otherwise to /plan-your-event.
- * - Not rendered on /sketch or on the plan page itself.
+ * - Not rendered on the plan page itself.
  * The body gets matching bottom padding from globals.css while this bar exists.
  */
 export function StickyPlanBar() {
   const pathname = usePathname();
-  const isSketch = useIsSketch();
   const [visible, setVisible] = useState(false);
   const [href, setHref] = useState(PLAN_HREF);
-  const hidden = isSketch || pathname === PLAN_HREF;
+  const hidden = pathname === PLAN_HREF;
 
   useEffect(() => {
     if (hidden) return;

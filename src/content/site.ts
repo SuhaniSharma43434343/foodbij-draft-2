@@ -1,5 +1,5 @@
 // Site copy for the Home page and the Weddings service page (W2.3).
-// Starting point: the approved homepage sketch (src/app/sketch/page.tsx), checked against
+// Starting point: the approved homepage design (docs/design/), checked against
 // docs/brief/VOICE.md and docs/brief/CONTENT-EXPORT.md. Photos: docs/design/photo-picks.md and
 // docs/brief/IMAGE-INDEX.csv.
 //

@@ -128,7 +128,8 @@ export function EnquiryForm({ preset = "" }: EnquiryFormProps) {
     // and only on a confirmed success show enquiryForm.status.sent. Until then nothing is sent and
     // no network call is made: the visitor is told plainly and shown how to reach Foodbiz.
     setShowStatus(true);
-    requestAnimationFrame(() => statusRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" }));
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    requestAnimationFrame(() => statusRef.current?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "nearest" }));
   };
 
   const errorCount = Object.keys(errors).length;

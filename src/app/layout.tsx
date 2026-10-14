@@ -9,7 +9,8 @@ import "./globals.css";
 const cormorant = Cormorant({
   subsets: ["latin"],
   display: "swap",
-  weight: ["500", "600"],
+  // Only 500 is used (font-medium); italic for the one pull line per page.
+  weight: ["500"],
   style: ["normal", "italic"],
   variable: "--font-cormorant",
 });

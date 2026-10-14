@@ -22,6 +22,7 @@ export function StoryPhoto({ img, sizes, preload, className = "" }: StoryPhotoPr
         alt={img.alt}
         fill
         preload={preload}
+        fetchPriority={preload ? "high" : undefined}
         sizes={sizes}
         className={`object-cover ${className}`.trim()}
         style={img.crop?.position ? { objectPosition: img.crop.position } : undefined}

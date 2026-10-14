@@ -49,7 +49,7 @@ body {
 
 /* Below 1024px the sticky "Plan your event" bar covers the bottom of the screen, so the page gets
    matching bottom padding. The padding is painted navy so it continues the footer. Pages without
-   the bar (e.g. /sketch) get no padding. */
+   the bar (the plan page) get no padding. */
 @media (max-width: 1023.98px) {
   body:has([data-sticky-plan-bar]) {
     padding-bottom: var(--sticky-bar-h);

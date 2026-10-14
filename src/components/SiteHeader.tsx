@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { PLAN_HREF, services, site } from "@/content/site";
 import { ButtonLink } from "./Button";
-import { useIsSketch } from "./HideOnSketch";
 
 export type HeaderVariant = "overlay" | "solid";
 
@@ -43,28 +42,36 @@ function CloseIcon() {
 const logoClass = "h-auto w-[132px] lg:w-[170px]";
 const logoSizes = "(min-width: 1024px) 170px, 132px";
 
-/** White and navy logos stacked; `light` shows the white one. Both load up front so the swap never flickers. */
+/**
+ * White and navy logos stacked; `light` shows the white one. Both load up front so the swap never flickers,
+ * at low fetch priority so React does not preload them ahead of the hero photo (the only preload).
+ * The link gets 7px of padding (cancelled by a negative margin) so its tap target is 44px tall.
+ */
 function Logo({ light, onClick }: { light: boolean; onClick?: () => void }) {
   return (
-    <Link href="/" aria-label="Foodbiz, home" onClick={onClick} className="relative block">
-      <Image
-        src="/logos/foodbiz-2026-1200w.png"
-        alt=""
-        width={1200}
-        height={274}
-        loading="eager"
-        sizes={logoSizes}
-        className={`${logoClass} transition-opacity duration-300 ${light ? "opacity-0" : "opacity-100"}`}
-      />
-      <Image
-        src="/logos/foodbiz-2026-white-1200w.png"
-        alt=""
-        width={1200}
-        height={274}
-        loading="eager"
-        sizes={logoSizes}
-        className={`${logoClass} absolute inset-0 transition-opacity duration-300 ${light ? "opacity-100" : "opacity-0"}`}
-      />
+    <Link href="/" aria-label="Foodbiz, home" onClick={onClick} className="-my-[7px] block py-[7px]">
+      <span className="relative block">
+        <Image
+          src="/logos/foodbiz-2026-1200w.png"
+          alt=""
+          width={1200}
+          height={274}
+          loading="eager"
+          fetchPriority="low"
+          sizes={logoSizes}
+          className={`${logoClass} transition-opacity duration-300 ${light ? "opacity-0" : "opacity-100"}`}
+        />
+        <Image
+          src="/logos/foodbiz-2026-white-1200w.png"
+          alt=""
+          width={1200}
+          height={274}
+          loading="eager"
+          fetchPriority="low"
+          sizes={logoSizes}
+          className={`${logoClass} absolute inset-0 transition-opacity duration-300 ${light ? "opacity-100" : "opacity-0"}`}
+        />
+      </span>
     </Link>
   );
 }
@@ -84,7 +91,6 @@ type SiteHeaderProps = {
  */
 export function SiteHeader({ variant }: SiteHeaderProps) {
   const pathname = usePathname() ?? "/";
-  const isSketch = useIsSketch();
   const mode = variant ?? variantFor(pathname);
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -151,8 +157,6 @@ export function SiteHeader({ variant }: SiteHeaderProps) {
       desktop.removeEventListener("change", onResize);
     };
   }, [open]);
-
-  if (isSketch) return null;
 
   const transparent = mode === "overlay" && !scrolled;
   const close = () => setOpen(false);

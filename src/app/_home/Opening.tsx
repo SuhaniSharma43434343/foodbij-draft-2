@@ -24,7 +24,8 @@ export function Opening() {
           alt={image.alt}
           fill
           preload
-          sizes="(orientation: portrait) 115vh, (min-width: 1024px) 56vw, 100vw"
+          fetchPriority="high"
+          sizes="(min-width: 1024px) 56vw, 100vw"
           className="object-cover object-[40%_50%] lg:-scale-x-100 lg:object-[0%_50%]"
         />
       </div>

@@ -63,7 +63,8 @@ export function WorkGridView({ active = "all", onSelect }: { active?: Filter; on
   const shown = active === "all" ? stories : stories.filter((s) => s.service === active);
   const row = useRef<HTMLDivElement>(null);
 
-  // Phone: the filter row scrolls sideways, so bring the pressed button into view.
+  // Phone: the filter row scrolls sideways, so bring the pressed button into view. (The row has 4px
+  // of vertical padding, taken off its top margin, so the scroll box does not clip the focus ring.)
   useEffect(() => {
     const el = row.current;
     const btn = el?.querySelector<HTMLElement>('[aria-pressed="true"]');
@@ -78,7 +79,7 @@ export function WorkGridView({ active = "all", onSelect }: { active?: Filter; on
         ref={row}
         role="group"
         aria-label={work.filterLabel}
-        className="-mx-5 mt-10 flex gap-2 overflow-x-auto px-5 pb-1 [scrollbar-width:none] lg:mx-0 lg:mt-14 lg:flex-wrap lg:px-0"
+        className="-mx-5 mt-9 flex gap-2 overflow-x-auto px-5 py-1 [scrollbar-width:none] lg:mx-0 lg:mt-[52px] lg:flex-wrap lg:px-0"
       >
         <FilterButton pressed={active === "all"} onClick={() => select("all")}>
           {work.allLabel}
@@ -96,9 +97,9 @@ export function WorkGridView({ active = "all", onSelect }: { active?: Filter; on
         <p className="t-body mt-10 text-navy/72">{work.empty}</p>
       ) : (
         <ul className={gridClass}>
-          {shown.map((s) => (
+          {shown.map((s, i) => (
             <li key={s.slug}>
-              <StoryCard story={s} />
+              <StoryCard story={s} preload={i === 0} />
             </li>
           ))}
         </ul>

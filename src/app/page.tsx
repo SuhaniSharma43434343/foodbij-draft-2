@@ -1,4 +1,4 @@
-// Homepage (W3.2): built from the approved sketch (src/app/sketch/page.tsx) on the shared
+// Homepage (W3.2): built from the approved design (docs/design/) on the shared
 // components and the copy in src/content/site.ts.
 import { PlanBand } from "@/components/PlanBand";
 import { home } from "@/content/site";
