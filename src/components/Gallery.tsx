@@ -9,7 +9,7 @@ import { Photo } from "./Photo";
  * Native horizontal scrolling (swipe, trackpad, shift+wheel) with snap; on desktop two quiet buttons
  * step through it. It never takes over vertical scrolling.
  */
-export function Gallery({ images, label }: { images: Img[]; label: string }) {
+export function Gallery({ images, label, dark }: { images: Img[]; label: string; dark?: boolean }) {
   const track = useRef<HTMLUListElement>(null);
   const step = (dir: 1 | -1) => {
     const el = track.current;
@@ -34,10 +34,10 @@ export function Gallery({ images, label }: { images: Img[]; label: string }) {
         })}
       </ul>
       <div className="wrap mt-6 hidden justify-end gap-2 lg:flex">
-        <button type="button" onClick={() => step(-1)} className="btn btn--sm bg-transparent px-4 text-[var(--navy)] ring-1 ring-[var(--line)] hover:bg-[var(--linen)]" aria-label="Previous photographs">
+        <button type="button" onClick={() => step(-1)} className={`btn btn--sm bg-transparent px-4 ring-1 ${dark ? "text-white ring-[var(--line-dark)] hover:bg-[var(--navy-2)]" : "text-[var(--navy)] ring-[var(--line)] hover:bg-[var(--linen)]"}`} aria-label="Previous photographs">
           <span className="arrow rotate-180" aria-hidden="true" />
         </button>
-        <button type="button" onClick={() => step(1)} className="btn btn--sm bg-transparent px-4 text-[var(--navy)] ring-1 ring-[var(--line)] hover:bg-[var(--linen)]" aria-label="Next photographs">
+        <button type="button" onClick={() => step(1)} className={`btn btn--sm bg-transparent px-4 ring-1 ${dark ? "text-white ring-[var(--line-dark)] hover:bg-[var(--navy-2)]" : "text-[var(--navy)] ring-[var(--line)] hover:bg-[var(--linen)]"}`} aria-label="Next photographs">
           <span className="arrow" aria-hidden="true" />
         </button>
       </div>

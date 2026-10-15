@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Close } from "@/components/Close";
+import { RevealText } from "@/components/RevealText";
 import { WorkIndex } from "@/components/WorkIndex";
 import { stories } from "@/content/stories";
 
@@ -13,7 +14,7 @@ export default function OurWorkPage() {
     <>
       <section className="pb-[var(--section)] pt-[calc(var(--header-h)+56px)] lg:pt-[calc(var(--header-h)+96px)]">
         <div className="wrap">
-          <h1 className="t-h1 max-w-[14ch]">Every event starts with a brief.</h1>
+          <RevealText as="h1" text="Every event starts with a brief." trigger="load" delay={150} className="t-big max-w-[13ch]" />
         </div>
         <div className="mt-10 lg:mt-14">
           <WorkIndex stories={stories} />

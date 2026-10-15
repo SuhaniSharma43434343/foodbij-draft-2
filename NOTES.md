@@ -7,26 +7,58 @@ Brief: `docs/brief/01-BRIEF.md`. Screenshots: `docs/handin/`.
 
 ## Design concept
 
-A hospitality editorial: white pages where the real photographs are set like a magazine spread, each one cropped and
-placed differently, with navy bands as the pauses between chapters. The words stay few and plain so the food,
-the service and the one action, "Plan your event", carry every page.
+Cinematic hospitality: every page alternates full-bleed dark photographs, navy chapters, linen and white editorial
+spreads, so the visitor moves through a sequence of scenes rather than a stack of sections. Oversized serif type,
+photographs layered over each other's edges and a few precise motions (masked words, rising photos) carry the
+luxury; the copy stays short and factual.
+
+## Third pass: the radical visual redesign (current version)
+
+Why: the review recording showed too much empty space, repeated layouts and large blank image areas.
+
+**Blank image areas, found and fixed.** Two causes, both measured. (1) Every photo went through Next's on-demand
+image optimiser, which took 0.5 to 1.3s per photo on first request (measured on the local production server), so
+large frames sat empty while scrolling. (2) Frames waiting to reveal were transparent, so a slow photo showed as white.
+Fix: `scripts/optimize-images.mjs` pre-builds every photo into static WebP files at five widths (`public/o/`, runs
+before every build) and records each photo's dominant colour; a custom `next/image` loader (`src/lib/image-loader.ts`)
+serves them directly; every frame is filled with its photo's own colour while loading; reveals start slightly before a
+photo enters the screen. Logos are now 9-14 KB WebP files instead of 55-65 KB PNGs. A fast-scroll test (one screen
+every 0.5s) now finds no empty frames on Home, Weddings or Brand launches; on Celebrations, three film-strip photos
+were still arriving at one scroll stop, shown as colour blocks rather than white.
+
+**Homepage, rebuilt scene by scene:** a full-screen photograph with the headline set at up to 152px, rising word by
+word; a second photograph rises out of the hero's lower edge into the introduction; a typographic introduction and a
+service index (hover shows a photo on desktop); four service chapters, each in its own mood (Weddings: full-height gold
+photograph beside navy; Celebrations: linen with a photo set into another's corner; Brand launches: navy with the name
+across the page and three photos at three sizes; Corporate: white with a ruled grid of what the service covers); the
+founders' line as an oversized navy statement; an asymmetric linen food spread; a horizontal Recent work sequence;
+and a full-screen closing invitation.
+
+**Service pages, four moods on one structure** (`ServicePage.tsx`, `variant` in `content/services.ts`):
+cinematic (Weddings, full-bleed dark hero), intimate (Celebrations, linen with layered photos), stage (Brand
+launches, navy with a row of photos), precise (Corporate, white with a 21:9 photograph). The light and dark rhythm of
+the later sections changes with the mood, and the closing invitation uses an unused photo when one is available.
+
+**Signature motion (CSS only, no new dependency; GSAP is not installed and was not added):** masked word-by-word
+heading reveals (`RevealText.tsx`), mask reveals for photos, scroll-linked drift inside frames, the hero opening
+out from a frame, hover lift on photos and the service index. Native scrolling throughout; nothing is pinned.
 
 ## How it differs from the first draft
 
 | | First draft | This version |
 |---|---|---|
-| Opening | Navy panel with a photo fading in from the right, three-line serif headline | One full-bleed night photograph (a server inside a lit crescent canapé counter) that opens out from a frame on arrival; small headline bottom-left, lead and action set apart bottom-right |
-| Type | Cormorant + Jost, uppercase tracked labels and buttons | Instrument Serif (one weight) + Manrope, sentence case everywhere, no tracked caps |
-| Navigation | Bottom thumb dock, intro loader, copper cursor, page curtain | Header that hides on scroll down and returns on scroll up; a Services panel with photos on desktop; a full-screen menu that lists the four services directly on phones; no loader, cursor or curtain |
-| Services on home | Pinned list with a swapping image | Four spreads, each composed differently (portrait left, wide right, a navy full-bleed band, a narrow centred frame) |
-| Food | Navy horizontal gallery | Linen band: asymmetric mosaic on desktop, one large photo plus a swipe row on phones |
-| Buttons | Copper fill | Navy (white on dark); copper only for the arrow, underlines, focus ring and the nav marker |
-| Motion | Lenis smooth scroll plus several effects | Native scrolling. Three effects only: clip-path rise for photos, short fade-up for text, gentle scroll-linked drift inside some frames (CSS scroll-driven, no library) |
+| Opening | Navy panel with a photo fading in from the right | One full-bleed night photograph opening out from a frame, oversized headline rising word by word, a second photo layered over the edge |
+| Type | Cormorant + Jost, uppercase tracked labels and buttons | Instrument Serif at display sizes up to 152px + Manrope, sentence case everywhere |
+| Navigation | Bottom thumb dock, intro loader, copper cursor, page curtain | Header that hides on scroll down and returns on scroll up; a Services panel with photos on desktop; a full-screen phone menu listing the four services; no loader, cursor or curtain |
+| Services on home | Pinned list with a swapping image | A service index, then four chapters with different compositions and moods |
+| Service pages | One template | Four hero compositions and section rhythms |
+| Buttons | Copper fill | Navy (white on dark); copper only for arrows, underlines, focus rings and fine rules |
+| Motion | Lenis smooth scroll plus several effects | Native scrolling; masked type, photo reveals and drift, all CSS |
 
 ## Fonts and colours
 
-- **Instrument Serif 400** (and its italic, used only for the founders' line): narrow, high-contrast, still crisp at
-  34px on a 360px phone; one weight keeps the hierarchy clean.
+- **Instrument Serif 400** (and its italic, used only for the founders' line and loaded without preloading):
+  narrow and high-contrast, it holds at 42px on a 360px phone and at 152px on a laptop.
 - **Manrope 400/500** for text: open and readable at 16px; body is 16px on phones, 17px from 1024px.
 - Navy `#0B1C2D` (text, buttons, dark bands), white (page), copper `#B87333` for small details only;
   `#8F5523` copper ink for small copper text on white (6.0:1), `#D9A576` for small copper on navy (7.7:1).
@@ -44,10 +76,14 @@ Choices and why:
   without a single word. Desktop crop keeps her face and the counter; phones show the full portrait.
   Limitation: the file is 1602px wide, so on a large high-density screen it is slightly soft. A wider version from the
   client, or the planned shoot, would fix it.
-- **Service heroes:** `aurangabad-wedding-04` (thalis), `glasshouse-dessert-table-02`, `raymond-chairmans-lounge-05`,
-  `motilal-oswal-01`. Homepage service images are different frames (`bayview-lawns-wedding-02`,
-  `glasshouse-dessert-table-01`, `cartier-01`, `sbi-02`) so each page feels new.
-- **Food:** `cartier-09`, `bangalore-wedding-01`, `himalayan-defender-journey-01`, `cartier-03`, `roca-store-launch-01`.
+- **Service page heroes:** Weddings `aurangabad-wedding-04` (thalis, full-bleed); Celebrations
+  `glasshouse-dessert-table-02` with `ninja-01` set in; Brand launches `raymond-chairmans-lounge-05`, `cartier-03`,
+  `rolling-loud-02`; Corporate `sbi-03`.
+- **Homepage chapters:** `bangalore-wedding-04` with `bayview-lawns-wedding-02`; `glasshouse-dessert-table-02` with
+  `ninja-04`; `cartier-01`, `merc-eqg-launch-03`, `kaytranada-03`; `netflix-03`. Statement: `himesh-reshamiya-01`.
+  Food spread: the live-counter crop, `roca-store-launch-01`, `aurangabad-wedding-04`, `cartier-03`,
+  `himalayan-defender-journey-01`, `bayview-lawns-wedding-01`. Hero inset: `cartier-09`.
+- No photo appears twice on the same page; the homepage and each service page skip any photo already shown.
 - Left out on purpose: `diosa-store-launch-01/-02` (may be renders, 07-OPEN-ITEMS), `uti-02` (sideways, 720px),
   `peppa-pig-05` and `black-pink-01` (character parties), `ninja-03` (old sub-brand card in frame), Ferrari and other
   logo-led frames, `merc-eqg-launch-02` and `bayview-lawns-wedding-04` (face masks date them), `raymond-chairmans-lounge-02`
@@ -84,7 +120,7 @@ of event), shows an error summary that takes focus, and on a valid brief says pl
 "Copy my brief" button. The button reads "Check my brief", not "Send". The type of event is preset from
 `?type=<service>` on every service page's actions.
 
-## Second pass (after review against the first draft)
+## Second pass
 
 - No service page repeats a photograph: story cards and the gallery skip any image already used higher on the page
   (`ServicePage.tsx`). Galleries were re-chosen so each still has three to six frames.
@@ -94,27 +130,28 @@ of event), shows an error summary that takes focus, and on a valid brief says pl
 - Homepage corporate spread: larger 4:5 frame so the four spreads carry equal weight.
 - Headings use balanced wrapping and paragraphs avoid single-word last lines (no "with / us" orphans).
 
-## Testing done (production build, local, headless Chrome; re-run after the second pass)
+## Testing done (production build, local, headless Chrome; re-run after the third pass)
 
-- `npm run build`: passes, 27 static pages, no type errors.
+- `npm run build`: passes (image pre-build, then 27 static pages), no type errors.
 - Crawl of every internal link from the homepage: 23 pages, all 200, no failed images, no console errors, one `h1`
   per page, every image has alt text, noindex on every page.
 - No horizontal overflow on any of the 23 pages at 360, 375, 390, 768, 1024, 1280 and 1920px.
-- Tap targets: every visible link and button at 360px is at least 44px tall (the only flagged item is the hidden skip link).
+- Tap targets: every visible link and button at 360px is at least 44px tall (only the hidden skip link is smaller).
 - Form: empty submit shows two errors and focuses the summary; a bad email is caught; a valid brief shows the
   "not sent" status and focuses it; no success claim; the preset from `?type=corporate-dining` works.
 - Phone menu: opens with focus on Close, locks page scroll, closes on Escape and returns focus to Menu, closes after
   following a link. Desktop Services panel opens and closes on Escape.
 - Sticky phone action: hidden while scrolling down, shown on scroll up, hidden over closing invitations and the footer,
   absent on the enquiry page.
-- Motion: 36 of 37 reveal elements fire on a desktop scroll-through (the one left is a phone-only photo that is
-  hidden at desktop width), and they fire again after client navigation; with reduced motion and with JavaScript
-  off, no photo is clipped and no text is hidden.
-- Not verified: the "Copy my brief" clipboard button (headless Chrome blocks clipboard access; it falls back to a
-  message telling the visitor to copy by hand).
-- Speed, measured with Chrome's own LCP/CLS observers (phone viewport, 4x CPU slowdown, about 1.6 Mbps and 150ms
-  latency): home LCP 1.3s, CLS 0, about 295 KB transferred; Weddings LCP 1.5s, CLS 0. **This is not Lighthouse.**
-  Lighthouse is not installed on this machine and I did not install it; run PageSpeed Insights on the preview URL.
+- Motion: 45 of 45 reveal elements fire on a desktop scroll-through and again after client navigation; with
+  reduced motion and with JavaScript off, no photo is clipped and no text is hidden.
+- Blank frames: the fast-scroll test described above.
+- Not verified: the "Copy my brief" clipboard button (headless Chrome blocks clipboard access).
+- Speed, Chrome's own LCP/CLS observers on a phone viewport with 4x CPU slowdown and about 1.6 Mbps: home LCP 1.9s,
+  Weddings LCP 1.8s, CLS 0 on both. With the browser cache disabled, first paint on the homepage ranged from 2.3s to
+  2.9s across runs; the page is heavier than the second pass (more photographs and display type). Without the CPU
+  slowdown it is about 1.4s. **This is not Lighthouse** (not installed; I did not install it). Run PageSpeed Insights
+  on a preview URL.
 - Not done: real iPhone and Android devices, a TV, a fresh-eyes test, PageSpeed Insights. No preview deployment yet.
 
 ## Unfinished
@@ -122,6 +159,9 @@ of event), shows an error summary that takes focus, and on a valid brief says pl
 - AI images for the two slots above.
 - Preview deployment: the noindex config is ready; not deployed.
 - `docs/design/` and `docs/qa/` still describe the first draft; this file is the record for this version.
+- `public/o/` (the pre-built photos, about 28 MB) is not committed; `npm run build` regenerates it (about 90s the first time).
+- The homepage hero photo is 1602px wide and looks slightly soft on large high-density screens.
+- First paint on a slow phone connection is slower than in the second pass (see Speed above).
 
 ## [NEEDS CLIENT] items
 

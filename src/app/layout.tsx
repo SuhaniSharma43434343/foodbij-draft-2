@@ -6,13 +6,22 @@ import { RevealObserver } from "@/components/RevealObserver";
 import { StickyCta } from "@/components/StickyCta";
 import "./globals.css";
 
-// Display: Instrument Serif (one weight, plus italic for the founders' line).
+// Display: Instrument Serif, one weight. The italic (only the founders' line, far below the first
+// screen) is a separate face that is not preloaded, so it never competes with the first paint.
 const instrument = Instrument_Serif({
   subsets: ["latin"],
   weight: "400",
-  style: ["normal", "italic"],
+  style: ["normal"],
   display: "swap",
   variable: "--font-instrument",
+});
+const instrumentItalic = Instrument_Serif({
+  subsets: ["latin"],
+  weight: "400",
+  style: ["italic"],
+  display: "swap",
+  preload: false,
+  variable: "--font-instrument-italic",
 });
 
 // Text: Manrope, variable; the site uses 400 and 500.
@@ -39,7 +48,7 @@ const motionScript = `try{if(!matchMedia('(prefers-reduced-motion: reduce)').mat
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en-IN" className={`${instrument.variable} ${manrope.variable}`} suppressHydrationWarning>
+    <html lang="en-IN" className={`${instrument.variable} ${instrumentItalic.variable} ${manrope.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: motionScript }} />
       </head>

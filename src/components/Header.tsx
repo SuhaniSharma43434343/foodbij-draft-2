@@ -20,7 +20,8 @@ const LINKS = [
  */
 export function Header() {
   const pathname = usePathname();
-  const isHome = pathname === "/";
+  // Pages that open on a dark full-width hero: the header starts transparent over it.
+  const isHome = ["/", "/services/weddings", "/services/brand-launches"].includes(pathname);
   const [over, setOver] = useState(isHome);
   const [hidden, setHidden] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -43,7 +44,7 @@ export function Header() {
     const update = () => {
       raf = 0;
       const y = window.scrollY;
-      const heroEnd = isHome ? window.innerHeight * 0.82 : 0;
+      const heroEnd = isHome ? window.innerHeight * 0.6 : 0;
       setOver(isHome && y < heroEnd);
       if (Math.abs(y - last) > 6) {
         setHidden(y > last && y > 240);
@@ -126,19 +127,17 @@ export function Header() {
               <span className="logo">
               <Image
                 className="logo-navy"
-                src="/logos/foodbiz-2026-1200w.png"
+                src="/logos/foodbiz-2026-400w.webp"
                 alt=""
-                width={1200}
-                height={274}
-                preload
+                width={400}
+                height={91}
               />
               <Image
                 className="logo-white"
-                src="/logos/foodbiz-2026-white-1200w.png"
+                src="/logos/foodbiz-2026-white-400w.webp"
                 alt=""
-                width={1200}
-                height={274}
-                preload
+                width={400}
+                height={91}
               />
               </span>
             </Link>
@@ -214,7 +213,7 @@ export function Header() {
         <div className="wrap flex min-h-full flex-col pb-10">
           <div className="flex h-[var(--header-h)] items-center justify-between">
             <span className="relative block h-[27px] w-[118px]">
-              <Image src="/logos/foodbiz-2026-white-1200w.png" alt="Foodbiz" width={1200} height={274} />
+              <Image src="/logos/foodbiz-2026-white-400w.webp" alt="Foodbiz" width={400} height={91} />
             </span>
             <button type="button" className="nav-link gap-3" onClick={() => setMenuOpen(false)}>
               Close

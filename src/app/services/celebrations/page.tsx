@@ -7,5 +7,5 @@ const data = servicePages["celebrations"];
 export const metadata: Metadata = data.meta;
 
 export default function Page() {
-  return <ServicePage data={data} flip={true} />;
+  return <ServicePage data={data} />;
 }

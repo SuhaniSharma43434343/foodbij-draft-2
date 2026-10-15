@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 import { Close } from "@/components/Close";
 import { Photo } from "@/components/Photo";
+import { RevealText } from "@/components/RevealText";
 import { Txt } from "@/components/Txt";
 import { ourStory as p } from "@/content/pages";
 
@@ -14,7 +15,7 @@ export default function OurStoryPage() {
     <>
       <section className="pt-[calc(var(--header-h)+56px)] lg:pt-[calc(var(--header-h)+96px)]">
         <div className="wrap grid gap-10 lg:grid-cols-12 lg:gap-8">
-          <h1 className="t-display hero-in max-w-[14ch] lg:col-span-7">{p.heading}</h1>
+          <RevealText as="h1" text={p.heading} trigger="load" delay={150} className="t-big max-w-[12ch] lg:col-span-7" />
           <div className="space-y-5 lg:col-span-5 lg:col-start-8 lg:pt-6">
             {p.intro.map((t, i) => (
               <p key={i} className={`hero-in ${i ? "muted" : "t-lead"}`} style={d(250 + i * 120)}>
@@ -29,11 +30,9 @@ export default function OurStoryPage() {
       </section>
 
       <section className="on-dark section" aria-label="The founders’ words">
-        <figure className="wrap max-w-[64rem]">
+        <figure className="wrap">
           <blockquote>
-            <p className="t-h1 italic" data-reveal="up">
-              “{p.quote}”
-            </p>
+            <RevealText as="p" text={`“${p.quote}”`} className="t-statement" />
           </blockquote>
           <figcaption className="t-meta mt-8 text-[var(--copper-soft)]">{p.quoteBy}</figcaption>
         </figure>

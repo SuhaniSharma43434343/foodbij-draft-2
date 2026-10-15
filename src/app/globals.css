@@ -37,7 +37,7 @@
   /* Spacing */
   --gutter: 20px;
   --max: 1440px;
-  --section: clamp(88px, 11vw, 168px);
+  --section: clamp(72px, 9vw, 144px);
   --header-h: 64px;
 
   /* Motion: one easing family, three durations */
@@ -347,8 +347,8 @@ a:hover .uline,
   clip-path: inset(100% 0 0 0);
   scale: 1.12;
   transition:
-    clip-path var(--t-slow) var(--ease) var(--d, 0ms),
-    scale 1.8s var(--ease) var(--d, 0ms);
+    clip-path 1.1s var(--ease) var(--d, 0ms),
+    scale 1.6s var(--ease) var(--d, 0ms);
 }
 .mo [data-reveal="image"].is-in img {
   clip-path: inset(0 0 0 0);
@@ -597,7 +597,7 @@ a:hover .uline,
 .hero-content {
   position: absolute;
   inset: auto 0 0 0;
-  padding-bottom: clamp(36px, 7vh, 80px);
+  padding-bottom: clamp(64px, 9vh, 96px);
 }
 @media (prefers-reduced-motion: no-preference) {
   .hero-media {
@@ -739,4 +739,146 @@ textarea.input {
   color: #a3361f; /* 6.5:1 on white */
 }
 
+}
+
+/* ==========================================================================
+   Editorial display layer (second direction): oversized type, masked word reveals,
+   layered photographs.
+   ========================================================================== */
+@layer components {
+  .t-mega {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: clamp(2.625rem, 0.9rem + 7.4vw, 9.5rem);
+    line-height: 0.92;
+    letter-spacing: -0.02em;
+  }
+  .t-big {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: clamp(2.25rem, 1rem + 4.6vw, 6.25rem);
+    line-height: 0.98;
+    letter-spacing: -0.016em;
+  }
+  .t-statement {
+    font-family: var(--font-instrument-italic), var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(2rem, 0.9rem + 4.4vw, 6rem);
+    line-height: 1.02;
+    letter-spacing: -0.014em;
+  }
+  .copper-rule {
+    display: block;
+    width: 56px;
+    height: 1px;
+    background: var(--copper);
+  }
+  .on-dark .copper-rule {
+    background: var(--copper-soft);
+  }
+
+  /* Masked word reveal (RevealText). */
+  .rw {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: top;
+    padding-bottom: 0.12em;
+    margin-bottom: -0.12em;
+  }
+  .rw-i {
+    display: inline-block;
+  }
+  .mo .rt[data-reveal="text"] .rw-i {
+    translate: 0 108%;
+    transition: translate 1s var(--ease);
+    transition-delay: calc(var(--d, 0ms) + var(--i, 0) * 45ms);
+  }
+  .mo .rt[data-reveal="text"].is-in .rw-i {
+    translate: 0 0;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .rt-load .rw-i {
+      animation: word-rise 1.1s var(--ease) both;
+      animation-delay: calc(var(--d, 0ms) + var(--i, 0) * 55ms);
+    }
+  }
+  @keyframes word-rise {
+    from {
+      translate: 0 108%;
+    }
+    to {
+      translate: 0 0;
+    }
+  }
+
+  /* A photo set into another with a margin of the section's own colour. */
+  .inset-frame {
+    box-shadow: 0 0 0 10px var(--inset-bg, #fff);
+  }
+  @media (min-width: 1024px) {
+    .inset-frame {
+      box-shadow: 0 0 0 14px var(--inset-bg, #fff);
+    }
+  }
+
+  /* Service index rows on the homepage. */
+  .svc-row {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 16px;
+    min-height: 88px;
+    padding-block: 18px;
+    border-top: 1px solid var(--line);
+    color: var(--navy);
+    text-decoration: none;
+    transition: color var(--t-fast) ease;
+  }
+  .svc-row:last-child {
+    border-bottom: 1px solid var(--line);
+  }
+  .svc-row .svc-thumb {
+    position: absolute;
+    right: 72px;
+    top: 50%;
+    width: 132px;
+    aspect-ratio: 4 / 3;
+    translate: 0 -50%;
+    opacity: 0;
+    scale: 0.92;
+    pointer-events: none;
+    transition:
+      opacity 0.45s var(--ease),
+      scale 0.6s var(--ease);
+  }
+  @media (hover: hover) and (min-width: 1024px) {
+    .svc-row:hover .svc-thumb,
+    .svc-row:focus-visible .svc-thumb {
+      opacity: 1;
+      scale: 1;
+    }
+    .svc-row:hover .svc-name {
+      translate: 12px 0;
+    }
+  }
+  .svc-name {
+    transition: translate 0.6s var(--ease);
+  }
+
+  /* Hero layered inset photo: arrives after the main photograph. */
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-inset {
+      animation: inset-in 1.4s var(--ease) 0.9s both;
+    }
+  }
+  @keyframes inset-in {
+    from {
+      clip-path: inset(100% 0 0 0);
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+    }
+  }
 }

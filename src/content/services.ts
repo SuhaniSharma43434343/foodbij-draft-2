@@ -4,10 +4,16 @@
 
 import { photos, type Img, type ServiceSlug } from "./site";
 
+/** Each service page shares one structure but has its own mood:
+ *  cinematic (weddings: full-bleed, dark, warm), intimate (celebrations: linen, layered photographs),
+ *  stage (launches: navy, a row of photographs at scale), precise (corporate: white, ruled and exact). */
+export type Variant = "cinematic" | "intimate" | "stage" | "precise";
+
 export type ServicePageData = {
   slug: ServiceSlug;
+  variant: Variant;
   meta: { title: string; description: string };
-  hero: { promise: string; cta: string; image: Img };
+  hero: { promise: string; cta: string; image: Img; extra?: Img[] };
   /** "What we cover": one heading, then three or four formats as plain lines. */
   cover: { heading: string; formats: { title: string; text: string }[]; image: Img };
   steps: { heading: string; items: { title: string; text: string }[] };
@@ -22,6 +28,7 @@ export type ServicePageData = {
 export const servicePages: Record<ServiceSlug, ServicePageData> = {
   weddings: {
     slug: "weddings",
+    variant: "cinematic",
     meta: {
       title: "Weddings",
       description: "Wedding catering in Mumbai: multi-day weddings, live counters, and the family dishes that have to be there.",
@@ -57,6 +64,7 @@ export const servicePages: Record<ServiceSlug, ServicePageData> = {
 
   celebrations: {
     slug: "celebrations",
+    variant: "intimate",
     meta: {
       title: "Celebrations & private dining",
       description: "Catering in Mumbai for birthdays, children’s parties, family functions and sit-down dinners at home.",
@@ -65,6 +73,7 @@ export const servicePages: Record<ServiceSlug, ServicePageData> = {
       promise: "Birthdays, family functions and dinners at home. We cook and serve, so you stay with your guests.",
       cta: "Tell us about your party",
       image: photos.glasshouseBoards,
+      extra: [photos.ninjaSushi],
     },
     cover: {
       heading: "Every party has a different crowd.",
@@ -86,13 +95,14 @@ export const servicePages: Record<ServiceSlug, ServicePageData> = {
       ],
     },
     stories: ["garden-birthday", "childrens-counters", "glasshouse-dessert-table"],
-    gallery: [photos.glasshouseTable, photos.ninjaSushi, photos.playseumServers, photos.ninjaGarden, photos.carnival, photos.playseumFarm],
+    gallery: [photos.glasshouseTable, photos.playseumServers, photos.ninjaGarden, photos.carnival, photos.playseumFarm],
     galleryNote: "[NEEDS CLIENT: photographs of sit-down dinners. None exist yet; AI imagery is planned for this slot, see NOTES.md]",
     close: { heading: "Tell us about your party.", lead: "Whose party it is and roughly how many are coming is enough to start." },
   },
 
   "brand-launches": {
     slug: "brand-launches",
+    variant: "stage",
     meta: {
       title: "Brand launches & live events",
       description: "Catering in Mumbai for store and product launches, brand days, concerts, festivals and large-format events.",
@@ -101,6 +111,7 @@ export const servicePages: Record<ServiceSlug, ServicePageData> = {
       promise: "Food that suits the brand, holds up under stage light and keeps up with the crowd.",
       cta: "Tell us about your launch",
       image: photos.raymondTrays,
+      extra: [photos.cartierCocktails, photos.rollingLoudLine],
     },
     cover: {
       heading: "For one evening, the food is part of the brand.",
@@ -122,12 +133,13 @@ export const servicePages: Record<ServiceSlug, ServicePageData> = {
       ],
     },
     stories: ["boutique-evening", "car-launch-at-night", "anime-launch-party", "music-festival"],
-    gallery: [photos.mercViolet, photos.cartierBar, photos.defenderBoard, photos.kaytranadaCounter, photos.rollingLoudLine, photos.cartierPink],
+    gallery: [photos.mercViolet, photos.cartierBar, photos.defenderBoard, photos.kaytranadaCounter, photos.himeshTeam, photos.cartierPink],
     close: { heading: "Tell us about your launch.", lead: "The date, the venue and the run sheet, if you have one, is enough to start." },
   },
 
   "corporate-dining": {
     slug: "corporate-dining",
+    variant: "precise",
     meta: {
       title: "Corporate & office dining",
       description: "Daily and recurring catering for offices and campuses in Mumbai, plus corporate functions.",
@@ -135,7 +147,7 @@ export const servicePages: Record<ServiceSlug, ServicePageData> = {
     hero: {
       promise: "Lunch for the same people, every working day, and the functions your office hosts in between.",
       cta: "Talk to us about your office",
-      image: photos.motilalBoards,
+      image: photos.sbiTables,
     },
     cover: {
       heading: "The test is an ordinary Tuesday.",
@@ -145,7 +157,7 @@ export const servicePages: Record<ServiceSlug, ServicePageData> = {
         { title: "Corporate functions", text: "Annual days, conferences, press events and outdoor days." },
         { title: "Every diet", text: "Dietary needs agreed with you up front, before the first lunch." },
       ],
-      image: photos.netflixTeam,
+      image: photos.motilalBoards,
     },
     steps: {
       heading: "Setting up a programme",
@@ -157,7 +169,7 @@ export const servicePages: Record<ServiceSlug, ServicePageData> = {
       ],
     },
     stories: ["bank-day-lunch", "office-relay"],
-    gallery: [photos.sbiLine, photos.utiRoom, photos.bsmrLawn, photos.sbiTables, photos.bsmrMenu],
+    gallery: [photos.netflixTeam, photos.sbiLine, photos.utiRoom, photos.bsmrLawn, photos.bsmrMenu],
     galleryNote: "[NEEDS CLIENT: photographs of daily office dining. Every photo here is from a corporate function]",
     close: { heading: "Tell us about your office.", lead: "How many people you feed, and when they eat, is enough to start." },
   },

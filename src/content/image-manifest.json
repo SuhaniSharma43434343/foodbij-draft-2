@@ -1,0 +1,478 @@
+{
+ "/images/crops/hero-plating.jpg": {
+  "name": "9400f83090",
+  "widths": [
+   240,
+   640,
+   1080,
+   1600
+  ],
+  "color": "#98a8a8"
+ },
+ "/images/1-weddings/randive-wedding/randive-wedding-01.jpg": {
+  "name": "cd0e46d4c1",
+  "widths": [
+   240,
+   640,
+   1080,
+   1600,
+   1602
+  ],
+  "color": "#080808"
+ },
+ "/images/1-weddings/bayview-lawns-wedding/bayview-lawns-wedding-02.jpg": {
+  "name": "4d0e86c3ce",
+  "widths": [
+   240,
+   640,
+   1080,
+   1600
+  ],
+  "color": "#080808"
+ },
+ "/images/1-weddings/bayview-lawns-wedding/bayview-lawns-wedding-01.jpg": {
+  "name": "89b0dc318e",
+  "widths": [
+   240,
+   640,
+   1080,
+   1600,
+   2400
+  ],
+  "color": "#f8f8f8"
+ },
+ "/images/1-weddings/bangalore-wedding/bangalore-wedding-01.jpg": {
+  "name": "ffc8a2f7b1",
+  "widths": [
+   240,
+   640,
+   1080,
+   1600,
+   2400
+  ],
+  "color": "#98a898"
+ },
+ "/images/1-weddings/bangalore-wedding/bangalore-wedding-04.jpg": {
+  "name": "7c50826a2f",
+  "widths": [
+   240,
+   640,
+   1080,
+   1600
+  ],
+  "color": "#180808"
+ },
+ "/images/1-weddings/aurangabad-wedding/aurangabad-wedding-04.jpg": {
+  "name": "a1e38699ec",
+  "widths": [
+   240,
+   640,
+   1080,
+   1600,
+   2400
+  ],
+  "color": "#d82808"
+ },
+ "/images/1-weddings/aurangabad-wedding/aurangabad-wedding-01.jpg": {
+  "name": "2b54352600",
+  "widths": [
+   240,
+   640,
+   1080,
+   1152
+  ],
+  "color": "#986838"
+ },
+ "/images/2-celebrations-private-dining/glasshouse-dessert-table/glasshouse-dessert-table-01.jpg": {
+  "name": "a162f16e1c",
+  "widths": [
+   240,
+   640,
+   1080,
+   1600,
+   2400
+  ],
+  "color": "#c8c8c8"
+ },
+ "/images/2-celebrations-private-dining/glasshouse-dessert-table/glasshouse-dessert-table-02.jpg": {
+  "name": "5262c5bcdb",
+  "widths": [
+   240,
+   640,
+   1080,
+   1600,
+   1800
+  ],
+  "color": "#f8f8f8"
+ },
+ "/images/2-celebrations-private-dining/ninja/ninja-04.jpg": {
+  "name": "9c66f05cc2",
+  "widths": [
+   240,
+   640,
+   1080,
+   1600,
+   1800
+  ],
+  "color": "#c8f8f8"
+ },
+ "/images/2-celebrations-private-dining/ninja/ninja-02.jpg": {
+  "name": "4841504d64",
+  "widths": [
+   240,
+   640,
+   1080,
+   1600,
+   1800
+  ],
+  "color": "#080808"
+ },
+ "/images/2-celebrations-private-dining/ninja/ninja-01.jpg": {
+  "name": "eb6134e59d",
+  "widths": [
+   240,
+   640,
+   1080,
+   1600,
+   2400
+  ],
+  "color": "#080808"
+ },
+ "/images/2-celebrations-private-dining/playseum-set-ups/playseum-set-ups-03.jpg": {
+  "name": "099c3fd482",
+  "widths": [
+   240,
+   640,
+   1080,
+   1600,
+   2400
+  ],
+  "color": "#080808"
+ },
+ "/images/2-celebrations-private-dining/playseum-set-ups/playseum-set-ups-02.jpg": {
+  "name": "81a0d9eb68",
+  "widths": [
+   240,
+   640,
+   1080,
+   1600,
+   2400
+  ],
+  "color": "#685848"
+ },
+ "/images/2-celebrations-private-dining/playseum-set-ups/playseum-set-ups-01.jpg": {
+  "name": "004cfeafc3",
+  "widths": [
+   240,
+   640,
+   1080,
+   1600,
+   2400
+  ],
+  "color": "#080808"
+ },
+ "/images/2-celebrations-private-dining/carnival/carnival-01.jpg": {
+  "name": "1e0536ec11",
+  "widths": [
+   240,
+   640,
+   1080,
+   1156
+  ],
+  "color": "#283828"
+ },
+ "/images/3-brand-launches-live-events/cartier/cartier-01.jpg": {
+  "name": "0bb7df77cc",
+  "widths": [
+   240,
+   640,
+   1080,
+   1600,
+   2400
+  ],
+  "color": "#080808"
+ },
+ "/images/3-brand-launches-live-events/cartier/cartier-03.jpg": {
+  "name": "d7feea3327",
+  "widths": [
+   240,
+   640,
+   1080,
+   1600,
+   2400
+  ],
+  "color": "#282838"
+ },
+ "/images/3-brand-launches-live-events/cartier/cartier-04.jpg": {
+  "name": "f44f5a698a",
+  "widths": [
+   240,
+   640,
+   1080,
+   1600,
+   2400
+  ],
+  "color": "#080808"
+ },
+ "/images/3-brand-launches-live-events/cartier/cartier-05.jpg": {
+  "name": "13836f52d6",
+  "widths": [
+   240,
+   640,
+   1080,
+   1600,
+   2400
+  ],
+  "color": "#080808"
+ },
+ "/images/3-brand-launches-live-events/cartier/cartier-07.jpg": {
+  "name": "831586fab0",
+  "widths": [
+   240,
+   640,
+   1080,
+   1600,
+   2400
+  ],
+  "color": "#080808"
+ },
+ "/images/3-brand-launches-live-events/cartier/cartier-08.jpg": {
+  "name": "348b1a4e3b",
+  "widths": [
+   240,
+   640,
+   1080,
+   1600,
+   2400
+  ],
+  "color": "#080808"
+ },
+ "/images/3-brand-launches-live-events/cartier/cartier-09.jpg": {
+  "name": "96015bcbe1",
+  "widths": [
+   240,
+   640,
+   1080,
+   1600,
+   2400
+  ],
+  "color": "#080808"
+ },
+ "/images/3-brand-launches-live-events/raymond-chairmans-lounge/raymond-chairmans-lounge-02.jpg": {
+  "name": "ad0669dc76",
+  "widths": [
+   240,
+   640,
+   1080,
+   1086
+  ],
+  "color": "#080808"
+ },
+ "/images/3-brand-launches-live-events/raymond-chairmans-lounge/raymond-chairmans-lounge-05.jpg": {
+  "name": "6d4f42a87d",
+  "widths": [
+   240,
+   640,
+   1080,
+   1600,
+   1800
+  ],
+  "color": "#181818"
+ },
+ "/images/3-brand-launches-live-events/roca-store-launch/roca-store-launch-01.jpg": {
+  "name": "9dbce3f748",
+  "widths": [
+   240,
+   640,
+   1080,
+   1600,
+   1800
+  ],
+  "color": "#080828"
+ },
+ "/images/3-brand-launches-live-events/casio/casio-02.jpg": {
+  "name": "52868c0f74",
+  "widths": [
+   240,
+   640,
+   1080,
+   1600,
+   2400
+  ],
+  "color": "#180808"
+ },
+ "/images/3-brand-launches-live-events/casio/casio-03.jpg": {
+  "name": "5d53a5e0eb",
+  "widths": [
+   240,
+   640,
+   1080,
+   1600,
+   2400
+  ],
+  "color": "#181818"
+ },
+ "/images/3-brand-launches-live-events/merc-eqg-launch/merc-eqg-launch-01.jpg": {
+  "name": "d077a9b7fe",
+  "widths": [
+   240,
+   640,
+   1080,
+   1600,
+   2400
+  ],
+  "color": "#080838"
+ },
+ "/images/3-brand-launches-live-events/merc-eqg-launch/merc-eqg-launch-03.jpg": {
+  "name": "6ee40bfb5c",
+  "widths": [
+   240,
+   640,
+   1080,
+   1600,
+   1800
+  ],
+  "color": "#080818"
+ },
+ "/images/3-brand-launches-live-events/kaytranada/kaytranada-03.jpg": {
+  "name": "661edd81b6",
+  "widths": [
+   240,
+   640,
+   1080,
+   1600,
+   2400
+  ],
+  "color": "#181818"
+ },
+ "/images/3-brand-launches-live-events/himesh-reshamiya/himesh-reshamiya-01.jpg": {
+  "name": "63f08f5d42",
+  "widths": [
+   240,
+   640,
+   1080,
+   1600,
+   1800
+  ],
+  "color": "#c8d8e8"
+ },
+ "/images/3-brand-launches-live-events/rolling-loud/rolling-loud-02.jpg": {
+  "name": "181e551bbd",
+  "widths": [
+   240,
+   640,
+   1080,
+   1600,
+   2400
+  ],
+  "color": "#383828"
+ },
+ "/images/3-brand-launches-live-events/rolling-loud/rolling-loud-01.jpg": {
+  "name": "a727407321",
+  "widths": [
+   240,
+   640,
+   1080,
+   1600,
+   1800
+  ],
+  "color": "#080808"
+ },
+ "/images/3-brand-launches-live-events/crunchyroll/crunchyroll-02.jpg": {
+  "name": "6cec1f42e9",
+  "widths": [
+   240,
+   640,
+   1080,
+   1600,
+   1800
+  ],
+  "color": "#a8c8e8"
+ },
+ "/images/3-brand-launches-live-events/himalayan-defender-journey/himalayan-defender-journey-01.jpg": {
+  "name": "4da9e41bbd",
+  "widths": [
+   240,
+   640,
+   1080,
+   1350
+  ],
+  "color": "#181818"
+ },
+ "/images/4-corporate-office-dining/motilal-oswal/motilal-oswal-01.jpg": {
+  "name": "76c5438b30",
+  "widths": [
+   240,
+   640,
+   1080,
+   1600,
+   1800
+  ],
+  "color": "#282828"
+ },
+ "/images/4-corporate-office-dining/sbi/sbi-02.jpg": {
+  "name": "f2eee52ab1",
+  "widths": [
+   240,
+   640,
+   1080,
+   1600,
+   1800
+  ],
+  "color": "#887868"
+ },
+ "/images/4-corporate-office-dining/sbi/sbi-03.jpg": {
+  "name": "2aa65b053f",
+  "widths": [
+   240,
+   640,
+   1080,
+   1600,
+   2400
+  ],
+  "color": "#d8c8c8"
+ },
+ "/images/4-corporate-office-dining/netflix/netflix-03.jpg": {
+  "name": "061097caba",
+  "widths": [
+   240,
+   640,
+   1080,
+   1600,
+   2400
+  ],
+  "color": "#181818"
+ },
+ "/images/4-corporate-office-dining/uti/uti-03.jpg": {
+  "name": "7047fb3eb4",
+  "widths": [
+   240,
+   640,
+   1080,
+   1600
+  ],
+  "color": "#787878"
+ },
+ "/images/4-corporate-office-dining/bloomberg-bsmr/bloomberg-bsmr-04.jpg": {
+  "name": "c4899089fb",
+  "widths": [
+   240,
+   640,
+   1080,
+   1600,
+   1800
+  ],
+  "color": "#d8d8d8"
+ },
+ "/images/4-corporate-office-dining/bloomberg-bsmr/bloomberg-bsmr-05.jpg": {
+  "name": "5da0f33573",
+  "widths": [
+   240,
+   640,
+   1080,
+   1600,
+   1800
+  ],
+  "color": "#d8d8d8"
+ }
+}

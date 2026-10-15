@@ -14,7 +14,7 @@ export function Footer() {
         <div className="grid gap-12 lg:grid-cols-12">
           <div className="lg:col-span-4">
             <Link href="/" aria-label="Foodbiz, home" className="relative flex h-[44px] w-[132px] items-center lg:w-[166px]">
-              <Image src="/logos/foodbiz-2026-white-1200w.png" alt="" width={1200} height={274} className="h-full w-full object-contain object-left" />
+              <Image src="/logos/foodbiz-2026-white-400w.webp" alt="" width={400} height={91} className="h-full w-full object-contain object-left" />
             </Link>
             <p className="muted mt-6 max-w-[30ch]">Catering and hospitality, Mumbai.</p>
           </div>
