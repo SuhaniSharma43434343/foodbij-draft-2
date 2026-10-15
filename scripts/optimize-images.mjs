@@ -1,6 +1,7 @@
 // Pre-builds every photo the site uses into static WebP files at fixed widths, plus a dominant colour
 // for each, so no photo waits on the on-demand image optimiser (which took 0.5-1.3s per image cold and
-// left large frames blank while scrolling). Run: npm run images  (also runs before every build).
+// left large frames blank while scrolling). Run `npm run images` after adding or changing a photo, and commit
+// public/o/ with it: the build does not regenerate these files (Vercel's .vercelignore drops scripts/).
 //
 // Output: public/o/<hash>-<width>.webp and src/content/image-manifest.json
 import sharp from "sharp";

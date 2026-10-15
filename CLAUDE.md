@@ -39,6 +39,10 @@ old dull "shaadi" look, tech/dashboard styling, chef hats, crossed cutlery and w
 
 ## Where things are
 
+- `public/o/` - the photos the site serves: WebP files pre-built from `public/images/` by `npm run images`
+  (also writes `src/content/image-manifest.json`). Re-run it and commit both after adding or changing a photo;
+  the build does not do it (`.vercelignore` drops `scripts/`).
+
 - `docs/brief/` - brief, meeting notes, guide, open items, voice, old copy export, image index
 - `docs/reference/` - teardown of obcatering.com (the client's reference) with screenshots
 - `docs/design/` - taste spec and mockups (produced in the look phase)

@@ -19,8 +19,8 @@ Why: the review recording showed too much empty space, repeated layouts and larg
 **Blank image areas, found and fixed.** Two causes, both measured. (1) Every photo went through Next's on-demand
 image optimiser, which took 0.5 to 1.3s per photo on first request (measured on the local production server), so
 large frames sat empty while scrolling. (2) Frames waiting to reveal were transparent, so a slow photo showed as white.
-Fix: `scripts/optimize-images.mjs` pre-builds every photo into static WebP files at five widths (`public/o/`, runs
-before every build) and records each photo's dominant colour; a custom `next/image` loader (`src/lib/image-loader.ts`)
+Fix: `scripts/optimize-images.mjs` pre-builds every photo into static WebP files at five widths (`public/o/`,
+committed with the code) and records each photo's dominant colour; a custom `next/image` loader (`src/lib/image-loader.ts`)
 serves them directly; every frame is filled with its photo's own colour while loading; reveals start slightly before a
 photo enters the screen. Logos are now 9-14 KB WebP files instead of 55-65 KB PNGs. A fast-scroll test (one screen
 every 0.5s) now finds no empty frames on Home, Weddings or Brand launches; on Celebrations, three film-strip photos
@@ -132,7 +132,8 @@ of event), shows an error summary that takes focus, and on a valid brief says pl
 
 ## Testing done (production build, local, headless Chrome; re-run after the third pass)
 
-- `npm run build`: passes (image pre-build, then 27 static pages), no type errors.
+- `npm run build`: passes, 27 static pages, no type errors. Also passes from a clean copy of the pushed commit with
+  Vercel's ignored files removed and a fresh `npm ci` (the same way Vercel builds).
 - Crawl of every internal link from the homepage: 23 pages, all 200, no failed images, no console errors, one `h1`
   per page, every image has alt text, noindex on every page.
 - No horizontal overflow on any of the 23 pages at 360, 375, 390, 768, 1024, 1280 and 1920px.
@@ -159,7 +160,9 @@ of event), shows an error summary that takes focus, and on a valid brief says pl
 - AI images for the two slots above.
 - Preview deployment: the noindex config is ready; not deployed.
 - `docs/design/` and `docs/qa/` still describe the first draft; this file is the record for this version.
-- `public/o/` (the pre-built photos, about 28 MB) is not committed; `npm run build` regenerates it (about 90s the first time).
+- After adding or changing a photo, run `npm run images` and commit `public/o/` and `src/content/image-manifest.json`.
+  The build does not regenerate them: Vercel's `.vercelignore` drops `scripts/`, which is why the first Vercel
+  build of this version failed (fixed by shipping the prepared photos with the code).
 - The homepage hero photo is 1602px wide and looks slightly soft on large high-density screens.
 - First paint on a slow phone connection is slower than in the second pass (see Speed above).
 
