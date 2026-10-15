@@ -1,114 +1,101 @@
 import type { Metadata } from "next";
-import { PlanBand } from "@/components/PlanBand";
-import { SectionHeading } from "@/components/SectionHeading";
-import { HeroLines } from "@/components/motion/HeroLines";
-import { BeliefsSequence } from "@/components/story/BeliefsSequence";
-import { CroppedPhoto } from "@/components/story/CroppedPhoto";
-import { ScrollLit } from "@/components/work/ScrollLit";
-import { ourStory } from "@/content/pages";
-import "@/components/work/pages-motion.css";
+import type { CSSProperties } from "react";
+import { Close } from "@/components/Close";
+import { Photo } from "@/components/Photo";
+import { Txt } from "@/components/Txt";
+import { ourStory as p } from "@/content/pages";
 
-export const metadata: Metadata = {
-  title: ourStory.meta.title,
-  description: ourStory.meta.description,
-};
+export const metadata: Metadata = p.meta;
 
-const PHOTO_SIZES = "(min-width: 1320px) 520px, (min-width: 1024px) 38vw, calc(100vw - 40px)";
+const d = (ms: number) => ({ "--d": `${ms}ms` }) as CSSProperties;
 
-/**
- * Our story (01-BRIEF.md s6): who Foodbiz is, what it holds to, the founders, how a brief is taken.
- *
- * Motion (W8.3): opening in pure CSS (title through its mask, paragraphs fade up); photos wipe in and
- * drift on desktop scroll; the founders' line lights word by word; the values run as a scroll sequence
- * (BeliefsSequence); the other sections fade up on arrival. Static without JS and under reduced motion.
- */
 export default function OurStoryPage() {
-  const { intro, image, quote, beliefs, founders, brief, plan } = ourStory;
   return (
     <>
-      {/* 1. Who we are */}
-      <section aria-labelledby="story-title" className="pt-12 pb-16 lg:pt-24 lg:pb-28">
-        <div className="site-container grid grid-cols-1 gap-12 lg:grid-cols-12 lg:items-end lg:gap-12">
-          <div className="lg:col-span-6">
-            <h1 id="story-title" className="t-display-l max-w-[16ch] text-balance text-navy">
-              <HeroLines lines={[intro.heading]} />
-            </h1>
-            <div className="mt-8 space-y-5">
-              {intro.paragraphs.map((p, i) => (
-                <p key={p} className="hero-fade t-body text-navy/85" style={{ "--d": `${300 + i * 90}ms` } as React.CSSProperties}>
-                  {p}
-                </p>
-              ))}
-            </div>
+      <section className="pt-[calc(var(--header-h)+56px)] lg:pt-[calc(var(--header-h)+96px)]">
+        <div className="wrap grid gap-10 lg:grid-cols-12 lg:gap-8">
+          <h1 className="t-display hero-in max-w-[14ch] lg:col-span-7">{p.heading}</h1>
+          <div className="space-y-5 lg:col-span-5 lg:col-start-8 lg:pt-6">
+            {p.intro.map((t, i) => (
+              <p key={i} className={`hero-in ${i ? "muted" : "t-lead"}`} style={d(250 + i * 120)}>
+                {t}
+              </p>
+            ))}
           </div>
-          <CroppedPhoto
-            img={image}
-            className="aspect-[4/5] lg:col-span-5 lg:col-start-8"
-            motion
-            // The photo is zoomed in its frame, so ask for a wider file.
-            sizes={`(min-width: 1320px) ${Math.round(520 * (image.zoom ?? 1))}px, (min-width: 1024px) ${Math.round(38 * (image.zoom ?? 1))}vw, calc((100vw - 40px) * ${image.zoom ?? 1})`}
-          />
+        </div>
+        <div className="mt-14 lg:mt-24">
+          <Photo img={p.image} ratio="21 / 9" sizes="100vw" drift className="max-md:aspect-[4/3]" />
         </div>
       </section>
 
-      {/* 2. The founders' line, as a pull quote */}
-      <section aria-label="In the founders' words" className="pb-16 lg:pb-28">
-        <div className="site-container">
-          <figure className="relative pt-10 lg:max-w-[52rem] lg:pt-14">
-            <span aria-hidden="true" data-reveal="rule" className="absolute inset-x-0 top-0 h-px bg-copper" />
-            <blockquote>
-              <ScrollLit
-                text={`“${quote.text}”`}
-                className="font-display text-[1.875rem] leading-[1.18] font-medium text-navy italic lg:text-[2.75rem] lg:leading-[1.12]"
-              />
-            </blockquote>
-            <figcaption data-reveal="" className="mt-6 text-[14px] leading-[1.5] text-navy/72">
-              {quote.by}
-            </figcaption>
-          </figure>
-        </div>
+      <section className="on-dark section" aria-label="The founders’ words">
+        <figure className="wrap max-w-[64rem]">
+          <blockquote>
+            <p className="t-h1 italic" data-reveal="up">
+              “{p.quote}”
+            </p>
+          </blockquote>
+          <figcaption className="t-meta mt-8 text-[var(--copper-soft)]">{p.quoteBy}</figcaption>
+        </figure>
       </section>
 
-      {/* 3. What we hold to: a scroll sequence (pinned on desktop) */}
-      <BeliefsSequence id="story-beliefs" heading={beliefs.heading} items={beliefs.items} />
-
-      {/* 4. The founders: names and roles only. No photos until real ones arrive, no bios until confirmed. */}
-      <section aria-labelledby="story-founders" className="section-y">
-        <div className="site-container">
-          <SectionHeading id="story-founders" heading={founders.heading} reveal />
-          <ul data-reveal-stagger="" className="mt-10 grid grid-cols-1 gap-8 lg:mt-14 lg:grid-cols-2 lg:gap-12">
-            {founders.people.map((p) => (
-              <li key={p.name} className="border-t border-navy/12 pt-6">
-                <p className="font-display text-[1.75rem] leading-[1.15] font-medium text-navy lg:text-[2rem]">{p.name}</p>
-                <p className="t-label mt-3 text-copper-deep">{p.role}</p>
+      <section className="section" aria-labelledby="beliefs-title">
+        <div className="wrap grid gap-10 lg:grid-cols-12 lg:gap-8">
+          <h2 id="beliefs-title" className="t-h2 lg:col-span-4" data-reveal="up">
+            {p.beliefs.heading}
+          </h2>
+          <ul className="border-t border-[var(--line)] lg:col-span-7 lg:col-start-6">
+            {p.beliefs.items.map((b, i) => (
+              <li key={b.title} className="border-b border-[var(--line)] py-7" data-reveal="up" style={d(i * 70)}>
+                <h3 className="t-h3">{b.title}</h3>
+                <p className="muted mt-2 max-w-[48ch]">{b.text}</p>
               </li>
             ))}
           </ul>
-          <p data-reveal="" className="t-body mt-8 text-navy/60 italic">
-            {founders.bioNote}
-          </p>
         </div>
       </section>
 
-      {/* 5. How we take a brief */}
-      <section aria-labelledby="story-brief" className="section-y bg-mist">
-        <div className="site-container grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-12">
-          <div className="lg:col-span-5">
-            <SectionHeading id="story-brief" heading={brief.heading} headingClassName="max-w-[18ch]" reveal />
-            <CroppedPhoto img={brief.image} className="mt-10 aspect-[4/3] lg:mt-14" sizes={PHOTO_SIZES} motion />
-          </div>
-          <ol data-reveal-stagger="" className="lg:col-span-6 lg:col-start-7">
-            {brief.steps.map((s) => (
-              <li key={s.title} className="border-t border-navy/12 py-7 lg:first:border-t-copper">
-                <h3 className="font-display text-[1.5rem] leading-[1.18] font-medium text-navy lg:text-[1.625rem]">{s.title}</h3>
-                <p className="t-body mt-2 text-navy/80">{s.text}</p>
+      <section className="bg-[var(--linen)] section" aria-labelledby="brief-title">
+        <div className="wrap">
+          <h2 id="brief-title" className="t-h2" data-reveal="up">
+            {p.brief.heading}
+          </h2>
+          <ol className="mt-12 grid gap-10 md:grid-cols-2 lg:grid-cols-4 lg:gap-8">
+            {p.brief.steps.map((s, i) => (
+              <li key={s.title} className="border-t border-[var(--line)] pt-6" data-reveal="up" style={d(i * 90)}>
+                <span className="serif text-[1.25rem] text-[var(--copper-ink)]" aria-hidden="true">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <h3 className="serif mt-3 text-[1.5rem] leading-tight">{s.title}</h3>
+                <p className="muted mt-3">{s.text}</p>
               </li>
             ))}
           </ol>
         </div>
       </section>
 
-      <PlanBand heading={plan.heading} lead={plan.lead} cta={plan.cta} />
+      <section className="section" aria-labelledby="founders-title">
+        <div className="wrap grid gap-8 lg:grid-cols-12 lg:gap-8">
+          <h2 id="founders-title" className="t-h2 lg:col-span-4">
+            {p.founders.heading}
+          </h2>
+          <div className="lg:col-span-7 lg:col-start-6">
+            <ul className="grid gap-6 sm:grid-cols-2">
+              {p.founders.people.map((name) => (
+                <li key={name}>
+                  <p className="t-h3">{name}</p>
+                  <p className="muted mt-1">Co-founder</p>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-8">
+              <Txt>{p.founders.note}</Txt>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <Close heading={p.close.heading} lead={p.close.lead} />
     </>
   );
 }

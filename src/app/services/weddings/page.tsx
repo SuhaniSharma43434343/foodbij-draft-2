@@ -1,25 +1,11 @@
 import type { Metadata } from "next";
 import { ServicePage } from "@/components/ServicePage";
-import { services, weddings } from "@/content/site";
+import { servicePages } from "@/content/services";
 
-const service = services.find((s) => s.slug === "weddings")!;
-const others = services.filter((s) => s.slug !== service.slug);
+const data = servicePages["weddings"];
 
-export const metadata: Metadata = {
-  title: "Weddings",
-  description: service.promise,
-};
+export const metadata: Metadata = data.meta;
 
-export default function WeddingsPage() {
-  return (
-    <ServicePage
-      service={service}
-      page={weddings}
-      others={others}
-      galleryCrops={{
-        // Chef at the live counter: keep the bottom of the frame (hands, plate, garnish), toque out.
-        "/images/1-weddings/bangalore-wedding/bangalore-wedding-03.jpg": { zoom: 2, position: "50% 100%" },
-      }}
-    />
-  );
+export default function Page() {
+  return <ServicePage data={data} flip={false} />;
 }

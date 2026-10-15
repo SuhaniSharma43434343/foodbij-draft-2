@@ -1,202 +1,167 @@
-import Image from "next/image";
-import { photoStyle } from "@/components/media/photo-bg";
 import Link from "next/link";
-import type { ReactNode } from "react";
-import { PLAN_HREF, type Service, type ServicePage as ServicePageContent } from "@/content/site";
-import { ArrowLink } from "./ArrowLink";
-import { PlanBand } from "./PlanBand";
-import { SectionHeading } from "./SectionHeading";
-import { ScrollFocus } from "./motion/ScrollFocus";
-import { ServiceGallery, type GalleryCrop } from "./service/ServiceGallery";
-import { ServiceHero } from "./service/ServiceHero";
-import { StepsMotion } from "./service/StepsMotion";
-import { stories as allStories } from "@/content/stories";
-import "./service/service-motion.css";
+import type { CSSProperties } from "react";
+import type { ServicePageData } from "@/content/services";
+import { getService, PLAN_HREF, services } from "@/content/site";
+import { storiesBySlug } from "@/content/stories";
+import { Close } from "./Close";
+import { Gallery } from "./Gallery";
+import { Photo } from "./Photo";
+import { Txt } from "./Txt";
 
-export type { GalleryCrop };
+const d = (ms: number) => ({ "--d": `${ms}ms` }) as CSSProperties;
 
-/** The Our work page for a service-page story, matched by its photo folder. */
-function storyHref(folder: string): string | undefined {
-  const match = allStories.find((st) => st.images.some((img) => img.src.includes(`/${folder}/`)));
-  return match ? `/our-work/${match.slug}` : undefined;
-}
-
-export type ServicePageProps = {
-  /** The service this page is for (one entry of `services`). */
-  service: Service;
-  /** The page copy (e.g. `weddings`). */
-  page: ServicePageContent;
-  /** The other three services, in brief order (linked near the end of the page). */
-  others: Service[];
-  /**
-   * Optional per-photo crops for the gallery, keyed by image src. `zoom` > 1 enlarges the photo inside
-   * its frame, anchored to the bottom; `position` is its object-position, e.g. "50% 100%" keeps the bottom
-   * of the frame (use it to crop a head or a chef's toque out of the top).
-   */
-  galleryCrops?: Record<string, GalleryCrop>;
-};
-
-/** Phone photos run edge to edge (W9.4), so they are as wide as the screen below 1024px. */
-const FULL_COL = "100vw";
-
-function SmallTitle({ as: Tag = "h3", children, className = "" }: { as?: "h3" | "p"; children: ReactNode; className?: string }) {
-  return (
-    <Tag className={`font-display text-[1.625rem] leading-[1.15] font-medium lg:text-[1.75rem] ${className}`.trim()}>
-      {children}
-    </Tag>
-  );
-}
-
-/**
- * One template for the four service pages (01-BRIEF.md section 6): hero, what we do, how it
- * works, event stories, food photos, the other services, and the plan band preset to this service.
- *
- * Motion (docs/design/motion-spec.md, "Expressive pass"; CSS in ./service/service-motion.css). The scroll
- * effects are driven by the shared useScrollProgress primitive (--p / data-step) inside the client parts:
- * - ServiceHero: cinematic opening (slash, masked name, fade-ups, photo settle) and a pinned scroll where
- *   the photo frames itself into a plate while the text drifts out (150svh phone / 170vh desktop).
- * - What we do: staggered reveals, copper rules drawing in.
- * - StepsMotion: desktop pins and steps through "How it works"; phone reveals steps with a copper line.
- * - Stories and other services: wipe reveals, hover zoom, data-cursor="view" on linked photos.
- * - ServiceGallery: the homepage food band behaviour (phone carousel, desktop pinned row) with crops.
- * - W9.4 phone: story and other-service photos run edge to edge (4:5) and are ScrollFocus targets (zoom,
- *   lift and a copper rule while they cross the middle of the screen); links and photo cards press at 0.97.
- * Without JS or under reduced motion every section is the static layout, nothing pinned or hidden.
- */
-export function ServicePage({ service, page, others, galleryCrops = {} }: ServicePageProps) {
-  const { hero, whatWeDo, howItWorks, stories, gallery, otherServices, plan } = page;
-  const id = service.slug;
+/** The shared service page: same order on all four, varied by photography and which side things sit. */
+export function ServicePage({ data, flip = false }: { data: ServicePageData; flip?: boolean }) {
+  const service = getService(data.slug);
+  const stories = storiesBySlug(data.stories).slice(0, 3);
+  const others = services.filter((s) => s.slug !== data.slug);
+  const planHref = `${PLAN_HREF}?type=${data.slug}`;
 
   return (
     <>
-      {/* 1. Hero */}
-      <ServiceHero id={id} headline={hero.headline} line={hero.line} cta={hero.cta ?? plan.cta} href="#plan" image={hero.image} />
-
-      {/* 2. What we do */}
-      <section aria-labelledby={`${id}-what`} className="section-y relative overflow-hidden">
-        <div className="site-container relative">
-          <SectionHeading reveal id={`${id}-what`} heading={whatWeDo.heading} headingClassName="max-w-[22ch] text-balance" />
-          <ul data-reveal-stagger="" className="mt-12 border-t border-navy/12 lg:mt-16 lg:grid lg:grid-cols-2 lg:gap-x-16">
-            {whatWeDo.formats.map((f) => (
-              <li key={f.title} className="border-b border-navy/12 py-8 lg:py-10">
-                <span aria-hidden="true" data-reveal="rule" className="copper-rule mb-5" />
-                <SmallTitle>{f.title}</SmallTitle>
-                <p className="t-body mt-3 text-navy/80">{f.text}</p>
-              </li>
-            ))}
-          </ul>
+      {/* 1-3. Hero: the photograph, the service name, one promise, the enquiry action. */}
+      <section className="pt-[var(--header-h)] lg:grid lg:min-h-[100svh] lg:grid-cols-12 lg:gap-8" aria-labelledby="svc-title">
+        <div className={`lg:col-span-7 lg:row-start-1 ${flip ? "lg:col-start-1" : "lg:col-start-6"}`}>
+          <Photo img={data.hero.image} sizes="(min-width: 1024px) 58vw, 100vw" preload className="aspect-square sm:aspect-[4/3] lg:aspect-auto lg:h-full" />
         </div>
-      </section>
-
-      {/* 3. How it works */}
-      <StepsMotion id={id} heading={howItWorks.heading} steps={howItWorks.steps} />
-
-      {/* 4. Event stories from this service */}
-      <section aria-labelledby={`${id}-stories`} className="section-y">
-        <div className="site-container">
-          <SectionHeading reveal id={`${id}-stories`} heading={stories.heading} />
-          <ul className="mt-12 grid grid-cols-1 gap-16 lg:mt-16 lg:grid-cols-2 lg:gap-12">
-            {stories.items.map((s) => {
-              const pending = s.brief.startsWith("[NEEDS CLIENT");
-              const href = storyHref(s.folder);
-              const photo = (
-                <div data-reveal="wipe" data-focus-scroll="" className="relative aspect-[4/5] overflow-hidden">
-                  <div className="absolute inset-0">
-                    <Image
-                      src={s.image.src}
-                      style={photoStyle(s.image.src)}
-                      alt={s.image.alt}
-                      fill
-                      sizes={`(min-width: 1320px) 600px, (min-width: 1024px) 46vw, ${FULL_COL}`}
-                      className="media-zoom object-cover"
-                    />
-                  </div>
-                </div>
-              );
-              return (
-                <li key={s.folder}>
-                  <article className="group">
-                    {href ? (
-                      <Link href={href} tabIndex={-1} aria-hidden="true" data-cursor="view" className="sv-bleed press block">
-                        {photo}
-                      </Link>
-                    ) : (
-                      <div className="sv-bleed">{photo}</div>
-                    )}
-                    <div data-reveal="">
-                      <h3 className="t-display-m mt-6 text-[1.75rem] lg:text-[2.25rem]">
-                        {href ? (
-                          <Link href={href} className="press underline-offset-4 hover:underline active:underline">
-                            {s.title}
-                          </Link>
-                        ) : (
-                          s.title
-                        )}
-                      </h3>
-                      <p className="t-label mt-6 text-copper-deep">The brief</p>
-                      <p className={`t-body mt-2 ${pending ? "text-navy/60 italic" : "text-navy/80"}`}>{s.brief}</p>
-                      <p className="t-label mt-6 text-copper-deep">What we made</p>
-                      <p className="t-body mt-2 text-navy/80">{s.whatWeMade}</p>
-                    </div>
-                  </article>
-                </li>
-              );
-            })}
-          </ul>
-          <div className="mt-10 lg:mt-14">
-            <ArrowLink href={`/our-work?service=${service.slug}`} className="press">
-              {stories.linkLabel}
-            </ArrowLink>
+        <div
+          className={`wrap flex flex-col justify-end pb-14 pt-8 lg:row-start-1 lg:pb-[clamp(48px,8vh,96px)] lg:pt-0 ${
+            flip ? "lg:col-span-4 lg:col-start-9 lg:pl-0" : "lg:col-span-4 lg:col-start-1 lg:pr-0"
+          }`}
+        >
+          <Link href="/#services" className="t-meta muted hero-in inline-flex min-h-[44px] items-center gap-2 self-start" style={d(200)}>
+            Services <span className="text-[var(--copper)]" aria-hidden="true">/</span>
+          </Link>
+          <h1 id="svc-title" className="t-h1 hero-in mt-1" style={d(300)}>
+            {service.name}
+          </h1>
+          <p className="t-lead muted hero-in mt-5 max-w-[36ch]" style={d(420)}>
+            {data.hero.promise}
+          </p>
+          <div className="hero-in mt-8" style={d(540)}>
+            <Link href={planHref} className="btn">
+              {data.hero.cta} <span className="arrow" aria-hidden="true" />
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* 5. Food and presentation photos */}
-      <ServiceGallery id={id} heading={gallery.heading} images={gallery.images} crops={galleryCrops} />
+      {/* 4. What we cover. */}
+      <section className="section" aria-labelledby="cover-title">
+        <div className="wrap grid gap-12 lg:grid-cols-12 lg:gap-8">
+          <div className={`lg:col-span-6 lg:row-start-1 ${flip ? "lg:col-start-7" : "lg:col-start-1"}`}>
+            <h2 id="cover-title" className="t-h2 max-w-[16ch]" data-reveal="up">
+              {data.cover.heading}
+            </h2>
+            <ul className="mt-10 border-t border-[var(--line)]">
+              {data.cover.formats.map((f, i) => (
+                <li key={f.title} className="grid gap-1 border-b border-[var(--line)] py-6 md:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)] md:gap-8" data-reveal="up" style={d(i * 70)}>
+                  <h3 className="serif text-[1.375rem] leading-tight lg:text-[1.5rem]">{f.title}</h3>
+                  <p className="muted">{f.text}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className={`lg:col-span-5 lg:row-start-1 lg:self-start ${flip ? "lg:col-start-1" : "lg:col-start-8"}`}>
+            <Photo img={data.cover.image} ratio="4 / 5" sizes="(min-width: 1024px) 40vw, 100vw" drift className={flip ? "max-lg:mr-[14%]" : "max-lg:ml-[14%]"} />
+          </div>
+        </div>
+      </section>
 
-      {/* 6. Other services */}
-      <section aria-labelledby={`${id}-others`} className="section-y">
-        <div className="site-container">
-          <SectionHeading reveal id={`${id}-others`} heading={otherServices.label} />
-          <ul className="mt-12 grid grid-cols-1 gap-12 lg:mt-16 lg:grid-cols-3 lg:gap-12">
-            {others.map((s) => (
-              <li key={s.slug} className="group">
-                <Link href={s.href} tabIndex={-1} aria-hidden="true" data-cursor="view" className="sv-bleed press block">
-                  <div data-reveal="wipe" data-focus-scroll="" className="relative aspect-[4/5] overflow-hidden lg:aspect-[3/2]">
-                    <div className="absolute inset-0">
-                      <Image
-                        src={s.heroImage.src}
-                        style={photoStyle(s.heroImage.src)}
-                        alt=""
-                        fill
-                        sizes={`(min-width: 1320px) 400px, (min-width: 1024px) 30vw, ${FULL_COL}`}
-                        className="media-zoom object-cover"
-                      />
-                    </div>
-                  </div>
-                </Link>
-                <div data-reveal="">
-                  <SmallTitle className="mt-3">
-                    <Link href={s.href} className="press inline-flex min-h-11 items-center underline-offset-4 hover:underline active:underline">
-                      {s.name}
+      {/* 5. How it works: numbered, because the order is the point. */}
+      <section className="on-dark section" aria-labelledby="steps-title">
+        <div className="wrap">
+          <h2 id="steps-title" className="t-h2 max-w-[18ch]" data-reveal="up">
+            {data.steps.heading}
+          </h2>
+          <ol className="mt-12 grid gap-10 md:grid-cols-2 lg:mt-16 lg:grid-cols-4 lg:gap-8">
+            {data.steps.items.map((s, i) => (
+              <li key={s.title} className="border-t border-[var(--line-dark)] pt-6" data-reveal="up" style={d(i * 90)}>
+                <span className="serif text-[1.25rem] text-[var(--copper-soft)]" aria-hidden="true">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <h3 className="serif mt-3 text-[1.625rem] leading-tight">{s.title}</h3>
+                <p className="muted mt-3 max-w-[32ch]">{s.text}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* 6. Event stories from this service. */}
+      {stories.length > 0 && (
+        <section className="section" aria-labelledby="stories-title">
+          <div className="wrap">
+            <h2 id="stories-title" className="t-h2" data-reveal="up">
+              From our work
+            </h2>
+            <ul className="mt-12 space-y-20 lg:mt-16 lg:space-y-28">
+              {stories.map((s, i) => {
+                const right = i % 2 === 1;
+                return (
+                  <li key={s.slug} className="grid gap-6 lg:grid-cols-12 lg:items-center lg:gap-8">
+                    <Link
+                      href={`/our-work/${s.slug}`}
+                      tabIndex={-1}
+                      aria-hidden="true"
+                      className={`lift block lg:row-start-1 ${i === 0 ? "lg:col-span-7" : "lg:col-span-6"} ${right ? (i === 0 ? "lg:col-start-6" : "lg:col-start-7") : "lg:col-start-1"}`}
+                    >
+                      <Photo img={s.images[0]} ratio={i === 0 ? "3 / 2" : "4 / 3"} sizes="(min-width: 1024px) 55vw, 100vw" />
                     </Link>
-                  </SmallTitle>
-                </div>
+                    <div className={`lg:row-start-1 lg:col-span-4 ${right ? "lg:col-start-1" : "lg:col-start-9"}`}>
+                      <h3 className="t-h3" data-reveal="up">
+                        {s.title}
+                      </h3>
+                      <p className="muted mt-3 max-w-[40ch]" data-reveal="up" style={d(90)}>
+                        {s.summary}
+                      </p>
+                      <Link href={`/our-work/${s.slug}`} className="tlink mt-4" data-reveal="up" style={d(160)}>
+                        <span className="uline">Read the story</span>
+                        <span className="arrow" aria-hidden="true" />
+                      </Link>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </section>
+      )}
+
+      {/* 7. Photographs. */}
+      <section className="pb-[var(--section)]" aria-label="Photographs">
+        <Gallery images={data.gallery} label={`${service.name}: photographs`} />
+        {data.galleryNote && (
+          <p className="wrap mt-6">
+            <Txt>{data.galleryNote}</Txt>
+          </p>
+        )}
+      </section>
+
+      {/* 8. The other services. */}
+      <section className="border-t border-[var(--line)] py-16 lg:py-24" aria-labelledby="others-title">
+        <div className="wrap">
+          <h2 id="others-title" className="t-h3">
+            Other occasions
+          </h2>
+          <ul className="mt-8 grid gap-4 md:grid-cols-3 md:gap-8">
+            {others.map((s) => (
+              <li key={s.slug}>
+                <Link href={s.href} className="lift group grid grid-cols-[96px_1fr] items-center gap-5 md:block">
+                  <Photo img={s.image} ratio="4 / 3" sizes="(min-width: 768px) 30vw, 96px" reveal={false} />
+                  <span className="serif flex items-center justify-between gap-4 text-[1.375rem] leading-tight md:mt-4 lg:text-[1.625rem]">
+                    <span className="uline [background-size:0_1px] group-hover:[background-size:100%_1px]">{s.name}</span>
+                    <span className="arrow" aria-hidden="true" />
+                  </span>
+                </Link>
               </li>
             ))}
           </ul>
         </div>
       </section>
 
-      <ScrollFocus />
-
-      {/* 7. Plan your event, preset to this service */}
-      <PlanBand
-        heading={plan.heading}
-        lead={plan.lead}
-        cta={plan.cta}
-        href={`${PLAN_HREF}?service=${plan.presetService}`}
-      />
+      {/* 9. Plan your event, preset to this service. */}
+      <Close heading={data.close.heading} lead={data.close.lead} service={data.slug} />
     </>
   );
 }

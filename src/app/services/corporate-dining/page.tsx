@@ -1,26 +1,11 @@
 import type { Metadata } from "next";
 import { ServicePage } from "@/components/ServicePage";
-import { services } from "@/content/site";
-import { corporateDining } from "@/content/services-pages";
+import { servicePages } from "@/content/services";
 
-const service = services.find((s) => s.slug === "corporate-dining")!;
-const others = services.filter((s) => s.slug !== service.slug);
+const data = servicePages["corporate-dining"];
 
-export const metadata: Metadata = {
-  title: service.name,
-  description: service.promise,
-};
+export const metadata: Metadata = data.meta;
 
-export default function CorporateDiningPage() {
-  return (
-    <ServicePage
-      service={service}
-      page={corporateDining}
-      others={others}
-      galleryCrops={{
-        // Canapé boards: crop in on the food so the tile reads as a detail, not a repeat of the hero.
-        "/images/4-corporate-office-dining/motilal-oswal/motilal-oswal-01.jpg": { zoom: 1.5, position: "60% 100%" },
-      }}
-    />
-  );
+export default function Page() {
+  return <ServicePage data={data} flip={true} />;
 }

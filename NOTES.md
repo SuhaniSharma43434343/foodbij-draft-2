@@ -1,184 +1,135 @@
-# Foodbiz v2 - hand-in notes
+# Foodbiz v2, editorial redesign: hand-in notes
 
-Preview build of the new Foodbiz site, 2026-10-14. Brief: `docs/brief/01-BRIEF.md`.
+Branch `redesign-editorial`, 2026-10-15. The first draft stays untouched on `main` (deployed at foodbiz-v2.vercel.app).
+Brief: `docs/brief/01-BRIEF.md`. Screenshots: `docs/handin/`.
 
-## Design idea
+## Design concept
 
-A printed dinner menu for a Mumbai host: a fine, high-contrast serif on white and deep navy, with the
-food photographed and laid out like a magazine spread. Copper appears only where you can act or where
-the logo would, so every page stays calm and "Plan your event" is always the obvious next step.
+A hospitality editorial: white pages where the real photographs are set like a magazine spread, each one cropped and
+placed differently, with navy bands as the pauses between chapters. The words stay few and plain so the food,
+the service and the one action, "Plan your event", carry every page.
 
-## Fonts and colours, and why
+## How it differs from the first draft
 
-- **Cormorant** (display, 500/600, one italic line per page at most): the most refined serif we tested
-  at 360px; at 500 the hairlines stay whole on a phone, which answers the "type not refined on mobile"
-  complaint.
-- **Jost** (text, 400/500): a geometric sans with the round O's and straight strokes of the FOODB/Z
-  wordmark, so type and logo read as one family. Body is 16px (17px from 768px), weight 400.
-- Colours come from the new logo. Navy `#0B1C2D` for text and dark bands (reads as black, softer on
-  photos). Copper `#B87333` for buttons, the active nav marker, thin rules and service numerals,
-  never body text. Copper-deep `#8F5523` for small copper text on white (6.0:1). White page ground.
-  Mist `#F4F1EC` for one alternate light band. About 70% white, 25% navy, under 5% copper; the photos
-  carry the colour.
-- **Owner's decision (2026-10-14):** keep the logo copper `#B87333` as the button fill. White on that
-  copper is **3.8:1**, below the 4.5:1 AA level for small text. Mitigation: button labels are 13px,
-  uppercase, weight 500, wide tracking, in buttons at least 48px tall. Fallback if this changes:
-  fill `#A0612A` (5.0:1), a one-token swap.
+| | First draft | This version |
+|---|---|---|
+| Opening | Navy panel with a photo fading in from the right, three-line serif headline | One full-bleed night photograph (a server inside a lit crescent canapé counter) that opens out from a frame on arrival; small headline bottom-left, lead and action set apart bottom-right |
+| Type | Cormorant + Jost, uppercase tracked labels and buttons | Instrument Serif (one weight) + Manrope, sentence case everywhere, no tracked caps |
+| Navigation | Bottom thumb dock, intro loader, copper cursor, page curtain | Header that hides on scroll down and returns on scroll up; a Services panel with photos on desktop; a full-screen menu that lists the four services directly on phones; no loader, cursor or curtain |
+| Services on home | Pinned list with a swapping image | Four spreads, each composed differently (portrait left, wide right, a navy full-bleed band, a narrow centred frame) |
+| Food | Navy horizontal gallery | Linen band: asymmetric mosaic on desktop, one large photo plus a swipe row on phones |
+| Buttons | Copper fill | Navy (white on dark); copper only for the arrow, underlines, focus ring and the nav marker |
+| Motion | Lenis smooth scroll plus several effects | Native scrolling. Three effects only: clip-path rise for photos, short fade-up for text, gentle scroll-linked drift inside some frames (CSS scroll-driven, no library) |
 
-## Pages built, and how
+## Fonts and colours
 
-Routes: `/`, `/services/weddings`, `/services/celebrations`, `/services/brand-launches`,
-`/services/corporate-dining`, `/our-work`, `/our-work/<slug>` (13 stories), `/our-story`,
-`/plan-your-event`, `/privacy`, `/terms`. (The design sketch pages were removed before hand-in; their
-screenshots stay in `docs/design/shots/` as the review record.)
+- **Instrument Serif 400** (and its italic, used only for the founders' line): narrow, high-contrast, still crisp at
+  34px on a 360px phone; one weight keeps the hierarchy clean.
+- **Manrope 400/500** for text: open and readable at 16px; body is 16px on phones, 17px from 1024px.
+- Navy `#0B1C2D` (text, buttons, dark bands), white (page), copper `#B87333` for small details only;
+  `#8F5523` copper ink for small copper text on white (6.0:1), `#D9A576` for small copper on navy (7.7:1).
+  One neutral, linen `#F5F1EB`, is used for the food band and the brief steps on Our story. Secondary text
+  `#46525E` (7.9:1). Primary buttons are navy with white text (16:1), so the old 3.8:1 copper-button compromise is gone.
 
-Stack: Next.js 16 (App Router), React 19, Tailwind 4, TypeScript, npm. All copy lives in
-`src/content/*.ts` (`site.ts`, `services-pages.ts`, `stories.ts`, `pages.ts`). Run: `npm install`,
-then `npm run dev` (http://localhost:3010); `npm run build` for a production build. Kept out of
-search three ways: `robots: noindex` in metadata, an `X-Robots-Tag: noindex, nofollow` header
-(`next.config`), and `robots.ts` disallowing everything.
+## Images
+
+All photographs are real, cleared frames from `05-assets/images/` (already in `public/images/`). One derived file:
+`public/images/crops/hero-plating.jpg`, a crop of `bangalore-wedding-03` that removes the chef's head and toque
+(the brief avoids chef hats), used as the live-counter image on Weddings and in one story.
+
+Choices and why:
+- **Home opening: `randive-wedding-01`.** Night light, a server and the food in one frame: service and presentation
+  without a single word. Desktop crop keeps her face and the counter; phones show the full portrait.
+  Limitation: the file is 1602px wide, so on a large high-density screen it is slightly soft. A wider version from the
+  client, or the planned shoot, would fix it.
+- **Service heroes:** `aurangabad-wedding-04` (thalis), `glasshouse-dessert-table-02`, `raymond-chairmans-lounge-05`,
+  `motilal-oswal-01`. Homepage service images are different frames (`bayview-lawns-wedding-02`,
+  `glasshouse-dessert-table-01`, `cartier-01`, `sbi-02`) so each page feels new.
+- **Food:** `cartier-09`, `bangalore-wedding-01`, `himalayan-defender-journey-01`, `cartier-03`, `roca-store-launch-01`.
+- Left out on purpose: `diosa-store-launch-01/-02` (may be renders, 07-OPEN-ITEMS), `uti-02` (sideways, 720px),
+  `peppa-pig-05` and `black-pink-01` (character parties), `ninja-03` (old sub-brand card in frame), Ferrari and other
+  logo-led frames, `merc-eqg-launch-02` and `bayview-lawns-wedding-04` (face masks date them), `raymond-chairmans-lounge-02`
+  (garments dominate the frame).
 
 ## AI-generated images
 
-**None yet.** No image on the site is AI-made. Planned slots (opening plating loop and poster,
-sit-down dinners, daily office dining, food close-ups, optional wedding mood) with sizes and prompts
-are in `docs/design/ai-image-prompts.md`. Each one will be listed here with file name and prompt
-before it is merged, and none will appear on `/our-work`.
+**None are on the site.** No image-generation tool was available in this session, so I did not make any. Two slots
+are flagged on the pages instead of being filled with weaker stand-ins. Planned prompts, for whoever generates them
+(each must be labelled as AI here and never used in a story):
 
-## Photos
+| Slot | Page | Prompt |
+|---|---|---|
+| Sit-down dinner | Celebrations | "A long dinner table at a Mumbai home at night, plated modern Indian courses on white porcelain, brass and copper serving pieces, low candlelight, hands placing a plate, no faces, no text, no logos, editorial food photography, shallow depth of field" |
+| Daily office lunch | Corporate | "A clean office cafeteria counter at midday, steel and copper serving dishes of dal, rice, sabzi and salads, labelled with blank cards, soft daylight, no people's faces, no text, no logos, minimal and functional" |
 
-- All real photos come from the pack's `05-assets` (cleared frames only), copied to `public/images/`.
-  Picks and reasons: `docs/design/photo-picks.md`.
-- The folder named after a sub-brand was renamed to `glasshouse-dessert-table` so the name never
-  shows in image URLs (`docs/brief/IMAGE-INDEX.csv.NOTE.md`).
-- Left out on purpose: `diosa-store-launch-01/-02` (may be renders); `uti-02` (sideways, 720px);
-  `peppa-pig-05`, `black-pink-01` (character-themed parties); Ferrari and other logo-heavy frames
-  (also `cartier-02`, `casio-01`, `bsmr-02/-03`, `sbi-01`); `ninja-03` (an old sub-brand counter
-  card in frame); `sbi-04` (menus with the retired logo); `bayview-lawns-wedding-04` and
-  `merc-eqg-launch-02` (cooks in face masks date the photos).
-- Crops hide a logo, a chef's toque (`bangalore-wedding-03`), a TV and wall lettering.
+## Pages and how it is built
 
-## Flagged for a second look
+Routes: `/`, `/services/weddings`, `/services/celebrations`, `/services/brand-launches`, `/services/corporate-dining`,
+`/our-work` (filter by service), `/our-work/<slug>` (13 stories), `/our-story`, `/plan-your-event`, `/privacy`, `/terms`, and a 404.
 
-- `sbi-02`: a small old-logo card on a lamp. Kept; the card is tiny and unreadable at site sizes.
-- `ninja-01` and `ninja-04`: re-checked by eye, no character theme. The themed pizzas were only in
-  `ninja-03`, which is removed.
-- Every frame that shows a client's brand: logo-use rights are not confirmed (07-OPEN-ITEMS C4).
-- Story pages use event and client names taken from the photo folders (C4). Titles are generic, but
-  the visible brief placeholders on `/our-work/<slug>` name the event (for example "the brief for the
-  Cartier boutique event"). Confirm name rights, or make those placeholders generic, before sharing
-  outside the team.
-- The relay menu board photo carries the event's own small mark in its top-left corner.
+Next.js 16 (App Router, static output), React 19, Tailwind 4, TypeScript. No animation library: `lenis` was removed.
+Copy lives in `src/content/` (`site.ts`, `services.ts`, `stories.ts`, `pages.ts`). The four service pages share
+`src/components/ServicePage.tsx`, varied by photography and by which side the image sits.
+Motion: `RevealObserver.tsx` (IntersectionObserver, once per element, cleaned up on route change) and CSS in
+`globals.css`. Hidden reveal states exist only when an inline script adds `html.mo`, which it does only when
+reduced motion is not requested, so content is visible without JavaScript and with reduced motion on.
 
-## Accessibility and speed
+Out of search three ways (unchanged): `robots` noindex metadata, an `X-Robots-Tag: noindex, nofollow` header
+(`next.config.ts`) and `robots.txt` disallowing everything.
 
-Full write-up and re-run commands: `docs/qa/a11y-perf.md`.
+The enquiry form has no backend (no inbox or sending domain is confirmed). It validates (name; phone or email; type
+of event), shows an error summary that takes focus, and on a valid brief says plainly that nothing was sent, with a
+"Copy my brief" button. The button reads "Check my brief", not "Send". The type of event is preset from
+`?type=<service>` on every service page's actions.
 
-- **Checks** (`scripts/a11y-check.mjs`, all 23 linked pages, production build): one h1 per page, no
-  skipped heading levels, alt text on every image, labelled form controls, unique titles, tap targets
-  at least 44px and no sideways scroll at 360px, all pass. Keyboard: the phone menu opens, keeps focus
-  inside, closes on Escape and returns focus; skip link works; visible focus ring on every stop.
-- **Lighthouse, local, mobile preset** (median of three runs, on a slow laptop; PageSpeed needs a public
-  URL): Home 78 / 96 / 96 / 66, Weddings 79 / 96 / 96 / 66, Our work 82 / 96 / 96 / 66
-  (performance / accessibility / best practices / SEO). Page weight cut by about a third (AVIF photos,
-  right-sized hero, only the hero preloaded, unused font weight dropped).
-- **Known and accepted:** accessibility 96 because of the copper buttons (owner decision above);
-  SEO 66 because the preview is deliberately noindex. Performance is limited mainly by framework
-  start-up time under Lighthouse's CPU throttling; expect higher scores on pagespeed.web.dev once
-  deployed.
-- **Not done yet:** real-phone checks (one Android, one iPhone), the fresh-eyes test from 06-GUIDE
-  step 7, and a screen-reader pass.
+## Testing done (production build, local, headless Chrome)
 
-## What is unfinished
+- `npm run build`: passes, 27 static pages, no type errors.
+- Crawl of every internal link from the homepage: 23 pages, all 200, no failed images, no console errors, one `h1`
+  per page, every image has alt text, noindex on every page.
+- No horizontal overflow on any of the 23 pages at 360, 375, 390, 768, 1024, 1280 and 1920px.
+- Tap targets: every visible link and button at 360px is at least 44px tall (the only flagged item is the hidden skip link).
+- Form: empty submit shows two errors and focuses the summary; a bad email is caught; a valid brief shows the
+  "not sent" status and focuses it; no success claim; the preset from `?type=corporate-dining` works.
+- Phone menu: opens with focus on Close, locks page scroll, closes on Escape and returns focus to Menu, closes after
+  following a link. Desktop Services panel opens and closes on Escape.
+- Sticky phone action: hidden while scrolling down, shown on scroll up, hidden over closing invitations and the footer,
+  absent on the enquiry page.
+- Motion: reveals fire on scroll and again after client navigation; with reduced motion and with JavaScript off, no
+  photo is clipped and no text is hidden.
+- Speed, measured with Chrome's own LCP/CLS observers (phone viewport, 4x CPU slowdown, about 1.6 Mbps and 150ms
+  latency): home LCP 1.3s, CLS 0, about 295 KB transferred; Weddings LCP 1.3s, CLS 0. **This is not Lighthouse.**
+  Lighthouse is not installed on this machine and I did not install it; run PageSpeed Insights on the preview URL.
+- Not done: real iPhone and Android devices, a TV, a fresh-eyes test, PageSpeed Insights. No preview deployment yet.
 
-- AI images and the opening video loop (not made yet; see above).
-- The enquiry form does not send: there is no backend. It says so plainly and shows how to reach
-  Foodbiz; nothing pretends to have sent.
-- Privacy and Terms are drafts for Foodbiz's counsel (marked on both pages).
-- Contact details (phone, WhatsApp, email, address) are placeholders.
-- No client-logo strip (rights). No Venues page (not in v1, C10).
-- Brand guidelines and the black logo have not arrived (C1); the site uses the supplied logo files.
-- Preview link not deployed yet (owner's decision pending).
-- Noindex and robots rules stay until launch.
-- Favicon: a placeholder (navy square with the copper stroke from the logo); swap for an official mark.
+## Unfinished
 
-## Every [NEEDS CLIENT] item
+- AI images for the two slots above.
+- Preview deployment (the config is ready; deploying needs the owner's go-ahead).
+- `docs/design/` and `docs/qa/` still describe the first draft; this file is the record for this version.
 
-49 items, de-duplicated (from `grep -rn "NEEDS CLIENT" src/` plus 07-OPEN-ITEMS).
+## [NEEDS CLIENT] items
 
-**Contact (4)** - [NEEDS CLIENT: phone], [NEEDS CLIENT: whatsapp], [NEEDS CLIENT: email],
-[NEEDS CLIENT: address]. Used wherever contact details appear: closing bands, the plan page,
-the form status message and the legal pages. (Instagram `@foodbizcatering` is the verified handle in
-CONTENT-EXPORT and is used.)
+Contact and legal
+1. Phone. 2. WhatsApp. 3. Enquiry email. 4. Address (footer, Plan your event, Privacy, Terms).
+5. Date of legal review; retention period for enquiries; governing law and jurisdiction (counsel to confirm).
+6. Instagram is the only verified handle (`@foodbizcatering`); no other social links are shown.
 
-**The brief for each event, 2-3 sentences (13, C3)** - shown as placeholders on the story pages and
-service pages:
-1. Wedding in Bengaluru (`bangalore-wedding`)
-2. Outdoor wedding (`bayview-lawns-wedding`)
-3. Wedding in Aurangabad (`aurangabad-wedding`)
-4. Children's birthday in the garden (`ninja`; "the birthday in Mumbai" on the Celebrations page)
-5. Counters for a children's party (`playseum-set-ups`; "the play-space counters")
-6. Dessert table in a glasshouse (`glasshouse-dessert-table`; also the occasion)
-7. Music festival (`rolling-loud`)
-8. Anime launch party (`crunchyroll`; only one cleared frame)
-9. Evening at a jewellery boutique (`cartier`; "the boutique evening")
-10. Car launch at night (`merc-eqg-launch`; "the car launch")
-11. Retail evening by the garden (`casio`)
-12. Relay race between office towers (`bloomberg-bsmr`; "the corporate relay")
-13. Bank's anniversary lunch (`sbi`; "the bank day lunch")
+Our story
+7. A line on each founder, and photographs if they want them (no placeholder faces are shown).
 
-Amar's own examples (Akanksha wedding, Mirani wedding, Ferrari Purosangue launch, Crunchyroll show,
-the upcoming Maserati launch) have no briefs or matching cleared photos yet.
+Photos
+8. Photographs of gourmet sit-down dinners (none exist; AI planned).
+9. Photographs of daily office dining (every corporate photo is a function).
 
-**Name rights (13 + 1, C4)** - permission to name each of the 13 events/clients/venues above, and
-logo-use rights for every frame showing a client brand (and for any future logo strip).
+Event briefs (one per story, shown on the story page as the placeholder)
+10. Bangalore Wedding. 11. Bayview Lawns Wedding. 12. Aurangabad Wedding. 13. Ninja (garden birthday).
+14. Playseum Set Ups. 15. Glasshouse dessert table. 16. Cartier. 17. Merc EQG Launch. 18. Crunchyroll.
+19. Rolling Loud. 20. Casio. 21. SBI. 22. Bloomberg BSMR.
 
-**Menus quoted from the clients' own boards and cards (4)** - confirm we may quote:
-1. Bayview Lawns counter signage (Thai Chatuchak ice cream, The Mangolian live wok, chai).
-2. The birthday counter cards (Ninja margherita pizzas, sushi board station).
-3. The ramen counter at the anime launch.
-4. The relay menu board (thukpa with momos, Corfu salad, etc.; also quoted on the Corporate page).
-
-**About the business (6)**
-- [NEEDS CLIENT: founder bios] (who does what is not confirmed).
-- Are tastings offered? (no tasting step on the Weddings page until confirmed).
-- Which diets are catered for as standard, e.g. Jain (Corporate page names none).
-- [NEEDS CLIENT: reply time] (form "sent" message).
-- Confirm the large-event capability on Brand launches ("Concerts and festivals" format).
-- Numbers (years, events, cities, C5): none on the site until supplied.
-
-**Legal (2)** - [NEEDS CLIENT: date of legal review] for the "Updated" line; counsel's read of both
-drafts.
-
-**Photos and assets (6)** - sit-down dinner photos (C2); daily office dining photos; food close-ups
-(C7); founders' photos (C6: left out, no stock or AI faces); usable event video (C8); brand
-guidelines and the black logo (C1).
-
-## Motion and phone experience (added after review, 2026-10-14)
-
-The owner asked for interactions, scroll effects and an "experience", especially on phones. The static
-version is kept as the git tag `v1-static`. Spec: `docs/design/motion-spec.md`. Recordings (animated
-WebP, about 12 fps): `docs/design/motion/`.
-
-- **Everywhere:** Lenis smooth scroll (desktop mouse/trackpad only), scroll reveals, clip-path photo wipes,
-  desktop parallax, header that hides on scroll down, a copper "View" cursor and magnetic primary buttons
-  (desktop pointer only), a short navy page curtain with the copper slash between pages.
-- **Homepage:** cinematic opening (copper slash, masked headline from a visible state, photo framing
-  itself like a plate on scroll), a scroll-lit statement of the founders' line, services as pinned
-  stacking photo cards (phone) or a pinned diagonal-wipe stage with a cursor preview (desktop), a slow
-  occasions marquee with a pause button, a pinned horizontal food gallery (desktop) or active-scale
-  carousel (phone), Instagram-style story viewer for event stories.
-- **Phone-first:** thumb dock (Services sheet + Plan your event), menu with staggered serif links and
-  photo crossfades, full-bleed photos, navy bands with fine static film grain, giant italic service
-  names that move with scroll, scroll-focus (the item mid-screen zooms and lights up instead of hover),
-  press states, and a step-by-step Plan your event (one question per screen, honest "not sent" result).
-- **Other pages:** service template (cinematic hero, pinned steps, gallery), Our work (animated filter,
-  story viewer), story pages, Our story (pinned values), Plan your event (calm reveals).
-- **Libraries:** `lenis` only; everything else is CSS and a small shared `useScrollProgress` hook.
-- **Reduced motion / no JavaScript:** every pin, scrub and hidden state only applies with JavaScript and
-  motion allowed; otherwise each page renders the static design, fully visible. The marquee has a pause
-  control; the story viewer does not auto-advance under reduced motion.
-- **Checks (production build, local):** a11y script passes on all pages; CLS 0 at 360 and 1440; no
-  sideways scroll at 360; Lighthouse mobile home 87 / 85 / 73 (median 85), Weddings 83.
-- **Photo change:** the Weddings image is now `bangalore-wedding-04` (the earlier frame showed chef's
-  hats in the background).
+Permissions
+23. Name rights: story titles are generic, but each brief placeholder names the photo folder (often the client)
+    so reviewers know which event is meant. Make those generic before the build goes outside the team.
+24. Logo-use rights: a few frames show a client's mark: the event mark on the relay menu board, the banner on the
+    ramen stall, and a vehicle in the background of the moss-board canapé photo. No client-logo strip.
+25. `sbi-02` carries a tiny old-logo card on a lamp; unreadable at site sizes, but flagged.

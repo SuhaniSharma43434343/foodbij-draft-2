@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
-import { PlanBand } from "@/components/PlanBand";
-import { HeroLines } from "@/components/motion/HeroLines";
-import { ScrollLit } from "@/components/work/ScrollLit";
-import { StoryPhoto } from "@/components/work/StoryPhoto";
-import { StoryPhotoSet } from "@/components/work/StoryPhotoSet";
-import { PLAN_HREF } from "@/content/site";
-import { getStory, stories, work } from "@/content/stories";
-import "@/components/work/pages-motion.css";
+import { Close } from "@/components/Close";
+import { Photo } from "@/components/Photo";
+import { Txt } from "@/components/Txt";
+import { getService } from "@/content/site";
+import { getStory, stories } from "@/content/stories";
 
 type Params = { slug: string };
 
@@ -19,96 +17,82 @@ export function generateStaticParams(): Params[] {
 
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const story = getStory((await params).slug);
-  if (!story) return {};
-  return { title: story.title, description: story.summary };
+  return story ? { title: story.title, description: story.summary } : {};
 }
 
-const HERO_SIZES = "(min-width: 1320px) 1224px, (min-width: 1024px) calc(100vw - 96px), calc(100vw - 40px)";
-
-function Label({ children }: { children: string }) {
-  return <h2 className="t-label text-copper-deep">{children}</h2>;
-}
-
-/**
- * One event story (01-BRIEF.md section 6): title, the brief, what we made, photos, live counter, plan.
- *
- * Motion (W8.3, CSS in components/work/pages-motion.css + the shared API in globals.css):
- * - Opening, pure CSS on first paint: the title rises through its mask; the hero photo settles from 1.08 (2.4s). As the hero scrolls away it is
- *   framed in (clip-path inset) and leans in (scale up only, so crops hold) - CSS scroll-driven where supported.
- * - "The brief" and "What we made" fade up in a short cascade; the live-counter line lights word by word.
- * - Photo set: phone swipe carousel with an active photo; desktop staggered grid, wipe-in + parallax.
- */
+/** One event story: the brief first, then what we made, then the photographs. */
 export default async function StoryPage({ params }: { params: Promise<Params> }) {
   const story = getStory((await params).slug);
   if (!story) notFound();
-  const [hero, ...rest] = story.images;
-  const pending = story.brief.startsWith("[NEEDS CLIENT");
-  const planHref = `${PLAN_HREF}?service=${story.service}`;
+  const service = getService(story.service);
+  const [lead, ...rest] = story.images;
+  const siblings = stories.filter((s) => s.service === story.service);
+  const next = siblings[(siblings.findIndex((s) => s.slug === story.slug) + 1) % siblings.length];
 
   return (
     <>
-      <article aria-labelledby="story-title">
-        <header className="site-container pt-12 lg:pt-20">
-          <h1 id="story-title" className="t-display-l max-w-[20ch] text-balance text-navy">
-            <HeroLines lines={[story.title]} />
-          </h1>
+      <article>
+        <header className="pt-[calc(var(--header-h)+40px)] lg:pt-[calc(var(--header-h)+72px)]">
+          <div className="wrap">
+            <Link href={service.href} className="t-meta muted inline-flex min-h-[44px] items-center gap-2">
+              {service.name} <span className="text-[var(--copper)]" aria-hidden="true">/</span>
+            </Link>
+            <h1 className="t-h1 hero-in mt-1 max-w-[18ch]">{story.title}</h1>
+          </div>
+          <div className="mt-10 lg:mx-auto lg:mt-14 lg:max-w-[var(--max)] lg:px-[var(--gutter)]">
+            <Photo img={lead} ratio="3 / 2" sizes="(min-width: 1440px) 1328px, (min-width: 1024px) 92vw, 100vw" preload />
+          </div>
         </header>
 
-        <div className="site-container mt-10 lg:mt-14">
-          <div data-cursor="view" className="pm-hero relative aspect-[4/5] overflow-hidden bg-mist md:aspect-[3/2]">
-            <div className="pm-hero-lean">
-              <div className="hero-zoom">
-                {hero.wideCrop ? (
-                  <>
-                    <div className="md:hidden">
-                      <StoryPhoto img={hero} preload sizes="calc(100vw - 40px)" />
-                    </div>
-                    <div className="hidden md:block">
-                      <StoryPhoto img={{ ...hero, crop: hero.wideCrop }} sizes={HERO_SIZES} />
-                    </div>
-                  </>
-                ) : (
-                  <StoryPhoto img={hero} preload sizes={HERO_SIZES} />
-                )}
-              </div>
-            </div>
+        <div className="wrap section grid gap-12 lg:grid-cols-12 lg:gap-8">
+          <section className="lg:col-span-5" aria-labelledby="brief">
+            <h2 id="brief" className="t-meta text-[var(--copper-ink)]">
+              The brief
+            </h2>
+            <p className="t-h3 mt-4">
+              <Txt>{story.brief}</Txt>
+            </p>
+          </section>
+          <section className="lg:col-span-5 lg:col-start-8" aria-labelledby="made">
+            <h2 id="made" className="t-meta text-[var(--copper-ink)]">
+              What we made
+            </h2>
+            <p className="mt-4">{story.whatWeMade}</p>
+            {story.liveCounter && <p className="muted mt-4">{story.liveCounter}</p>}
+          </section>
+        </div>
+
+        {rest.length > 0 && (
+          <div className="wrap grid gap-3 pb-[var(--section)] md:grid-cols-2 md:gap-8">
+            {rest.map((im, i) => (
+              <Photo
+                key={im.src}
+                img={im}
+                ratio={im.height > im.width ? "4 / 5" : "4 / 3"}
+                sizes="(min-width: 768px) 46vw, 100vw"
+                className={rest.length === 1 ? "md:col-span-2 md:mx-auto md:w-2/3" : i % 2 === 1 ? "md:mt-24" : ""}
+                delay={i * 120}
+              />
+            ))}
           </div>
-        </div>
-
-        <div className="site-container section-y grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-12">
-          <section data-reveal-stagger="" className="lg:col-span-5">
-            <Label>{work.story.briefLabel}</Label>
-            <p className={`t-body mt-3 ${pending ? "text-navy/60 italic" : "text-navy/80"}`}>{story.brief}</p>
-          </section>
-          <section data-reveal-stagger="" className="lg:col-span-6 lg:col-start-7">
-            <Label>{work.story.madeLabel}</Label>
-            <p className="t-body mt-3 text-navy/80">{story.whatWeMade}</p>
-            {story.liveStation ? (
-              <div className="mt-8 border-l-2 border-copper pl-5">
-                <p className="t-label text-copper-deep">{work.story.liveLabel}</p>
-                <ScrollLit
-                  text={story.liveStation}
-                  className="mt-2 font-display text-[1.375rem] leading-[1.25] font-medium text-navy lg:text-[1.625rem]"
-                />
-              </div>
-            ) : null}
-          </section>
-        </div>
-
-        {rest.length > 0 ? (
-          <section aria-label={work.story.photosLabel} className="pb-[72px] lg:pb-32">
-            <StoryPhotoSet images={rest} />
-          </section>
-        ) : null}
-
+        )}
       </article>
 
-      <PlanBand
-        heading={work.plan.heading}
-        lead={work.plan.lead}
-        cta={work.plan.cta}
-        href={planHref}
-      />
+      {next && next.slug !== story.slug && (
+        <nav aria-label="Next story" className="border-t border-[var(--line)]">
+          <Link href={`/our-work/${next.slug}`} className="wrap group flex min-h-[120px] items-center justify-between gap-6 py-10">
+            <span>
+              <span className="t-meta muted block">Next story</span>
+              <span className="t-h3 mt-1 block">
+                <span className="uline [background-size:0_1px] group-hover:[background-size:100%_1px]">{next.title}</span>
+              </span>
+            </span>
+            <span className="arrow" aria-hidden="true" />
+          </Link>
+        </nav>
+      )}
+
+      <Close heading="Brief us on something similar." lead="A date, a rough guest count and the kind of event is enough to start." service={story.service} />
     </>
   );
 }

@@ -1,16 +1,11 @@
 import type { Metadata } from "next";
 import { ServicePage } from "@/components/ServicePage";
-import { services } from "@/content/site";
-import { brandLaunches } from "@/content/services-pages";
+import { servicePages } from "@/content/services";
 
-const service = services.find((s) => s.slug === "brand-launches")!;
-const others = services.filter((s) => s.slug !== service.slug);
+const data = servicePages["brand-launches"];
 
-export const metadata: Metadata = {
-  title: service.name,
-  description: service.promise,
-};
+export const metadata: Metadata = data.meta;
 
-export default function BrandLaunchesPage() {
-  return <ServicePage service={service} page={brandLaunches} others={others} />;
+export default function Page() {
+  return <ServicePage data={data} flip={false} />;
 }

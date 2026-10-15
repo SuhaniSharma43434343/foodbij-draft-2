@@ -1,33 +1,18 @@
-// Site copy for the Home page and the Weddings service page (W2.3).
-// Starting point: the approved homepage design (docs/design/), checked against
-// docs/brief/VOICE.md and docs/brief/CONTENT-EXPORT.md. Photos: docs/design/photo-picks.md and
-// docs/brief/IMAGE-INDEX.csv.
-//
-// [NEEDS CLIENT] items used in this file (collect into NOTES.md):
-//   1. [NEEDS CLIENT: phone]          - site.contact, home.plan, weddings.plan, enquiryForm status
-//   2. [NEEDS CLIENT: whatsapp]       - site.contact
-//   3. [NEEDS CLIENT: email]          - site.contact, enquiryForm status
-//   4. [NEEDS CLIENT: address]        - site.contact
-//   5. [NEEDS CLIENT: reply time]     - enquiryForm "sent" message (no reply time is confirmed)
-//   6. [NEEDS CLIENT: the brief for the Bengaluru wedding]      - weddings.stories[0]
-//   7. [NEEDS CLIENT: the brief for the Bayview Lawns wedding]  - weddings.stories[1]
-// Also flagged in code comments below (not visible on the page):
-//   - name rights for event names taken from photo folders (Bengaluru, Bayview Lawns)
-//   - [NEEDS CLIENT: are tastings offered?] (no tasting step on the Weddings page until confirmed)
-
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
+// Shared site data: contact, the photo library, the four services and the homepage.
+// Facts come only from the pack (docs/brief/). Anything we do not have is a visible
+// [NEEDS CLIENT: ...] placeholder, listed in NOTES.md.
 
 export type Img = {
   /** Path under public/, starting with /images/ */
   src: string;
   alt: string;
-  /** Art-direction note for the builder (not shown on the page). */
-  note?: string;
+  width: number;
+  height: number;
+  /** CSS object-position for the crop. Default "50% 50%". */
+  position?: string;
+  /** Object-position from 1024px, when the wide crop needs a different focus. */
+  positionWide?: string;
 };
-
-export type NavItem = { label: string; href: string };
 
 export type ServiceSlug = "weddings" | "celebrations" | "brand-launches" | "corporate-dining";
 
@@ -35,476 +20,398 @@ export type Service = {
   slug: ServiceSlug;
   href: string;
   name: string;
-  shortName: string;
-  /** One line, used under the name on service links and in the hero. */
-  promise: string;
-  /** Two sentences for the homepage card. */
+  /** One or two plain sentences: homepage, menus and related-service links. */
   blurb: string;
   linkLabel: string;
-  heroImage: Img;
-  /** Value preset in the enquiry form's "type of event" field. */
-  enquiryValue: ServiceSlug;
-};
-
-export type Site = {
-  name: string;
-  nav: NavItem[];
-  headerCta: string;
-  contact: {
-    phone: string;
-    whatsapp: string;
-    email: string;
-    address: string;
-    instagram: { handle: string; url: string };
-  };
-  footer: { copyright: string; legal: NavItem[] };
-};
-
-export type Home = {
-  opening: { headline: string; lead: string; cta: string; image: Img };
-  servicesIntro: { heading: string };
-  food: { heading: string; images: Img[] };
-  /** Full-screen scroll-lit statement after the opening (the founders' own line). */
-  statement: { quote: string; quoteBy: string };
-  storyShort: {
-    quote: string;
-    quoteBy: string;
-    body: string;
-    linkLabel: string;
-    image: Img;
-  };
-  stories: { heading: string; linkLabel: string; items: StoryCard[] };
-  plan: { heading: string; lead: string; cta: string };
-};
-
-/** A homepage event card: photo, title and the brief in one line. */
-export type StoryCard = {
-  title: string;
-  line: string;
-  image: Img;
-  href: string;
-};
-
-export type Format = { title: string; text: string };
-export type Step = { title: string; text: string };
-
-export type EventStory = {
-  /** Photo folder name under the service's image folder, e.g. public/images/1-weddings/<folder>/ */
-  folder: string;
-  title: string;
-  brief: string;
-  whatWeMade: string;
+  /** The homepage image for this service (different from the service page hero). */
   image: Img;
 };
 
-export type ServicePage = {
-  /** cta: the hero button label; falls back to plan.cta. */
-  hero: { headline: string; line: string; image: Img; cta?: string };
-  whatWeDo: { heading: string; formats: Format[] };
-  howItWorks: { heading: string; steps: Step[] };
-  stories: { heading: string; items: EventStory[]; linkLabel: string };
-  gallery: { heading: string; images: Img[] };
-  /** The heading over the links to the other three services. */
-  otherServices: { label: string };
-  plan: { heading: string; lead: string; cta: string; presetService: ServiceSlug };
-};
-
-export type Option = { value: string; label: string };
-
-export type Field = {
-  label: string;
-  hint?: string;
-  required?: boolean;
-};
-
-export type EnquiryForm = {
-  heading: string;
-  lead: string;
-  fields: {
-    name: Field;
-    phone: Field;
-    email: Field;
-    eventType: Field & { options: Option[] };
-    date: Field;
-    guests: Field & { options: Option[] };
-    city: Field;
-    brief: Field;
-  };
-  submit: string;
-  status: { sent: string; cannotSend: string };
-};
-
-// ---------------------------------------------------------------------------
-// Shared
-// ---------------------------------------------------------------------------
-
-const IMG = "/images";
-const PHONE = "[NEEDS CLIENT: phone]";
-const EMAIL = "[NEEDS CLIENT: email]";
-
-/** Where every "Plan your event" link goes unless the page has its own #plan band. */
 export const PLAN_HREF = "/plan-your-event";
 
-/** "What we made" line for the outdoor (Bayview Lawns) wedding: used on Home and Weddings. */
-const BAYVIEW_LINE =
-  "Chai and ice cream outdoors, earthen pots along a wooden counter, and a live wok counter cooking to order.";
+/** Image helper: keeps every photo's real pixel size next to its path. */
+const img = (
+  src: string,
+  width: number,
+  height: number,
+  alt: string,
+  position?: string,
+  positionWide?: string,
+): Img => ({ src: `/images/${src}`, width, height, alt, position, positionWide });
 
-export const site: Site = {
+export const site = {
   name: "Foodbiz",
-  nav: [
-    { label: "Services", href: "/#services" },
-    { label: "Our work", href: "/our-work" },
-    { label: "Our story", href: "/our-story" },
-    { label: "Plan your event", href: PLAN_HREF },
-  ],
-  headerCta: "Plan your event",
   contact: {
-    phone: PHONE,
-    whatsapp: "[NEEDS CLIENT: whatsapp]",
-    email: EMAIL,
+    phone: "[NEEDS CLIENT: phone]",
+    whatsapp: "[NEEDS CLIENT: WhatsApp]",
+    email: "[NEEDS CLIENT: enquiry email]",
     address: "[NEEDS CLIENT: address]",
+    // The only verified handle (04-previous-version/CONTENT-EXPORT.md).
     instagram: { handle: "@foodbizcatering", url: "https://www.instagram.com/foodbizcatering" },
   },
-  footer: {
-    copyright: "© Foodies Hospitality. All rights reserved.",
-    legal: [
-      { label: "Privacy", href: "/privacy" },
-      { label: "Terms", href: "/terms" },
-    ],
-  },
+  legalName: "Foodies Hospitality",
 };
 
-// ---------------------------------------------------------------------------
-// The four services, in the order fixed by the brief
-// ---------------------------------------------------------------------------
+// The photos the site uses, by name. Sizes are the files' real pixel sizes.
+export const photos = {
+  livePlating: img(
+    "crops/hero-plating.jpg",
+    1600,
+    1220,
+    "A chef lifts fresh noodles onto a plate at a live counter, above a wheel of cheese.",
+    "52% 40%",
+  ),
+  randiveCrescent: img(
+    "1-weddings/randive-wedding/randive-wedding-01.jpg",
+    1602,
+    2400,
+    "A server in a block-printed waistcoat inside a lit crescent counter set with canapés, at night.",
+    "50% 55%",
+    "50% 46%",
+  ),
+  bayviewPots: img(
+    "1-weddings/bayview-lawns-wedding/bayview-lawns-wedding-02.jpg",
+    1600,
+    2400,
+    "Earthen pots and copper vessels along a wooden counter, each with a printed card.",
+    "50% 60%",
+  ),
+  bayviewChai: img(
+    "1-weddings/bayview-lawns-wedding/bayview-lawns-wedding-01.jpg",
+    2400,
+    1600,
+    "An outdoor chai and ice-cream station in white and pale wood, framed by foliage.",
+  ),
+  bangaloreDesserts: img(
+    "1-weddings/bangalore-wedding/bangalore-wedding-01.jpg",
+    2400,
+    2354,
+    "Domed yellow desserts set into a bed of dried beans on a service tray.",
+  ),
+  bangaloreBuffet: img(
+    "1-weddings/bangalore-wedding/bangalore-wedding-04.jpg",
+    1600,
+    2400,
+    "A tiered gold buffet lit by a row of brass lamps.",
+  ),
+  aurangabadThali: img(
+    "1-weddings/aurangabad-wedding/aurangabad-wedding-04.jpg",
+    2400,
+    1600,
+    "Brass thalis laid on a red cloth, a printed menu scroll beside each setting.",
+  ),
+  aurangabadCounter: img(
+    "1-weddings/aurangabad-wedding/aurangabad-wedding-01.jpg",
+    1152,
+    768,
+    "A long buffet counter dressed in green and orange, with brass service ware against carved screens.",
+  ),
+  glasshouseTable: img(
+    "2-celebrations-private-dining/glasshouse-dessert-table/glasshouse-dessert-table-01.jpg",
+    2400,
+    1800,
+    "A dessert table in a glasshouse: brownies, cookies, macarons and cupcakes under glass domes, dressed with purple statice.",
+  ),
+  glasshouseBoards: img(
+    "2-celebrations-private-dining/glasshouse-dessert-table/glasshouse-dessert-table-02.jpg",
+    1800,
+    2400,
+    "Wooden dessert boards and stacked plates on a black and white chequered floor.",
+    "50% 55%",
+  ),
+  ninjaOranges: img(
+    "2-celebrations-private-dining/ninja/ninja-04.jpg",
+    1800,
+    2400,
+    "A garden drinks station with jars of infused water and a pile of fresh oranges.",
+    "50% 70%",
+  ),
+  ninjaGarden: img(
+    "2-celebrations-private-dining/ninja/ninja-02.jpg",
+    1800,
+    2400,
+    "An outdoor grazing spread laid out beside a garden play area.",
+  ),
+  ninjaSushi: img(
+    "2-celebrations-private-dining/ninja/ninja-01.jpg",
+    2400,
+    1800,
+    "A chef standing behind a sushi board station under a warm lamp.",
+  ),
+  playseumPastel: img(
+    "2-celebrations-private-dining/playseum-set-ups/playseum-set-ups-03.jpg",
+    2400,
+    1800,
+    "A pastel children's counter dressed with paper fans and painted signs.",
+    "50% 75%",
+  ),
+  playseumFarm: img(
+    "2-celebrations-private-dining/playseum-set-ups/playseum-set-ups-02.jpg",
+    2400,
+    1800,
+    "A farm-themed children's food counter with gingham and warm lamps.",
+    "50% 85%",
+  ),
+  playseumServers: img(
+    "2-celebrations-private-dining/playseum-set-ups/playseum-set-ups-01.jpg",
+    2400,
+    1800,
+    "Two servers in green aprons holding wooden crates at a children's counter.",
+    "50% 70%",
+  ),
+  carnival: img(
+    "2-celebrations-private-dining/carnival/carnival-01.jpg",
+    1156,
+    867,
+    "An outdoor children's set-up with bunting and striped food counters.",
+  ),
+  cartierCarried: img(
+    "3-brand-launches-live-events/cartier/cartier-01.jpg",
+    2400,
+    1600,
+    "A slate tray of canapés carried through a room, the server's hand and sleeve in frame.",
+  ),
+  cartierCocktails: img(
+    "3-brand-launches-live-events/cartier/cartier-03.jpg",
+    2400,
+    1600,
+    "Cocktails being built at a bar, coupes and shakers on the pass.",
+    "60% 50%",
+  ),
+  cartierPink: img(
+    "3-brand-launches-live-events/cartier/cartier-04.jpg",
+    2400,
+    1600,
+    "A deep pink cocktail held up in a stemmed glass.",
+    "40% 50%",
+  ),
+  cartierBar: img(
+    "3-brand-launches-live-events/cartier/cartier-05.jpg",
+    2400,
+    1600,
+    "A bartender finishing a drink at a garden bar.",
+  ),
+  cartierTartlets: img(
+    "3-brand-launches-live-events/cartier/cartier-07.jpg",
+    2400,
+    1600,
+    "Tartlets dressed with edible flowers on a slate board.",
+  ),
+  cartierPresented: img(
+    "3-brand-launches-live-events/cartier/cartier-08.jpg",
+    2400,
+    1598,
+    "A gloved server presenting a slate of canapés.",
+  ),
+  cartierFlowers: img(
+    "3-brand-launches-live-events/cartier/cartier-09.jpg",
+    2400,
+    1600,
+    "A slate tray of canapés finished with fresh flowers.",
+    "45% 55%",
+  ),
+  raymondCups: img(
+    "3-brand-launches-live-events/raymond-chairmans-lounge/raymond-chairmans-lounge-02.jpg",
+    1086,
+    1448,
+    "Dark canapé cups finished with saffron-coloured piping and a sprig of green.",
+    "50% 75%",
+  ),
+  raymondTrays: img(
+    "3-brand-launches-live-events/raymond-chairmans-lounge/raymond-chairmans-lounge-05.jpg",
+    1800,
+    2400,
+    "A long run of white and black trays, each lined with plated canapés and white flowers.",
+  ),
+  rocaDesserts: img(
+    "3-brand-launches-live-events/roca-store-launch/roca-store-launch-01.jpg",
+    1800,
+    2400,
+    "Individually plated desserts under pink and violet display light.",
+    "50% 60%",
+  ),
+  casioEvening: img(
+    "3-brand-launches-live-events/casio/casio-02.jpg",
+    2400,
+    1800,
+    "An evening buffet under table lamps, mantel clocks among the platters, the garden behind the glass.",
+  ),
+  casioClock: img(
+    "3-brand-launches-live-events/casio/casio-03.jpg",
+    2400,
+    1800,
+    "A buffet counter dressed with a mantel clock and warm lamps.",
+    "20% 50%",
+  ),
+  mercBlue: img(
+    "3-brand-launches-live-events/merc-eqg-launch/merc-eqg-launch-01.jpg",
+    2400,
+    1800,
+    "A dessert display under blue light, with a single warm lamp.",
+  ),
+  mercViolet: img(
+    "3-brand-launches-live-events/merc-eqg-launch/merc-eqg-launch-03.jpg",
+    1800,
+    2400,
+    "A charcuterie and grazing spread lit in violet.",
+  ),
+  kaytranadaCounter: img(
+    "3-brand-launches-live-events/kaytranada/kaytranada-03.jpg",
+    2400,
+    1800,
+    "A service counter lit by table lamps inside a dark concert venue, the team working behind it.",
+  ),
+  himeshTeam: img(
+    "3-brand-launches-live-events/himesh-reshamiya/himesh-reshamiya-01.jpg",
+    1800,
+    2400,
+    "The service team in waistcoats, lined up along a red carpet before the doors open.",
+    "50% 65%",
+  ),
+  rollingLoudLine: img(
+    "3-brand-launches-live-events/rolling-loud/rolling-loud-02.jpg",
+    2400,
+    1800,
+    "A long buffet counter lit by lamps against a black backdrop.",
+  ),
+  rollingLoudDishes: img(
+    "3-brand-launches-live-events/rolling-loud/rolling-loud-01.jpg",
+    1800,
+    2400,
+    "Chafing dishes in service at a festival catering station.",
+  ),
+  ramenCounter: img(
+    "3-brand-launches-live-events/crunchyroll/crunchyroll-02.jpg",
+    1800,
+    2400,
+    "A wooden ramen stall hung with red paper lanterns, the kitchen team working behind the counter.",
+    "50% 70%",
+  ),
+  defenderBoard: img(
+    "3-brand-launches-live-events/himalayan-defender-journey/himalayan-defender-journey-01.jpg",
+    1350,
+    2400,
+    "Canapés set on a moss-dressed board with small printed name cards.",
+    "50% 70%",
+  ),
+  motilalBoards: img(
+    "4-corporate-office-dining/motilal-oswal/motilal-oswal-01.jpg",
+    1800,
+    2400,
+    "Canapés on tiered wooden boards at a window table, the city behind.",
+    "50% 60%",
+  ),
+  sbiLine: img(
+    "4-corporate-office-dining/sbi/sbi-02.jpg",
+    1800,
+    2400,
+    "A long banquet line of polished chafing dishes under brass table lamps.",
+    "50% 60%",
+  ),
+  sbiTables: img(
+    "4-corporate-office-dining/sbi/sbi-03.jpg",
+    2400,
+    1800,
+    "Round banquet tables laid with linen beside a long draped buffet.",
+  ),
+  netflixTeam: img(
+    "4-corporate-office-dining/netflix/netflix-03.jpg",
+    2400,
+    1800,
+    "Six servers in black standing in a line, each holding a prepared tray.",
+  ),
+  utiRoom: img(
+    "4-corporate-office-dining/uti/uti-03.jpg",
+    1600,
+    900,
+    "A buffet counter set into a wood-panelled banquet room.",
+  ),
+  bsmrMenu: img(
+    "4-corporate-office-dining/bloomberg-bsmr/bloomberg-bsmr-04.jpg",
+    1800,
+    2400,
+    "A printed menu board listing the hot pot, salad and main meal for the day.",
+    "50% 60%",
+  ),
+  bsmrLawn: img(
+    "4-corporate-office-dining/bloomberg-bsmr/bloomberg-bsmr-05.jpg",
+    1800,
+    2400,
+    "Trestle tables and shade tents laid out on a lawn between office buildings.",
+  ),
+};
 
 export const services: Service[] = [
   {
     slug: "weddings",
     href: "/services/weddings",
     name: "Weddings",
-    shortName: "Weddings",
-    promise: "Your family gets to be guests at its own wedding.",
-    blurb:
-      "Sangeet, wedding day, reception. Live counters, the family dishes that must be there, and a team that runs the evening so your family gets to be guests.",
     linkLabel: "See weddings",
-    // Was randive-wedding-01 (chef's toques in the background, which the brief avoids; no crop removes
-    // them in every place this image is shown, e.g. the full-height homepage service card).
-    heroImage: {
-      src: `${IMG}/1-weddings/bangalore-wedding/bangalore-wedding-04.jpg`,
-      alt: "A tiered gold buffet structure lit by a row of brass lamps.",
-    },
-    enquiryValue: "weddings",
+    blurb: "Multi-day weddings, live counters, and the family dishes that have to be there.",
+    image: photos.bayviewPots,
   },
   {
     slug: "celebrations",
     href: "/services/celebrations",
     name: "Celebrations & private dining",
-    shortName: "Celebrations",
-    promise: "Birthdays, family functions and dinners at home, without the fuss.",
-    blurb:
-      "Birthdays, children’s parties, family functions and sit-down dinners at home. Food that guests of every age actually finish, served without fuss.",
     linkLabel: "See celebrations",
-    heroImage: {
-      src: `${IMG}/2-celebrations-private-dining/glasshouse-dessert-table/glasshouse-dessert-table-01.jpg`,
-      alt: "A dessert table in a glasshouse: brownies, cookies, cupcakes under glass domes and macarons, dressed with purple statice and red blossom.",
-    },
-    enquiryValue: "celebrations",
+    blurb: "Birthdays, children’s parties, family functions and sit-down dinners at home.",
+    image: photos.glasshouseTable,
   },
   {
     slug: "brand-launches",
     href: "/services/brand-launches",
     name: "Brand launches & live events",
-    shortName: "Brand launches",
-    promise: "Food that suits the brand and keeps pace with the crowd.",
-    blurb:
-      "Store openings, product reveals, brand days and concerts. Food that suits the brand, holds up under stage light and keeps pace with the crowd.",
-    linkLabel: "See brand launches",
-    heroImage: {
-      src: `${IMG}/3-brand-launches-live-events/cartier/cartier-03.jpg`,
-      alt: "Cocktails being built at a bar, coupes and shakers on the pass.",
-    },
-    enquiryValue: "brand-launches",
+    linkLabel: "See launches and events",
+    blurb: "Store and product launches, brand days, concerts and festivals. Food that suits the brand and keeps up with the crowd.",
+    image: photos.cartierCarried,
   },
   {
     slug: "corporate-dining",
     href: "/services/corporate-dining",
     name: "Corporate & office dining",
-    shortName: "Corporate dining",
-    promise: "Lunch, every day, well.",
-    blurb:
-      "Daily meals for offices and campuses, and the functions in between. Minimal, clean and on time.",
-    linkLabel: "See corporate dining",
-    heroImage: {
-      src: `${IMG}/4-corporate-office-dining/motilal-oswal/motilal-oswal-01.jpg`,
-      alt: "Canapés arranged on tiered wooden boards at a window table with the city behind.",
-    },
-    enquiryValue: "corporate-dining",
+    linkLabel: "See office dining",
+    blurb: "Daily meals for offices and campuses, and the corporate functions in between.",
+    image: photos.sbiLine,
   },
 ];
 
-// ---------------------------------------------------------------------------
-// Home
-// ---------------------------------------------------------------------------
+export function getService(slug: ServiceSlug): Service {
+  return services.find((s) => s.slug === slug)!;
+}
 
-export const home: Home = {
-  opening: {
-    headline: "We cook. We host. You enjoy your own event.",
-    lead: "Catering and hospitality in Mumbai.",
-    cta: "Plan your event",
-    image: {
-      src: `${IMG}/3-brand-launches-live-events/cartier/cartier-07.jpg`,
-      alt: "Tartlets dressed with edible flowers on a slate board.",
-      note: "Still until a plating loop exists. Crops to portrait on phone; tray sits centre-left.",
-    },
+export const home = {
+  hero: {
+    headline: "Be a guest at your own event.",
+    lead: "Catering and hospitality in Mumbai, for weddings, celebrations, brand launches and offices.",
+    image: photos.randiveCrescent,
   },
-  servicesIntro: {
-    heading: "Four ways we feed a room.",
-  },
+  servicesHeading: "What we do",
   food: {
-    heading: "Food, service, presentation.",
+    heading: "Plated, passed, poured.",
     images: [
-      {
-        src: `${IMG}/1-weddings/bangalore-wedding/bangalore-wedding-01.jpg`,
-        alt: "Domed yellow desserts set into a bed of dried beans on a service tray.",
-      },
-      {
-        src: `${IMG}/3-brand-launches-live-events/raymond-chairmans-lounge/raymond-chairmans-lounge-03.jpg`,
-        alt: "Tiered white and black canapé trays dressed with white flowers.",
-        note: "Small file: grid tile only, never full-bleed.",
-      },
-      {
-        src: `${IMG}/1-weddings/aurangabad-wedding/aurangabad-wedding-04.jpg`,
-        alt: "Brass thalis laid out on a red cloth with printed menu scrolls beside each setting.",
-      },
-      {
-        src: `${IMG}/3-brand-launches-live-events/cartier/cartier-09.jpg`,
-        alt: "A slate tray of canapés finished with fresh flowers.",
-      },
-      {
-        // ninja-03 swapped out: an old sub-brand counter card is in frame.
-        src: `${IMG}/3-brand-launches-live-events/casio/casio-02.jpg`,
-        alt: "An evening buffet set under table lamps with a garden behind.",
-      },
-      {
-        src: `${IMG}/3-brand-launches-live-events/cartier/cartier-08.jpg`,
-        alt: "A gloved server presenting a slate of canapés.",
-      },
+      photos.cartierFlowers,
+      photos.bangaloreDesserts,
+      photos.defenderBoard,
+      photos.cartierCocktails,
+      photos.rocaDesserts,
     ],
   },
-  statement: {
+  story: {
+    // The founders' own line (04-previous-version/CONTENT-EXPORT.md s2.2, KEEP-ADAPT).
     quote: "We’re not just in the business of food. We’re in the business of food and experience.",
     quoteBy: "Amar Jog and Kushal Shetty, founders",
+    body: "Foodbiz is a catering and hospitality company in Mumbai. We plan the food and the hosting around it, so you can leave the stress to us and be present.",
+    image: photos.himeshTeam,
   },
-  storyShort: {
-    // The founders' line now opens the page (Statement band), so this block leads with their other promise.
-    quote: "Leave the stress to us. Be present at your own event.",
-    quoteBy: "",
-    body: "Foodbiz is a catering and hospitality company in Mumbai, founded by Amar Jog and Kushal Shetty. We plan the food and the hosting around it, so you get to be a guest.",
-    linkLabel: "Read our story",
-    image: {
-      src: `${IMG}/3-brand-launches-live-events/essentia/essentia-01.jpg`,
-      alt: "Two servers in black holding wooden trays of small bites, in a dark panelled room.",
-    },
+  work: {
+    heading: "Recent work",
+    // One story per service.
+    slugs: ["boutique-evening", "wedding-in-bengaluru", "garden-birthday", "bank-day-lunch"],
   },
-  stories: {
-    heading: "Every event starts with a brief.",
-    linkLabel: "See the work",
-    // NEEDS CLIENT: name rights + briefs for these events (event names come from the photo folders;
-    // titles stay generic and no client logo shows until the client confirms).
-    items: [
-      {
-        // Homepage stories open the Instagram-style viewer, so these are the stories with the most
-        // cleared photos (5, 3 and 3), one per service type. NEEDS CLIENT: name rights + briefs.
-        title: "An evening at a jewellery boutique",
-        line: "Canapés off slate, drinks built to order, and a floor team that kept moving all evening.",
-        image: {
-          src: `${IMG}/3-brand-launches-live-events/cartier/cartier-04.jpg`,
-          alt: "A deep pink cocktail held up in a stemmed glass.",
-        },
-        href: "/our-work/boutique-evening",
-      },
-      {
-        title: "A wedding in Bengaluru",
-        line: "A gold buffet built up in tiers, a chef finishing plates by hand, and dessert that arrived looking like it was grown.",
-        image: {
-          src: `${IMG}/1-weddings/bangalore-wedding/bangalore-wedding-02.jpg`,
-          alt: "A pearl necklace displayed on a stand beside a grazing board, warm lights out of focus behind.",
-        },
-        href: "/our-work/wedding-in-bengaluru",
-      },
-      {
-        title: "Counters for a children's party",
-        line: "A counter small people want to walk up to, with food they finish.",
-        image: {
-          src: `${IMG}/2-celebrations-private-dining/playseum-set-ups/playseum-set-ups-03.jpg`,
-          alt: "A pastel children's counter dressed with paper fans and painted signage.",
-        },
-        href: "/our-work/childrens-counters",
-      },
-    ],
-  },
-  plan: {
-    heading: "Tell us about your event.",
-    lead: "A date, a rough guest count and the kind of event is enough to start.",
-    cta: "Plan your event",
-  },
-};
-
-// ---------------------------------------------------------------------------
-// Weddings service page (01-BRIEF.md section 6, "Service page")
-// ---------------------------------------------------------------------------
-
-export const weddings: ServicePage = {
-  hero: {
-    headline: "Weddings",
-    cta: "Tell us about your wedding",
-    line: "We plan the food around your family, then run every counter, so you can be a guest at your own wedding.",
-    image: services[0].heroImage,
-  },
-  whatWeDo: {
-    heading: "Weddings are the hardest catering there is.",
-    formats: [
-      {
-        title: "Sangeet and mehendi",
-        text: "Small plates that work in one hand, and counters that stay open as long as the dancing.",
-      },
-      {
-        title: "Wedding day",
-        text: "The family dishes that have to be there go on the menu first; we build the rest around them.",
-      },
-      {
-        title: "Reception",
-        text: "Plated, a buffet or a thali service, with a floor team that keeps the evening moving.",
-      },
-      {
-        title: "Live counters",
-        text: "A live dosa counter, a wok cooking to order, chai poured fresh.",
-      },
-    ],
-  },
-  howItWorks: {
-    heading: "How a wedding runs with us.",
-    steps: [
-      {
-        title: "We meet",
-        text: "You tell us the shape of it: the days, the ceremonies, the families, and the dishes that aren’t negotiable.",
-      },
-      {
-        title: "We write the menus",
-        text: "Each ceremony gets its own menu, built around your family’s dishes and the dietary needs on both sides.",
-      },
-      {
-        title: "We plan the days",
-        text: "Timings, counters and the team for each event, agreed with you, and with your planner if you have one.",
-      },
-      {
-        title: "You’re a guest",
-        text: "Our team runs the food and the floor. Someone else is watching the counters.",
-      },
-    ],
-  },
-  stories: {
-    heading: "Weddings we’ve catered.",
-    linkLabel: "See the work",
-    items: [
-      {
-        // NEEDS CLIENT: name rights (event name and city taken from the photo folder "bangalore-wedding")
-        folder: "bangalore-wedding",
-        title: "A wedding in Bengaluru",
-        brief: "[NEEDS CLIENT: the brief for the Bengaluru wedding]",
-        whatWeMade:
-          "A gold buffet built up in tiers, a chef finishing plates by hand, and dessert that arrived looking like it was grown.",
-        // bangalore-wedding-04 is now the Weddings hero, so the story card uses the dessert frame.
-        image: {
-          src: `${IMG}/1-weddings/bangalore-wedding/bangalore-wedding-01.jpg`,
-          alt: "Domed yellow desserts set into a bed of dried beans on a service tray.",
-        },
-      },
-      {
-        // NEEDS CLIENT: name rights (venue name taken from the photo folder "bayview-lawns-wedding";
-        // the title avoids the venue until the client confirms it can be named)
-        folder: "bayview-lawns-wedding",
-        title: "An outdoor wedding",
-        brief: "[NEEDS CLIENT: the brief for the Bayview Lawns wedding]",
-        whatWeMade: BAYVIEW_LINE,
-        image: {
-          src: `${IMG}/1-weddings/bayview-lawns-wedding/bayview-lawns-wedding-01.jpg`,
-          alt: "An outdoor chai and ice-cream station in white and pale wood, framed by foliage.",
-        },
-      },
-    ],
-  },
-  gallery: {
-    heading: "At the counter and on the plate.",
-    images: [
-      {
-        src: `${IMG}/1-weddings/bangalore-wedding/bangalore-wedding-01.jpg`,
-        alt: "Domed yellow desserts set into a bed of dried beans on a service tray.",
-      },
-      {
-        src: `${IMG}/1-weddings/bangalore-wedding/bangalore-wedding-03.jpg`,
-        alt: "A chef finishing a plate with tweezers at a live counter.",
-        note: "Crop from the shoulders down to hands, plate and garnish; keep the head out of frame.",
-      },
-      {
-        src: `${IMG}/1-weddings/aurangabad-wedding/aurangabad-wedding-04.jpg`,
-        alt: "Brass thalis laid out on a red cloth with printed menu scrolls beside each setting.",
-      },
-      {
-        src: `${IMG}/1-weddings/bayview-lawns-wedding/bayview-lawns-wedding-02.jpg`,
-        alt: "Earthen pots and copper vessels arranged along a wooden counter with printed cards.",
-      },
-      {
-        src: `${IMG}/1-weddings/bangalore-wedding/bangalore-wedding-02.jpg`,
-        alt: "Necklaces on dark display busts, set among tartlets, crisps and grapes on a buffet.",
-      },
-    ],
-  },
-  otherServices: {
-    label: "Other things we do",
-  },
-  plan: {
-    heading: "Tell us about your wedding.",
-    lead: "Even if it’s a year out and nothing is fixed yet.",
-    cta: "Plan your event",
-    presetService: "weddings",
-  },
-};
-
-// ---------------------------------------------------------------------------
-// Enquiry form (Plan your event). It must never claim to have sent when it cannot.
-// ---------------------------------------------------------------------------
-
-export const enquiryForm: EnquiryForm = {
-  heading: "Plan your event",
-  lead: "Send a brief, or just call.",
-  fields: {
-    name: { label: "Your name", required: true },
-    phone: { label: "Phone", hint: "A phone number or an email is enough.", required: true },
-    email: { label: "Email" },
-    eventType: {
-      label: "Type of event",
-      required: true,
-      options: services.map((s) => ({ value: s.enquiryValue, label: s.name })),
-    },
-    date: { label: "Date", hint: "A month or rough date is fine." },
-    guests: {
-      label: "Guests",
-      options: [
-        { value: "under-50", label: "Under 50" },
-        { value: "50-150", label: "50-150" },
-        { value: "150-300", label: "150-300" },
-        { value: "300-600", label: "300-600" },
-        { value: "600-plus", label: "600+" },
-      ],
-    },
-    city: { label: "City" },
-    brief: { label: "Anything we should know up front?" },
-  },
-  submit: "Send the brief",
-  status: {
-    sent: "Thank you. Your brief has reached us, and we’ll be in touch [NEEDS CLIENT: reply time].",
-    cannotSend: `This preview cannot send yet. Please call ${PHONE} or email ${EMAIL}.`,
+  close: {
+    heading: "Tell us the date. We’ll take it from there.",
+    lead: "A rough guest count and the kind of event is enough to start.",
+    image: photos.casioEvening,
   },
 };

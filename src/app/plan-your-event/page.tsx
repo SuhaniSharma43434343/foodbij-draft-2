@@ -1,66 +1,59 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { EnquiryForm } from "@/components/plan/EnquiryForm";
-import { PresetEnquiryForm } from "@/components/plan/PresetEnquiryForm";
-import { HeroLines } from "@/components/motion/HeroLines";
-import { planPage } from "@/content/pages";
-import "@/components/work/pages-motion.css";
+import { EnquiryForm } from "@/components/EnquiryForm";
+import { Photo } from "@/components/Photo";
+import { Txt } from "@/components/Txt";
+import { planPage as p } from "@/content/pages";
+import { photos, site } from "@/content/site";
 
-export const metadata: Metadata = {
-  title: planPage.meta.title,
-  description: planPage.meta.description,
-};
+export const metadata: Metadata = p.meta;
 
-/**
- * Plan your event: a short intro with contact lines, and the enquiry form (solid header).
- * Motion stays calm here (W8.3): the title rises through its mask, the intro and contact
- * block fade up (pure CSS on first paint), the form's fields rise in a short cascade on first view
- * (EnquiryForm; never hidden for long, never blocks typing), and the "Not sent" panel slides in.
- */
-export default function PlanYourEventPage() {
-  const { heading, lead, contact } = planPage;
+export default function PlanPage() {
+  const c = site.contact;
   return (
-    <section aria-labelledby="plan-page-title" className="pt-12 pb-20 lg:pt-24 lg:pb-32">
-      <div className="site-container grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-12">
-        <div className="lg:col-span-5">
-          <h1 id="plan-page-title" className="t-display-l max-w-[14ch] text-navy">
-            <HeroLines lines={[heading]} />
-          </h1>
-          <p className="hero-fade t-lead mt-5 max-w-[34ch] text-navy [--d:260ms]">{lead}</p>
-
-          <div className="hero-fade relative mt-10 pt-8 lg:mt-14 [--d:420ms]">
-            {/* The divider draws in from the left as the contact block arrives (instant if already on screen). */}
-            <span aria-hidden="true" data-reveal="rule" className="absolute inset-x-0 top-0 h-px bg-navy/12" />
-            <h2 className="sr-only">{contact.label}</h2>
-            <dl>
-              {contact.lines.map((line) => (
-                <div key={line.label} className="grid grid-cols-[6.5rem_1fr] items-baseline gap-x-4 py-2">
-                  <dt className="text-[14px] text-navy/68">{line.label}</dt>
-                  <dd className="text-[16px] leading-[1.5] break-words text-navy">
-                    {line.href ? (
-                      <a
-                        href={line.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex min-h-11 items-center text-copper-deep underline decoration-copper/40 underline-offset-4 hover:decoration-copper"
-                      >
-                        {line.value}
-                      </a>
-                    ) : (
-                      line.value
-                    )}
-                  </dd>
-                </div>
-              ))}
-            </dl>
+    <section className="pb-[var(--section)] pt-[calc(var(--header-h)+48px)] lg:pt-[calc(var(--header-h)+88px)]">
+      <div className="wrap grid gap-14 lg:grid-cols-12 lg:gap-8">
+        <div className="lg:col-span-7">
+          <h1 className="t-h1 hero-in">{p.heading}</h1>
+          <p className="t-lead muted hero-in mt-5 max-w-[40ch]" style={{ "--d": "150ms" } as React.CSSProperties}>
+            {p.lead}
+          </p>
+          <div className="mt-12">
+            <Suspense fallback={null}>
+              <EnquiryForm />
+            </Suspense>
           </div>
         </div>
 
-        <div className="lg:col-span-6 lg:col-start-7">
-          <Suspense fallback={<EnquiryForm />}>
-            <PresetEnquiryForm />
-          </Suspense>
-        </div>
+        <aside className="lg:col-span-4 lg:col-start-9" aria-labelledby="contact-title">
+          <Photo img={photos.cartierPink} ratio="4 / 5" sizes="(min-width: 1024px) 30vw, 100vw" className="hidden lg:block" />
+          <h2 id="contact-title" className="t-h3 lg:mt-10">
+            Or talk to us
+          </h2>
+          <dl className="mt-6 space-y-4">
+            {[
+              ["Phone", c.phone],
+              ["WhatsApp", c.whatsapp],
+              ["Email", c.email],
+              ["Address", c.address],
+            ].map(([k, v]) => (
+              <div key={k}>
+                <dt className="t-meta muted">{k}</dt>
+                <dd className="mt-1">
+                  <Txt>{v}</Txt>
+                </dd>
+              </div>
+            ))}
+            <div>
+              <dt className="t-meta muted">Instagram</dt>
+              <dd className="mt-1">
+                <a href={c.instagram.url} className="tlink">
+                  <span className="uline">{c.instagram.handle}</span>
+                </a>
+              </dd>
+            </div>
+          </dl>
+        </aside>
       </div>
     </section>
   );
