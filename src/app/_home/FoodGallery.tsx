@@ -8,11 +8,11 @@ import "./gallery-motion.css";
  *   scroll, driven by useScrollProgress (--p 0..1); each photo drifts against its frame (counter-parallax)
  *   and a copper line fills along the bottom.
  * - Phone (<1024px): a native scroll-snap carousel; the centred slide is full size and bright, its
- *   neighbours scale down and dim (IntersectionObserver toggles `is-active`); "01 / 06" counter below.
+ *   neighbours scale down and dim (IntersectionObserver toggles `is-active`); position dots below.
  * - No JS / reduced motion: desktop shows the static asymmetric grid, phone the plain scroll-snap row.
  * Behaviour lives in ./gallery/GalleryMotion.tsx, all CSS in ./gallery-motion.css.
  */
 export function FoodGallery() {
-  const { label, heading, images } = home.food;
-  return <GalleryMotion label={label} heading={heading} images={images.map(({ src, alt }) => ({ src, alt }))} />;
+  const { heading, images } = home.food;
+  return <GalleryMotion heading={heading} images={images.map(({ src, alt }) => ({ src, alt }))} />;
 }

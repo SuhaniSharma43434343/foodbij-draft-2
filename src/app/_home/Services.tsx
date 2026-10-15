@@ -28,7 +28,7 @@ export function Services() {
   return (
     <section id="services" aria-labelledby="services-title" className="svc-section">
       <div className="site-container">
-        <SectionHeading reveal id="services-title" label={home.servicesIntro.label} heading={home.servicesIntro.heading} />
+        <SectionHeading reveal id="services-title" heading={home.servicesIntro.heading} />
       </div>
       <PhoneStack ref={stackRef} items={services} />
       <DesktopStage ref={deskRef} items={services} />

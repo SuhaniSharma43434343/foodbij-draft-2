@@ -40,26 +40,25 @@ function CardBody({ item, ring }: { item: StoryCard; ring?: boolean }) {
           />
         </div>
       </div>
-      <p className="t-label mt-5 text-copper-deep">{item.service}</p>
-      <h3 className="mt-2 font-display text-[1.5rem] leading-[1.2] font-medium">{item.title}</h3>
+      <h3 className="mt-5 font-display text-[1.5rem] leading-[1.2] font-medium">{item.title}</h3>
       <p className="t-body mt-2 text-navy/72">{item.line}</p>
     </>
   );
 }
 
 /**
- * Three event cards on the mist band: photo, service label, title, the brief in one line.
+ * Three event cards on the mist band: photo, title, the brief in one line.
  * Each card is a real link to its story page; with JS a plain click opens the story viewer
  * (src/components/stories/StoryViewer.tsx) over the page, stepping through these three stories.
  */
 export function EventStories() {
-  const { label, heading, linkLabel, items } = home.stories;
+  const { heading, linkLabel, items } = home.stories;
   const cards = items.map((item) => ({ item, story: storyFor(item) }));
   const set = cards.flatMap((c) => (c.story ? [c.story] : []));
   return (
     <section aria-labelledby="work-title" className="section-y bg-mist">
       <div className="site-container">
-        <SectionHeading reveal id="work-title" label={label} heading={heading} />
+        <SectionHeading reveal id="work-title" heading={heading} />
         <StoryViewerProvider stories={set}>
           <ul data-reveal-stagger className="mt-12 grid grid-cols-1 gap-14 lg:mt-16 lg:grid-cols-3 lg:gap-12">
             {cards.map(({ item, story }) => (

@@ -6,9 +6,9 @@ import { Grain } from "@/components/motion/Grain";
 import type { Service } from "@/content/site";
 
 /**
- * Service cards: full-bleed photo, navy gradient, copper numeral, a giant italic name, blurb and the link.
+ * Service cards: full-bleed photo, navy gradient, a copper rule, a giant italic name, blurb and the link.
  * W9.4 (phone): the name scales 0.92 -> 1 and slides in from the right as its card lands (scrubbed by --p);
- * the card is a ScrollFocus target (photo zooms and lifts, a copper rule draws under the numeral) and carries grain.
+ * the card is a ScrollFocus target (photo zooms and lifts, a copper rule draws above the name) and carries grain.
  * Under motion on phones each card is sticky and the next one slides over it (see services-motion.css);
  * otherwise a plain list (phone) or 2x2 grid (desktop without motion). Only the ArrowLink is a link.
  */
@@ -30,9 +30,6 @@ export function PhoneStack({ items, ref }: { items: Service[]; ref?: Ref<HTMLOLi
               <div className="svc-card-shade" aria-hidden="true" />
               <Grain />
               <div className="svc-card-text">
-                <p className="svc-card-num" aria-hidden="true">
-                  {String(i + 1).padStart(2, "0")}
-                </p>
                 <span className="svc-card-rule" aria-hidden="true" />
                 <h3 className="svc-card-name mt-3 text-white">{s.name}</h3>
                 <p className="t-body mt-4 text-white/88">{s.blurb}</p>

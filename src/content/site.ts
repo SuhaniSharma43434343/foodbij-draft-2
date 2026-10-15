@@ -48,7 +48,6 @@ export type Service = {
 
 export type Site = {
   name: string;
-  strapline: string;
   nav: NavItem[];
   headerCta: string;
   contact: {
@@ -58,31 +57,28 @@ export type Site = {
     address: string;
     instagram: { handle: string; url: string };
   };
-  footer: { closer: string; copyright: string; legal: NavItem[] };
+  footer: { copyright: string; legal: NavItem[] };
 };
 
 export type Home = {
   opening: { headline: string; lead: string; cta: string; image: Img };
-  servicesIntro: { label: string; heading: string };
-  food: { label: string; heading: string; images: Img[] };
+  servicesIntro: { heading: string };
+  food: { heading: string; images: Img[] };
   /** Full-screen scroll-lit statement after the opening (the founders' own line). */
   statement: { quote: string; quoteBy: string };
   storyShort: {
-    label: string;
     quote: string;
     quoteBy: string;
     body: string;
     linkLabel: string;
     image: Img;
   };
-  stories: { label: string; heading: string; linkLabel: string; items: StoryCard[] };
-  plan: { heading: string; lead: string; cta: string; phoneLine: string };
+  stories: { heading: string; linkLabel: string; items: StoryCard[] };
+  plan: { heading: string; lead: string; cta: string };
 };
 
-/** A homepage event card: photo, service label, title and the brief in one line. */
+/** A homepage event card: photo, title and the brief in one line. */
 export type StoryCard = {
-  /** Service label shown above the title (one of the four service names). */
-  service: string;
   title: string;
   line: string;
   image: Img;
@@ -104,12 +100,13 @@ export type EventStory = {
 export type ServicePage = {
   /** cta: the hero button label; falls back to plan.cta. */
   hero: { headline: string; line: string; image: Img; cta?: string };
-  whatWeDo: { label: string; heading: string; formats: Format[] };
-  howItWorks: { label: string; heading: string; steps: Step[] };
-  stories: { label: string; heading: string; items: EventStory[]; linkLabel: string };
-  gallery: { label: string; heading: string; images: Img[] };
+  whatWeDo: { heading: string; formats: Format[] };
+  howItWorks: { heading: string; steps: Step[] };
+  stories: { heading: string; items: EventStory[]; linkLabel: string };
+  gallery: { heading: string; images: Img[] };
+  /** The heading over the links to the other three services. */
   otherServices: { label: string };
-  plan: { heading: string; lead: string; cta: string; phoneLine: string; presetService: ServiceSlug };
+  plan: { heading: string; lead: string; cta: string; presetService: ServiceSlug };
 };
 
 export type Option = { value: string; label: string };
@@ -154,7 +151,6 @@ const BAYVIEW_LINE =
 
 export const site: Site = {
   name: "Foodbiz",
-  strapline: "Catering & hospitality | Mumbai",
   nav: [
     { label: "Services", href: "/#services" },
     { label: "Our work", href: "/our-work" },
@@ -170,7 +166,6 @@ export const site: Site = {
     instagram: { handle: "@foodbizcatering", url: "https://www.instagram.com/foodbizcatering" },
   },
   footer: {
-    closer: "Made for hosts who’d rather be present.",
     copyright: "© Foodies Hospitality. All rights reserved.",
     legal: [
       { label: "Privacy", href: "/privacy" },
@@ -255,7 +250,7 @@ export const services: Service[] = [
 export const home: Home = {
   opening: {
     headline: "We cook. We host. You enjoy your own event.",
-    lead: "Catering and hospitality for weddings, celebrations, brand launches and offices in Mumbai.",
+    lead: "Catering and hospitality in Mumbai.",
     cta: "Plan your event",
     image: {
       src: `${IMG}/3-brand-launches-live-events/cartier/cartier-07.jpg`,
@@ -264,12 +259,10 @@ export const home: Home = {
     },
   },
   servicesIntro: {
-    label: "What we do",
     heading: "Four ways we feed a room.",
   },
   food: {
-    label: "The food",
-    heading: "Food, service, presentation. In that order, every time.",
+    heading: "Food, service, presentation.",
     images: [
       {
         src: `${IMG}/1-weddings/bangalore-wedding/bangalore-wedding-01.jpg`,
@@ -304,7 +297,6 @@ export const home: Home = {
     quoteBy: "Amar Jog and Kushal Shetty, founders",
   },
   storyShort: {
-    label: "Our story",
     // The founders' line now opens the page (Statement band), so this block leads with their other promise.
     quote: "Leave the stress to us. Be present at your own event.",
     quoteBy: "",
@@ -316,7 +308,6 @@ export const home: Home = {
     },
   },
   stories: {
-    label: "Our work",
     heading: "Every event starts with a brief.",
     linkLabel: "See the work",
     // NEEDS CLIENT: name rights + briefs for these events (event names come from the photo folders;
@@ -325,7 +316,6 @@ export const home: Home = {
       {
         // Homepage stories open the Instagram-style viewer, so these are the stories with the most
         // cleared photos (5, 3 and 3), one per service type. NEEDS CLIENT: name rights + briefs.
-        service: "Brand launches & live events",
         title: "An evening at a jewellery boutique",
         line: "Canapés off slate, drinks built to order, and a floor team that kept moving all evening.",
         image: {
@@ -335,7 +325,6 @@ export const home: Home = {
         href: "/our-work/boutique-evening",
       },
       {
-        service: "Weddings",
         title: "A wedding in Bengaluru",
         line: "A gold buffet built up in tiers, a chef finishing plates by hand, and dessert that arrived looking like it was grown.",
         image: {
@@ -345,7 +334,6 @@ export const home: Home = {
         href: "/our-work/wedding-in-bengaluru",
       },
       {
-        service: "Celebrations & private dining",
         title: "Counters for a children's party",
         line: "A counter small people want to walk up to, with food they finish.",
         image: {
@@ -360,7 +348,6 @@ export const home: Home = {
     heading: "Tell us about your event.",
     lead: "A date, a rough guest count and the kind of event is enough to start.",
     cta: "Plan your event",
-    phoneLine: `Or call ${PHONE}`,
   },
 };
 
@@ -376,30 +363,27 @@ export const weddings: ServicePage = {
     image: services[0].heroImage,
   },
   whatWeDo: {
-    label: "What we do",
-    heading:
-      "Weddings are the hardest catering there is. Not because of the food, but because of everyone the food has to mean something to.",
+    heading: "Weddings are the hardest catering there is.",
     formats: [
       {
         title: "Sangeet and mehendi",
-        text: "Long evenings and people eating on their feet. Small plates that work in one hand, and counters that stay open as long as the dancing.",
+        text: "Small plates that work in one hand, and counters that stay open as long as the dancing.",
       },
       {
         title: "Wedding day",
-        text: "The ceremony sets the clock, and the food follows it. The family dishes that have to be there go on the menu first; we build the rest around them.",
+        text: "The family dishes that have to be there go on the menu first; we build the rest around them.",
       },
       {
         title: "Reception",
-        text: "A different crowd and a different mood. Plated, a buffet or a thali service, with a floor team that keeps the evening moving.",
+        text: "Plated, a buffet or a thali service, with a floor team that keeps the evening moving.",
       },
       {
         title: "Live counters",
-        text: "A live dosa counter, a wok cooking to order, chai poured fresh. Something happening at the counter gives guests a reason to walk over.",
+        text: "A live dosa counter, a wok cooking to order, chai poured fresh.",
       },
     ],
   },
   howItWorks: {
-    label: "How it works",
     heading: "How a wedding runs with us.",
     steps: [
       {
@@ -421,7 +405,6 @@ export const weddings: ServicePage = {
     ],
   },
   stories: {
-    label: "Our work",
     heading: "Weddings we’ve catered.",
     linkLabel: "See the work",
     items: [
@@ -453,7 +436,6 @@ export const weddings: ServicePage = {
     ],
   },
   gallery: {
-    label: "The food",
     heading: "At the counter and on the plate.",
     images: [
       {
@@ -486,7 +468,6 @@ export const weddings: ServicePage = {
     heading: "Tell us about your wedding.",
     lead: "Even if it’s a year out and nothing is fixed yet.",
     cta: "Plan your event",
-    phoneLine: `Or call ${PHONE}`,
     presetService: "weddings",
   },
 };
@@ -497,7 +478,7 @@ export const weddings: ServicePage = {
 
 export const enquiryForm: EnquiryForm = {
   heading: "Plan your event",
-  lead: "Send a brief, or just call. Both work.",
+  lead: "Send a brief, or just call.",
   fields: {
     name: { label: "Your name", required: true },
     phone: { label: "Phone", hint: "A phone number or an email is enough.", required: true },
@@ -510,7 +491,6 @@ export const enquiryForm: EnquiryForm = {
     date: { label: "Date", hint: "A month or rough date is fine." },
     guests: {
       label: "Guests",
-      hint: "A range works.",
       options: [
         { value: "under-50", label: "Under 50" },
         { value: "50-150", label: "50-150" },
@@ -519,11 +499,8 @@ export const enquiryForm: EnquiryForm = {
         { value: "600-plus", label: "600+" },
       ],
     },
-    city: { label: "City", hint: "Where the event is." },
-    brief: {
-      label: "Anything we should know up front?",
-      hint: "Optional. The occasion, the dishes that have to be there, any dietary needs.",
-    },
+    city: { label: "City" },
+    brief: { label: "Anything we should know up front?" },
   },
   submit: "Send the brief",
   status: {

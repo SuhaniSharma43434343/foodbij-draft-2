@@ -4,7 +4,6 @@ import { SectionHeading } from "@/components/SectionHeading";
 import { HeroLines } from "@/components/motion/HeroLines";
 import { BeliefsSequence } from "@/components/story/BeliefsSequence";
 import { CroppedPhoto } from "@/components/story/CroppedPhoto";
-import { PageSlash } from "@/components/work/PageSlash";
 import { ScrollLit } from "@/components/work/ScrollLit";
 import { ourStory } from "@/content/pages";
 import "@/components/work/pages-motion.css";
@@ -19,7 +18,7 @@ const PHOTO_SIZES = "(min-width: 1320px) 520px, (min-width: 1024px) 38vw, calc(1
 /**
  * Our story (01-BRIEF.md s6): who Foodbiz is, what it holds to, the founders, how a brief is taken.
  *
- * Motion (W8.3): opening in pure CSS (slash, title through its mask, paragraphs fade up); photos wipe in and
+ * Motion (W8.3): opening in pure CSS (title through its mask, paragraphs fade up); photos wipe in and
  * drift on desktop scroll; the founders' line lights word by word; the values run as a scroll sequence
  * (BeliefsSequence); the other sections fade up on arrival. Static without JS and under reduced motion.
  */
@@ -31,11 +30,7 @@ export default function OurStoryPage() {
       <section aria-labelledby="story-title" className="pt-12 pb-16 lg:pt-24 lg:pb-28">
         <div className="site-container grid grid-cols-1 gap-12 lg:grid-cols-12 lg:items-end lg:gap-12">
           <div className="lg:col-span-6">
-            <p className="t-label flex items-center gap-3 text-copper-deep">
-              <PageSlash />
-              {intro.label}
-            </p>
-            <h1 id="story-title" className="t-display-l mt-4 max-w-[16ch] text-balance text-navy">
+            <h1 id="story-title" className="t-display-l max-w-[16ch] text-balance text-navy">
               <HeroLines lines={[intro.heading]} />
             </h1>
             <div className="mt-8 space-y-5">
@@ -75,12 +70,12 @@ export default function OurStoryPage() {
       </section>
 
       {/* 3. What we hold to: a scroll sequence (pinned on desktop) */}
-      <BeliefsSequence id="story-beliefs" label={beliefs.label} heading={beliefs.heading} items={beliefs.items} />
+      <BeliefsSequence id="story-beliefs" heading={beliefs.heading} items={beliefs.items} />
 
       {/* 4. The founders: names and roles only. No photos until real ones arrive, no bios until confirmed. */}
       <section aria-labelledby="story-founders" className="section-y">
         <div className="site-container">
-          <SectionHeading id="story-founders" label={founders.label} heading={founders.heading} reveal />
+          <SectionHeading id="story-founders" heading={founders.heading} reveal />
           <ul data-reveal-stagger="" className="mt-10 grid grid-cols-1 gap-8 lg:mt-14 lg:grid-cols-2 lg:gap-12">
             {founders.people.map((p) => (
               <li key={p.name} className="border-t border-navy/12 pt-6">
@@ -99,26 +94,21 @@ export default function OurStoryPage() {
       <section aria-labelledby="story-brief" className="section-y bg-mist">
         <div className="site-container grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-12">
           <div className="lg:col-span-5">
-            <SectionHeading id="story-brief" label={brief.label} heading={brief.heading} headingClassName="max-w-[18ch]" reveal />
+            <SectionHeading id="story-brief" heading={brief.heading} headingClassName="max-w-[18ch]" reveal />
             <CroppedPhoto img={brief.image} className="mt-10 aspect-[4/3] lg:mt-14" sizes={PHOTO_SIZES} motion />
           </div>
           <ol data-reveal-stagger="" className="lg:col-span-6 lg:col-start-7">
-            {brief.steps.map((s, i) => (
-              <li key={s.title} className="grid grid-cols-[3rem_1fr] border-t border-navy/12 py-7 lg:first:border-t-copper">
-                <p aria-hidden="true" className="font-display text-[1.75rem] leading-none font-medium text-copper">
-                  {String(i + 1).padStart(2, "0")}
-                </p>
-                <div>
-                  <h3 className="font-display text-[1.5rem] leading-[1.18] font-medium text-navy lg:text-[1.625rem]">{s.title}</h3>
-                  <p className="t-body mt-2 text-navy/80">{s.text}</p>
-                </div>
+            {brief.steps.map((s) => (
+              <li key={s.title} className="border-t border-navy/12 py-7 lg:first:border-t-copper">
+                <h3 className="font-display text-[1.5rem] leading-[1.18] font-medium text-navy lg:text-[1.625rem]">{s.title}</h3>
+                <p className="t-body mt-2 text-navy/80">{s.text}</p>
               </li>
             ))}
           </ol>
         </div>
       </section>
 
-      <PlanBand heading={plan.heading} lead={plan.lead} cta={plan.cta} phoneLine={plan.phoneLine} />
+      <PlanBand heading={plan.heading} lead={plan.lead} cta={plan.cta} />
     </>
   );
 }

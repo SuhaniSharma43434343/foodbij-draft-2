@@ -24,25 +24,24 @@ const { phone, whatsapp, email, address } = site.contact;
 
 export type PageMeta = { title: string; description: string };
 
-export type PlanBandCopy = { heading: string; lead: string; cta: string; phoneLine: string };
+export type PlanBandCopy = { heading: string; lead: string; cta: string };
 
 /** A photo with its crop: `position` is the CSS object-position, `zoom` enlarges it in its frame. */
 export type CroppedImg = Img & { position?: string; zoom?: number };
 
 export type OurStory = {
   meta: PageMeta;
-  intro: { label: string; heading: string; paragraphs: string[] };
+  intro: { heading: string; paragraphs: string[] };
   image: CroppedImg;
   quote: { text: string; by: string };
-  beliefs: { label: string; heading: string; items: { title: string; text: string }[] };
+  beliefs: { heading: string; items: { title: string }[] };
   founders: {
-    label: string;
     heading: string;
     people: { name: string; role: string }[];
     /** Shown in place of bios until the founders confirm them. */
     bioNote: string;
   };
-  brief: { label: string; heading: string; steps: Step[]; image: CroppedImg };
+  brief: { heading: string; steps: Step[]; image: CroppedImg };
   plan: PlanBandCopy;
 };
 
@@ -50,10 +49,9 @@ export type ContactLine = { label: string; value: string; href?: string };
 
 export type PlanPage = {
   meta: PageMeta;
-  label: string;
   heading: string;
   lead: string;
-  body: string;
+  /** `label` is a visually hidden heading for the contact lines. */
   contact: { label: string; lines: ContactLine[] };
   form: {
     /** Visually hidden heading for the form region. */
@@ -71,7 +69,7 @@ export type PlanPage = {
       eventType: string;
       summary: string;
     };
-    status: { heading: string; message: string; kept: string };
+    status: { heading: string; message: string };
   };
 };
 
@@ -96,11 +94,10 @@ export const ourStory: OurStory = {
       "Foodbiz is a catering and hospitality company in Mumbai, founded by Amar Jog and Kushal Shetty. Leave the stress to us, and be present at your own event.",
   },
   intro: {
-    label: "Our story",
     heading: "Food, and the evening around it.",
     paragraphs: [
-      "Foodbiz is a catering and hospitality company in Mumbai, founded by Amar Jog and Kushal Shetty. The company behind it is Foodies Hospitality.",
-      "We cook for weddings, for celebrations at home, for brand launches and live events, and for offices. Each asks for a different kind of attention.",
+      "Foodbiz is a catering and hospitality company in Mumbai, founded by Amar Jog and Kushal Shetty.",
+      "We cook for weddings, for celebrations at home, for brand launches and live events, and for offices.",
       "What doesn’t change is the promise underneath: leave the stress to us, and be present at your own event.",
     ],
   },
@@ -116,29 +113,15 @@ export const ourStory: OurStory = {
     by: "Amar Jog and Kushal Shetty, founders",
   },
   beliefs: {
-    label: "What we hold to",
-    heading: "Four things we don’t bend on.",
+    heading: "Things we don’t bend on.",
     items: [
-      {
-        title: "Food and experience, not food alone.",
-        text: "How it’s served, when, by whom, and how it feels to be a guest in the room matter as much as what’s on the plate.",
-      },
-      {
-        title: "Be clear about what things cost.",
-        text: "You should know what you’re paying for and why. No line items that only make sense to us.",
-      },
-      {
-        title: "The host should get to enjoy it.",
-        text: "If you spend your own event managing your own event, we haven’t done our job.",
-      },
-      {
-        title: "Say what the food is.",
-        text: "Name the dish, the region, the cook. Heritage comes through on the plate, not in the adjectives around it.",
-      },
+      { title: "Food and experience, not food alone." },
+      { title: "Be clear about what things cost." },
+      { title: "The host should get to enjoy it." },
+      { title: "Say what the food is." },
     ],
   },
   founders: {
-    label: "The founders",
     heading: "The people behind it.",
     people: [
       { name: "Amar Jog", role: "Co-founder" },
@@ -147,12 +130,11 @@ export const ourStory: OurStory = {
     bioNote: "[NEEDS CLIENT: founder bios]",
   },
   brief: {
-    label: "How we take a brief",
     heading: "It starts with what the event is for.",
     steps: [
       {
         title: "You tell us the occasion",
-        text: "What it’s for, who’s coming, and roughly when and where. A rough idea is enough to start.",
+        text: "What it’s for, who’s coming, and roughly when and where.",
       },
       {
         title: "We ask about the people",
@@ -178,7 +160,6 @@ export const ourStory: OurStory = {
     heading: "Tell us about your event.",
     lead: "A date, a rough guest count and the kind of event is enough to start.",
     cta: "Plan your event",
-    phoneLine: `Or call ${phone}`,
   },
 };
 
@@ -191,10 +172,8 @@ export const planPage: PlanPage = {
     title: "Plan your event",
     description: "Tell Foodbiz about your event: the kind of event, roughly when, and roughly how many guests.",
   },
-  label: enquiryForm.heading,
   heading: "Tell us about your event.",
   lead: enquiryForm.lead,
-  body: "The kind of event, roughly when and roughly how many is enough to start. Nothing needs to be fixed yet.",
   contact: {
     label: "Or get in touch",
     lines: [
@@ -229,7 +208,6 @@ export const planPage: PlanPage = {
     status: {
       heading: "Not sent",
       message: enquiryForm.status.cannotSend,
-      kept: "Everything you typed is still in the form.",
     },
   },
 };

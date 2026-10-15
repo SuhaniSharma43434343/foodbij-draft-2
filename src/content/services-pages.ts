@@ -21,7 +21,6 @@
 import { services, type ServicePage } from "./site";
 
 const IMG = "/images";
-const PHONE = "[NEEDS CLIENT: phone]";
 const CELEB = `${IMG}/2-celebrations-private-dining`;
 const BRAND = `${IMG}/3-brand-launches-live-events`;
 const CORP = `${IMG}/4-corporate-office-dining`;
@@ -38,32 +37,29 @@ export const celebrations: ServicePage = {
     image: services[1].heroImage,
   },
   whatWeDo: {
-    label: "What we do",
-    heading:
-      "Every party has a different crowd. A child’s birthday, a family lunch and a dinner at your own table are different jobs, and we cook each one as its own.",
+    heading: "Every party has a different crowd.",
     formats: [
       {
         title: "Birthdays and children’s parties",
-        text: "Mini pizzas with faces on them, sliders sized for small hands, and a counter children want to walk up to. Allergies are labelled, and the adults get fed too.",
+        text: "Mini pizzas with faces on them, sliders sized for small hands, and a counter children want to walk up to.",
       },
       {
         title: "Family and social functions",
-        text: "A lunch for the whole family, an evening for friends. The dishes your family expects go on the menu first, and the rest is built around them.",
+        text: "The dishes your family expects go on the menu first, and the rest is built around them.",
       },
       {
         // NEEDS CLIENT: sit-down dinner photos (AI imagery planned). No real photo shows this format,
         // so it is described in words only and no event photo on this page stands in for it.
         title: "Sit-down dinners at home",
-        text: "A seated dinner at your own table, served course by course. The menu is allowed a little madness; the service stays calm, and the kitchen is left as we found it.",
+        text: "The menu is allowed a little madness; the service stays calm, and the kitchen is left as we found it.",
       },
       {
         title: "Dessert tables",
-        text: "Brownies, cookies and macarons, cupcakes under glass domes, dressed with flowers. A table people keep drifting back to.",
+        text: "Brownies, cookies and macarons, cupcakes under glass domes, dressed with flowers.",
       },
     ],
   },
   howItWorks: {
-    label: "How it works",
     heading: "How a party comes together.",
     steps: [
       {
@@ -85,7 +81,6 @@ export const celebrations: ServicePage = {
     ],
   },
   stories: {
-    label: "Our work",
     heading: "Parties we’ve catered.",
     linkLabel: "See the work",
     items: [
@@ -118,7 +113,6 @@ export const celebrations: ServicePage = {
     ],
   },
   gallery: {
-    label: "The food",
     heading: "Food children finish, and tables the adults linger at.",
     images: [
       {
@@ -152,7 +146,6 @@ export const celebrations: ServicePage = {
     heading: "Tell us about your party.",
     lead: "Whose party it is and roughly how many are coming is enough to start.",
     cta: "Plan your event",
-    phoneLine: `Or call ${PHONE}`,
     presetService: "celebrations",
   },
 };
@@ -169,17 +162,15 @@ export const brandLaunches: ServicePage = {
     image: services[2].heroImage,
   },
   whatWeDo: {
-    label: "What we do",
-    heading:
-      "At a launch, the food is part of the brand for one evening. It has to look right in the room, on the tray and in the photographs.",
+    heading: "At a launch, the food is part of the brand for one evening.",
     formats: [
       {
         title: "Store and product launches",
-        text: "An opening, a reveal, a new collection. Canapés plated to suit the brand, and a floor team that keeps moving around the room.",
+        text: "Canapés plated to suit the brand, and a floor team that keeps moving around the room.",
       },
       {
         title: "Brand days and private previews",
-        text: "A small room and a senior guest list. Trays that look right from every angle, and service that stays out of the conversation.",
+        text: "Trays that look right from every angle, and service that stays out of the conversation.",
       },
       {
         title: "Bars and cocktails",
@@ -188,12 +179,11 @@ export const brandLaunches: ServicePage = {
       {
         // NEEDS CLIENT: confirm the large-event capability described here (CONTENT-EXPORT 3.4 note)
         title: "Concerts and festivals",
-        text: "Service that runs to the set times, not the other way round. Long counters, a team placed where the queue forms, and restocking that doesn’t stop.",
+        text: "Service that runs to the set times, not the other way round.",
       },
     ],
   },
   howItWorks: {
-    label: "How it works",
     heading: "How a launch runs with us.",
     steps: [
       {
@@ -219,7 +209,6 @@ export const brandLaunches: ServicePage = {
     ],
   },
   stories: {
-    label: "Our work",
     heading: "Launches we’ve catered.",
     linkLabel: "See the work",
     items: [
@@ -251,7 +240,6 @@ export const brandLaunches: ServicePage = {
     ],
   },
   gallery: {
-    label: "The food",
     heading: "On the tray, at the bar, along the counter.",
     images: [
       {
@@ -288,7 +276,6 @@ export const brandLaunches: ServicePage = {
     heading: "Tell us about your launch.",
     lead: "The date, the venue and the run sheet, if you have one, is enough to start.",
     cta: "Plan your event",
-    phoneLine: `Or call ${PHONE}`,
     presetService: "brand-launches",
   },
 };
@@ -307,13 +294,11 @@ export const corporateDining: ServicePage = {
     image: services[3].heroImage,
   },
   whatWeDo: {
-    label: "What we do",
-    heading:
-      "The test is Tuesday, not the launch party. Anyone can cook well once; doing it every day for the same room is a different discipline.",
+    heading: "The test is Tuesday, not the launch party.",
     formats: [
       {
         title: "Daily office dining",
-        text: "Same kitchen, same team, a menu that changes daily. Planned around a short lunch window, so people eat and get back to work without queuing through their break.",
+        text: "Planned around a short lunch window, so people eat and get back to work without queuing through their break.",
       },
       {
         title: "Executive and working lunches",
@@ -321,17 +306,16 @@ export const corporateDining: ServicePage = {
       },
       {
         title: "Corporate functions",
-        text: "Annual days, conferences, press events and outdoor days. A buffet line, a seated lunch, or trays carried between sessions.",
+        text: "Annual days, conferences, press events and outdoor days.",
       },
       {
         // NEEDS CLIENT: which diets Foodbiz caters for as standard (e.g. Jain) - not confirmed, so not named.
         title: "Every diet, every day",
-        text: "Tell us who eats what. Dietary needs are agreed with you up front and labelled at the counter.",
+        text: "Dietary needs are agreed with you up front and labelled at the counter.",
       },
     ],
   },
   howItWorks: {
-    label: "How it works",
     heading: "Setting up a programme.",
     steps: [
       {
@@ -353,7 +337,6 @@ export const corporateDining: ServicePage = {
     ],
   },
   stories: {
-    label: "Our work",
     heading: "Corporate functions we’ve catered.",
     linkLabel: "See the work",
     items: [
@@ -386,7 +369,6 @@ export const corporateDining: ServicePage = {
     ],
   },
   gallery: {
-    label: "On the day",
     heading: "Set out, served, cleared.",
     images: [
       {
@@ -415,7 +397,6 @@ export const corporateDining: ServicePage = {
     heading: "Tell us about your office.",
     lead: "How many people you feed, and when they eat, is enough to start.",
     cta: "Plan your event",
-    phoneLine: `Or call ${PHONE}`,
     presetService: "corporate-dining",
   },
 };

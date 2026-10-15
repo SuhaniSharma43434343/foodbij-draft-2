@@ -49,9 +49,6 @@ export function DesktopStage({ items, ref }: { items: Service[]; ref: RefObject<
                         if (e.currentTarget.matches(":focus-visible")) goTo(i, false);
                       }}
                     >
-                      <span className="svc-num" aria-hidden="true">
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
                       <span className="svc-rule" aria-hidden="true" />
                       <span className="svc-title">{s.name}</span>
                     </button>

@@ -1,5 +1,4 @@
 import { StoryTrigger } from "@/components/stories/StoryViewer";
-import { services } from "@/content/site";
 import type { EventStoryFull } from "@/content/stories";
 import { StoryPhoto } from "./StoryPhoto";
 
@@ -11,12 +10,11 @@ type StoryCardProps = {
 };
 
 /**
- * An event card in the homepage style: 4:5 photo, service label, title, the summary line.
+ * An event card in the homepage style: 4:5 photo, title, the summary line.
  * The card is a StoryTrigger: a real link to /our-work/<slug> (no JS, modifier or middle click), and inside a
  * <StoryViewerProvider> a plain click opens the story viewer instead (W9.3).
  */
 export function StoryCard({ story, headingLevel: H = "h2", preload }: StoryCardProps) {
-  const service = services.find((s) => s.slug === story.service);
   return (
     <StoryTrigger slug={story.slug} className="tap-scale group block">
       {/* The thin copper story ring sits on an outer frame, because the inner frame's wipe (clip-path) would clip
@@ -32,8 +30,7 @@ export function StoryCard({ story, headingLevel: H = "h2", preload }: StoryCardP
           />
         </div>
       </div>
-      {service ? <p className="t-label mt-5 text-copper-deep">{service.name}</p> : null}
-      <H className="mt-2 font-display text-[1.5rem] leading-[1.2] font-medium text-navy group-hover:underline group-hover:decoration-1 group-hover:underline-offset-4">
+      <H className="mt-5 font-display text-[1.5rem] leading-[1.2] font-medium text-navy group-hover:underline group-hover:decoration-1 group-hover:underline-offset-4">
         {story.title}
       </H>
       <p className="t-body mt-2 text-navy/72">{story.summary}</p>

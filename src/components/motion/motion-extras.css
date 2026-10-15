@@ -19,8 +19,7 @@
   opacity: 0;
 }
 .cc-dot,
-.cc-ring,
-.cc-disc {
+.cc-ring {
   position: absolute;
   border-radius: 9999px;
   transition:
@@ -43,36 +42,13 @@
   opacity: 0;
   scale: 0.3;
 }
-.cc-disc {
-  left: -42px;
-  top: -42px;
-  width: 84px;
-  height: 84px;
-  display: grid;
-  place-items: center;
-  /* copper-deep keeps the small white "View" label above 4.5:1 */
-  background: color-mix(in srgb, var(--color-copper-deep) 94%, transparent);
-  color: #fff;
-  font-family: var(--font-sans);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  /* Optical centring: letter-spacing adds space after the last letter. */
-  text-indent: 0.18em;
-  opacity: 0;
-  scale: 0.1;
-}
 .cc[data-state="link"] .cc-dot,
 .cc[data-state="view"] .cc-dot {
   opacity: 0;
   scale: 0.5;
 }
-.cc[data-state="link"] .cc-ring {
-  opacity: 1;
-  scale: 1;
-}
-.cc[data-state="view"] .cc-disc {
+.cc[data-state="link"] .cc-ring,
+.cc[data-state="view"] .cc-ring {
   opacity: 1;
   scale: 1;
 }

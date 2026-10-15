@@ -7,7 +7,7 @@ import { Grain } from "@/components/motion/Grain";
 import { useScrollProgress } from "@/components/motion/useScrollProgress";
 
 type Img = { src: string; alt: string };
-type Props = { label: string; heading: string; images: Img[] };
+type Props = { heading: string; images: Img[] };
 
 // next/image sizes per frame position: phone slides are 78vw; desktop is the larger of the static grid
 // column and the pinned frame (the pinned photo is 115% of its frame for the counter-parallax).
@@ -22,9 +22,8 @@ const sizes = [
 
 const DESKTOP = "(min-width: 1024px)";
 const REDUCED = "(prefers-reduced-motion: reduce)";
-const pad = (n: number) => String(n).padStart(2, "0");
 
-export function GalleryMotion({ label, heading, images }: Props) {
+export function GalleryMotion({ heading, images }: Props) {
   const sectionRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const rowRef = useRef<HTMLUListElement>(null);
@@ -132,8 +131,7 @@ export function GalleryMotion({ label, heading, images }: Props) {
       <div className="fg-pin">
         <div ref={trackRef} className="fg-track">
           <div className="fg-intro" data-reveal-stagger="">
-            <p className="t-label text-copper">{label}</p>
-            <h2 id="food-title" className="fg-title t-display-m mt-4 text-white">
+            <h2 id="food-title" className="fg-title t-display-m text-white">
               {heading}
             </h2>
           </div>
@@ -161,9 +159,6 @@ export function GalleryMotion({ label, heading, images }: Props) {
           </ul>
         </div>
         <div className="fg-ui" aria-hidden="true">
-          <span className="fg-count t-label">
-            {pad(active + 1)} / {pad(images.length)}
-          </span>
           <span className="fg-dots">
             {images.map((img, i) => (
               <span key={img.src} className={i === active ? "is-on" : undefined} />

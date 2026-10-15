@@ -50,11 +50,6 @@ export function ServiceHero({ id, headline, line, cta, href, image }: Props) {
           className="sh-shade absolute inset-0 bg-[linear-gradient(to_bottom,rgba(11,28,45,0.55)_0%,rgba(11,28,45,0)_18%,rgba(11,28,45,0)_34%,rgba(11,28,45,0.85)_56%,#0B1C2D_70%)] lg:bg-[linear-gradient(to_bottom,rgba(11,28,45,0.55)_0%,rgba(11,28,45,0)_20%),linear-gradient(to_right,#0B1C2D_30%,rgba(11,28,45,0.6)_45%,rgba(11,28,45,0)_62%)]"
         />
         <Grain />
-        {/* Shown only while scrubbing: the photo named under the framed plate (its own alt text). */}
-        <p aria-hidden="true" className="sh-caption">
-          <CopperSlash className="sh-caption-slash" />
-          <span>{image.alt}</span>
-        </p>
         <div className="sh-text site-container absolute inset-x-0 bottom-0 pb-12 lg:pb-24">
           <CopperSlash className="sh-slash" />
           <h1 id={`${id}-title`} className="t-display-l max-w-[14ch]">

@@ -55,7 +55,6 @@ import {
   type ReactNode,
 } from "react";
 import { createPortal } from "react-dom";
-import { PLAN_HREF, services } from "@/content/site";
 import type { EventStoryFull, StoryImage } from "@/content/stories";
 import "./story-viewer.css";
 
@@ -77,10 +76,6 @@ const StoryViewerContext = createContext<StoryViewerApi | null>(null);
 /** The viewer API, or null outside a <StoryViewerProvider>. */
 export function useStoryViewer() {
   return useContext(StoryViewerContext);
-}
-
-function serviceLabel(slug: EventStoryFull["service"]) {
-  return services.find((s) => s.slug === slug)?.name ?? "";
 }
 
 function storyHref(slug: string) {
@@ -460,7 +455,6 @@ function StoryViewer({
     pos.i < imgs.length - 1 ? imgs[pos.i + 1] : stories[pos.s + 1]?.images[0];
   const nextStoryFirst: StoryImage | undefined = pos.i < imgs.length - 1 ? stories[pos.s + 1]?.images[0] : undefined;
 
-  const label = serviceLabel(story.service);
   const href = storyHref(story.slug);
 
   return (
@@ -516,9 +510,8 @@ function StoryViewer({
               ))}
             </div>
             <div className="sv-controls">
-              <p className="t-label sv-count" aria-live="polite">
-                <span className="sr-only">{story.title}, photo </span>
-                {pos.i + 1} / {imgs.length}
+              <p className="sr-only" aria-live="polite">
+                {story.title}, photo {pos.i + 1} / {imgs.length}
               </p>
               {!reduce && (
                 <button
@@ -537,15 +530,10 @@ function StoryViewer({
           </div>
 
           <div className="sv-caption">
-            <p className="t-label text-copper">{label}</p>
-            <h2 className="mt-2 font-display text-[2rem] leading-[1.08] font-medium text-white">{story.title}</h2>
-            <p className="t-body mt-3 text-white/85">{story.whatWeMade}</p>
-            <div className="mt-4 flex flex-wrap items-center gap-x-6">
+            <h2 className="font-display text-[2rem] leading-[1.08] font-medium text-white">{story.title}</h2>
+            <div className="mt-4">
               <Link href={href} className="sv-link t-button">
                 Read the story
-              </Link>
-              <Link href={PLAN_HREF} className="sv-link-small">
-                Plan your event
               </Link>
             </div>
           </div>

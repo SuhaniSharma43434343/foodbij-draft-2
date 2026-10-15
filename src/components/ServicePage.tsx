@@ -7,7 +7,6 @@ import { ArrowLink } from "./ArrowLink";
 import { PlanBand } from "./PlanBand";
 import { SectionHeading } from "./SectionHeading";
 import { ScrollFocus } from "./motion/ScrollFocus";
-import { DriftWord } from "./service/DriftWord";
 import { ServiceGallery, type GalleryCrop } from "./service/ServiceGallery";
 import { ServiceHero } from "./service/ServiceHero";
 import { StepsMotion } from "./service/StepsMotion";
@@ -40,13 +39,6 @@ export type ServicePageProps = {
 /** Phone photos run edge to edge (W9.4), so they are as wide as the screen below 1024px. */
 const FULL_COL = "100vw";
 
-/** Splits "First sentence. The rest." so a long section heading stays short on phone. */
-function splitHeading(text: string): [string, string] {
-  const i = text.indexOf(". ");
-  if (i === -1) return [text, ""];
-  return [text.slice(0, i + 1), text.slice(i + 2)];
-}
-
 function SmallTitle({ as: Tag = "h3", children, className = "" }: { as?: "h3" | "p"; children: ReactNode; className?: string }) {
   return (
     <Tag className={`font-display text-[1.625rem] leading-[1.15] font-medium lg:text-[1.75rem] ${className}`.trim()}>
@@ -63,9 +55,7 @@ function SmallTitle({ as: Tag = "h3", children, className = "" }: { as?: "h3" | 
  * effects are driven by the shared useScrollProgress primitive (--p / data-step) inside the client parts:
  * - ServiceHero: cinematic opening (slash, masked name, fade-ups, photo settle) and a pinned scroll where
  *   the photo frames itself into a plate while the text drifts out (150svh phone / 170vh desktop).
- * - What we do: staggered reveals, copper rules drawing in, and on desktop the service's short name as an
- *   oversized outline word drifting behind the list (DriftWord, decorative); on phone the name is a huge
- *   italic word that drifts sideways in its own clipped band under the heading (DriftWord variant "band").
+ * - What we do: staggered reveals, copper rules drawing in.
  * - StepsMotion: desktop pins and steps through "How it works"; phone reveals steps with a copper line.
  * - Stories and other services: wipe reveals, hover zoom, data-cursor="view" on linked photos.
  * - ServiceGallery: the homepage food band behaviour (phone carousel, desktop pinned row) with crops.
@@ -75,7 +65,6 @@ function SmallTitle({ as: Tag = "h3", children, className = "" }: { as?: "h3" | 
  */
 export function ServicePage({ service, page, others, galleryCrops = {} }: ServicePageProps) {
   const { hero, whatWeDo, howItWorks, stories, gallery, otherServices, plan } = page;
-  const [whatHeading, whatLead] = splitHeading(whatWeDo.heading);
   const id = service.slug;
 
   return (
@@ -85,21 +74,8 @@ export function ServicePage({ service, page, others, galleryCrops = {} }: Servic
 
       {/* 2. What we do */}
       <section aria-labelledby={`${id}-what`} className="section-y relative overflow-hidden">
-        <DriftWord word={service.shortName} />
         <div className="site-container relative">
-          <SectionHeading
-            reveal
-            id={`${id}-what`}
-            label={whatWeDo.label}
-            heading={whatHeading}
-            headingClassName="max-w-[22ch] text-balance"
-          />
-          {whatLead ? (
-            <p data-reveal="" className="t-lead mt-5 max-w-[44ch] text-navy/72">
-              {whatLead}
-            </p>
-          ) : null}
-          <DriftWord word={service.shortName} variant="band" />
+          <SectionHeading reveal id={`${id}-what`} heading={whatWeDo.heading} headingClassName="max-w-[22ch] text-balance" />
           <ul data-reveal-stagger="" className="mt-12 border-t border-navy/12 lg:mt-16 lg:grid lg:grid-cols-2 lg:gap-x-16">
             {whatWeDo.formats.map((f) => (
               <li key={f.title} className="border-b border-navy/12 py-8 lg:py-10">
@@ -113,12 +89,12 @@ export function ServicePage({ service, page, others, galleryCrops = {} }: Servic
       </section>
 
       {/* 3. How it works */}
-      <StepsMotion id={id} label={howItWorks.label} heading={howItWorks.heading} steps={howItWorks.steps} />
+      <StepsMotion id={id} heading={howItWorks.heading} steps={howItWorks.steps} />
 
       {/* 4. Event stories from this service */}
       <section aria-labelledby={`${id}-stories`} className="section-y">
         <div className="site-container">
-          <SectionHeading reveal id={`${id}-stories`} label={stories.label} heading={stories.heading} />
+          <SectionHeading reveal id={`${id}-stories`} heading={stories.heading} />
           <ul className="mt-12 grid grid-cols-1 gap-16 lg:mt-16 lg:grid-cols-2 lg:gap-12">
             {stories.items.map((s) => {
               const pending = s.brief.startsWith("[NEEDS CLIENT");
@@ -176,7 +152,7 @@ export function ServicePage({ service, page, others, galleryCrops = {} }: Servic
       </section>
 
       {/* 5. Food and presentation photos */}
-      <ServiceGallery id={id} label={gallery.label} heading={gallery.heading} images={gallery.images} crops={galleryCrops} />
+      <ServiceGallery id={id} heading={gallery.heading} images={gallery.images} crops={galleryCrops} />
 
       {/* 6. Other services */}
       <section aria-labelledby={`${id}-others`} className="section-y">
@@ -200,11 +176,11 @@ export function ServicePage({ service, page, others, galleryCrops = {} }: Servic
                   </div>
                 </Link>
                 <div data-reveal="">
-                  <SmallTitle className="mt-5">{s.name}</SmallTitle>
-                  <p className="t-body mt-2 text-navy/72">{s.promise}</p>
-                  <ArrowLink href={s.href} className="press mt-2">
-                    {s.linkLabel}
-                  </ArrowLink>
+                  <SmallTitle className="mt-3">
+                    <Link href={s.href} className="press inline-flex min-h-11 items-center underline-offset-4 hover:underline active:underline">
+                      {s.name}
+                    </Link>
+                  </SmallTitle>
                 </div>
               </li>
             ))}
@@ -219,7 +195,6 @@ export function ServicePage({ service, page, others, galleryCrops = {} }: Servic
         heading={plan.heading}
         lead={plan.lead}
         cta={plan.cta}
-        phoneLine={plan.phoneLine}
         href={`${PLAN_HREF}?service=${plan.presetService}`}
       />
     </>

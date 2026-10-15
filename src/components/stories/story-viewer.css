@@ -120,11 +120,6 @@
   margin-top: 6px;
   margin-right: -6px;
 }
-.sv-count {
-  margin-right: auto;
-  padding-left: 2px;
-  color: rgb(255 255 255 / 0.8);
-}
 .sv-icon-btn {
   display: inline-flex;
   width: 44px;
@@ -135,8 +130,7 @@
 }
 .sv-icon-btn:focus-visible,
 .sv-arrow:focus-visible,
-.sv-link:focus-visible,
-.sv-link-small:focus-visible {
+.sv-link:focus-visible {
   outline: 2px solid var(--color-copper);
   outline-offset: 2px;
 }
@@ -157,18 +151,6 @@
   text-decoration-color: var(--color-copper);
   text-underline-offset: 6px;
   text-decoration-thickness: 1px;
-}
-.sv-link-small {
-  display: inline-flex;
-  min-height: 44px;
-  align-items: center;
-  font-size: 14px;
-  color: rgb(255 255 255 / 0.75);
-}
-@media (hover: hover) {
-  .sv-link-small:hover {
-    color: #fff;
-  }
 }
 
 /* ---------- Desktop arrows (hidden on phone) ---------- */

@@ -209,10 +209,10 @@ export function EnquiryStepper({ values, setValues }: Props) {
           tabIndex={-1}
           className="block w-full scroll-mt-28 outline-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-copper"
         >
-          <span className="t-label block text-copper-deep">
+          <span className="sr-only">
             Step {i + 1} of {STEPS}
           </span>
-          <span className="mt-3 block font-display text-[1.75rem] leading-[1.15] font-medium text-navy">{questions[i]}</span>
+          <span className="block font-display text-[1.75rem] leading-[1.15] font-medium text-navy">{questions[i]}</span>
         </legend>
         <div className="mt-6">{children}</div>
       </fieldset>
@@ -313,9 +313,6 @@ export function EnquiryStepper({ values, setValues }: Props) {
         {panel(
           2,
           <>
-            <p id="enquiry-guests-hint" className={hintClass}>
-              {fields.guests.hint}
-            </p>
             <div className="mt-3 grid grid-cols-2 gap-3">
               {fields.guests.options.map((o) => (
                 <label key={o.value} className="ps-pill relative flex min-h-14 cursor-pointer items-center justify-center border border-navy/25 px-3 text-[16px] font-medium text-navy has-checked:border-navy has-checked:bg-navy has-checked:text-white">
@@ -326,7 +323,6 @@ export function EnquiryStepper({ values, setValues }: Props) {
                     value={o.value}
                     checked={values.guests === o.value}
                     onChange={() => set("guests", o.value)}
-                    aria-describedby="enquiry-guests-hint"
                     className="ps-radio absolute inset-0 m-0 cursor-pointer appearance-none"
                   />
                   {o.label}
@@ -334,7 +330,6 @@ export function EnquiryStepper({ values, setValues }: Props) {
               ))}
             </div>
           </>,
-          { describe: "enquiry-guests-hint" },
         )}
 
         {panel(
@@ -343,15 +338,11 @@ export function EnquiryStepper({ values, setValues }: Props) {
             <label htmlFor="enquiry-city" className={labelClass}>
               {fields.city.label}
             </label>
-            <p id="enquiry-city-hint" className={hintClass}>
-              {fields.city.hint}
-            </p>
             <input
               id="enquiry-city"
               name="city"
               type="text"
               autoComplete="address-level2"
-              aria-describedby="enquiry-city-hint"
               value={values.city}
               onChange={(e) => set("city", e.target.value)}
               className={`${control} ${controlBorder(false)} mt-2 h-12`}
@@ -365,14 +356,10 @@ export function EnquiryStepper({ values, setValues }: Props) {
             <label htmlFor="enquiry-brief" className={labelClass}>
               {fields.brief.label}
             </label>
-            <p id="enquiry-brief-hint" className={hintClass}>
-              {fields.brief.hint}
-            </p>
             <textarea
               id="enquiry-brief"
               name="brief"
               rows={5}
-              aria-describedby="enquiry-brief-hint"
               value={values.brief}
               onChange={(e) => set("brief", e.target.value)}
               className={`${control} ${controlBorder(false)} mt-2 min-h-36 resize-y py-3`}
@@ -486,7 +473,6 @@ export function EnquiryStepper({ values, setValues }: Props) {
               {copy.status.heading}
             </p>
             <p className="mt-3 text-[16px] leading-[1.55] text-navy">{copy.status.message}</p>
-            <p className="mt-2 text-[15px] leading-[1.5] text-navy/72">{copy.status.kept}</p>
           </div>
         ) : null}
       </div>

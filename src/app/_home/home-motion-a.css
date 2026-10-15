@@ -1,6 +1,6 @@
 /* ---------------------------------------------------------------------------
    Home, expressive pass W7.1 (docs/design/motion-spec.md, "Expressive pass").
-   Opening (cinematic pin), Statement (words light up), Marquee (occasion types).
+   Opening (cinematic pin), Statement (words light up).
    Scroll effects read var(--p) written by useScrollProgress. Every scroll effect is gated on
    html.js-motion + prefers-reduced-motion: no-preference, so without JS or under reduced motion the
    page renders the static version. Transforms, opacity and clip-path only.
@@ -41,11 +41,6 @@
   animation-duration: 2.4s;
 }
 
-/* Caption under the framed plate: only exists while scrubbing. */
-.op-caption {
-  display: none;
-}
-
 @media (prefers-reduced-motion: no-preference) {
   html.js-motion .op {
     height: 180svh;
@@ -72,33 +67,6 @@
   html.js-motion .op-shade {
     opacity: clamp(0, calc(1.7 - var(--p, 0) * 2.2), 1);
   }
-  html.js-motion .op-caption {
-    display: flex;
-    position: absolute;
-    left: 20px;
-    right: 20px;
-    bottom: 9%;
-    align-items: baseline;
-    gap: 12px;
-    margin: 0;
-    font-family: var(--font-display);
-    font-style: italic;
-    font-weight: 500;
-    font-size: 1.375rem;
-    line-height: 1.25;
-    color: rgb(255 255 255 / 0.88);
-    opacity: clamp(0, calc((var(--p, 0) - 0.62) * 3.2), 1);
-    translate: 0 calc((1 - var(--p, 0)) * 14px);
-    pointer-events: none;
-  }
-  html.js-motion .op-caption-slash {
-    flex: none;
-    width: 9px;
-    height: 17px;
-    fill: none;
-    stroke: var(--color-copper);
-    stroke-width: 1.7;
-  }
 
   @media (min-width: 1024px) {
     html.js-motion .op {
@@ -113,13 +81,6 @@
     html.js-motion .op-text {
       translate: 0 calc(var(--p, 0) * -30vh);
       opacity: calc(1 - var(--p, 0) * 2.5);
-    }
-    html.js-motion .op-caption {
-      left: 0;
-      right: 0;
-      bottom: 4.5vh;
-      justify-content: center;
-      font-size: 1.625rem;
     }
   }
 }
@@ -165,107 +126,6 @@
     opacity: clamp(0.16, calc(var(--q) * (var(--n) + 1) - var(--i)), 1);
     transition: opacity 160ms linear;
   }
-}
-
-/* ----- Marquee ------------------------------------------------------------ */
-
-.mq {
-  overflow: hidden;
-  border-block: 1px solid rgb(11 28 45 / 0.14);
-  padding-block: 26px;
-  background: var(--color-paper);
-  color: var(--color-navy);
-}
-.mq-track {
-  display: flex;
-  width: max-content;
-  animation: mq-loop 55s linear infinite;
-}
-.mq:hover .mq-track,
-.mq:focus-within .mq-track {
-  animation-play-state: paused;
-}
-.mq-list {
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.mq-item {
-  display: flex;
-  align-items: center;
-  font-family: var(--font-display);
-  font-style: italic;
-  font-weight: 500;
-  font-size: clamp(2.5rem, 8vw, 7rem);
-  line-height: 1.15;
-  white-space: nowrap;
-}
-.mq-slash {
-  flex: none;
-  width: 0.2em;
-  height: 0.38em;
-  margin-inline: 0.42em;
-  overflow: visible;
-  fill: none;
-  stroke: var(--color-copper);
-  stroke-width: 1.6;
-}
-@keyframes mq-loop {
-  to {
-    translate: -50% 0;
-  }
-}
-@media (min-width: 1024px) {
-  .mq {
-    padding-block: 44px;
-  }
-}
-/* Reduced motion: still, one copy, wrapping inside the page gutter. */
-@media (prefers-reduced-motion: reduce) {
-  .mq-track {
-    width: auto;
-    animation: none !important;
-    padding-inline: 20px;
-  }
-  .mq-list {
-    flex-wrap: wrap;
-    flex-shrink: 1;
-    row-gap: 0.1em;
-  }
-  .mq-list[data-dup] {
-    display: none;
-  }
-  .mq-item {
-    font-size: clamp(1.75rem, 5vw, 4rem);
-  }
-  .mq-item:last-child .mq-slash {
-    display: none;
-  }
-}
-
-/* Pause control for the marquee (WCAG 2.2.2). Small, quiet, bottom-right of the band; 44px target. */
-.mq { position: relative; }
-.mq-paused .mq-track { animation-play-state: paused; }
-.mq-toggle {
-  position: absolute;
-  right: 8px;
-  bottom: 4px;
-  z-index: 1;
-  display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  color: rgb(11 28 45 / 0.55);
-  background: transparent;
-  transition: color 200ms var(--ease-out, ease-out);
-}
-.mq-toggle:hover,
-.mq-toggle:focus-visible { color: #8f5523; }
-@media (prefers-reduced-motion: reduce) {
-  .mq-toggle { display: none; }
 }
 
 /* ----- Story short (W9.4) -------------------------------------------------- */

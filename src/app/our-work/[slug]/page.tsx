@@ -1,14 +1,11 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ButtonLink } from "@/components/Button";
 import { PlanBand } from "@/components/PlanBand";
 import { HeroLines } from "@/components/motion/HeroLines";
-import { PageSlash } from "@/components/work/PageSlash";
 import { ScrollLit } from "@/components/work/ScrollLit";
 import { StoryPhoto } from "@/components/work/StoryPhoto";
 import { StoryPhotoSet } from "@/components/work/StoryPhotoSet";
-import { PLAN_HREF, services } from "@/content/site";
+import { PLAN_HREF } from "@/content/site";
 import { getStory, stories, work } from "@/content/stories";
 import "@/components/work/pages-motion.css";
 
@@ -36,8 +33,7 @@ function Label({ children }: { children: string }) {
  * One event story (01-BRIEF.md section 6): title, the brief, what we made, photos, live counter, plan.
  *
  * Motion (W8.3, CSS in components/work/pages-motion.css + the shared API in globals.css):
- * - Opening, pure CSS on first paint: copper slash draws in beside the service label, the title rises through
- *   its mask, the summary fades up; the hero photo settles from 1.08 (2.4s). As the hero scrolls away it is
+ * - Opening, pure CSS on first paint: the title rises through its mask; the hero photo settles from 1.08 (2.4s). As the hero scrolls away it is
  *   framed in (clip-path inset) and leans in (scale up only, so crops hold) - CSS scroll-driven where supported.
  * - "The brief" and "What we made" fade up in a short cascade; the live-counter line lights word by word.
  * - Photo set: phone swipe carousel with an active photo; desktop staggered grid, wipe-in + parallax.
@@ -45,7 +41,6 @@ function Label({ children }: { children: string }) {
 export default async function StoryPage({ params }: { params: Promise<Params> }) {
   const story = getStory((await params).slug);
   if (!story) notFound();
-  const service = services.find((s) => s.slug === story.service)!;
   const [hero, ...rest] = story.images;
   const pending = story.brief.startsWith("[NEEDS CLIENT");
   const planHref = `${PLAN_HREF}?service=${story.service}`;
@@ -54,16 +49,9 @@ export default async function StoryPage({ params }: { params: Promise<Params> })
     <>
       <article aria-labelledby="story-title">
         <header className="site-container pt-12 lg:pt-20">
-          <p className="flex items-center gap-3">
-            <PageSlash />
-            <Link href={service.href} className="t-label inline-flex min-h-11 items-center text-copper-deep hover:underline">
-              {service.name}
-            </Link>
-          </p>
-          <h1 id="story-title" className="t-display-l mt-2 max-w-[20ch] text-balance text-navy">
+          <h1 id="story-title" className="t-display-l max-w-[20ch] text-balance text-navy">
             <HeroLines lines={[story.title]} />
           </h1>
-          <p className="hero-fade t-lead mt-5 max-w-[46ch] text-navy/72 [--d:300ms]">{story.summary}</p>
         </header>
 
         <div className="site-container mt-10 lg:mt-14">
@@ -113,19 +101,12 @@ export default async function StoryPage({ params }: { params: Promise<Params> })
           </section>
         ) : null}
 
-        <div data-reveal="" className="site-container flex flex-col gap-3 pb-[72px] sm:flex-row lg:pb-32">
-          <ButtonLink href={service.href} variant="outline">
-            {`See ${service.shortName.toLowerCase()}`}
-          </ButtonLink>
-          <ButtonLink href={planHref}>{work.plan.cta}</ButtonLink>
-        </div>
       </article>
 
       <PlanBand
         heading={work.plan.heading}
         lead={work.plan.lead}
         cta={work.plan.cta}
-        phoneLine={work.plan.phoneLine}
         href={planHref}
       />
     </>

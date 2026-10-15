@@ -223,10 +223,7 @@ export function ServicesSheet({ id, open, onClose }: ServicesSheetProps) {
                 className="sheet-row"
               >
                 <Image src={s.heroImage.src} style={photoStyle(s.heroImage.src)} alt="" width={64} height={80} sizes="64px" className="sheet-thumb" />
-                <span className="min-w-0">
-                  <span className="block font-display text-[1.5rem] leading-[1.1] font-medium">{s.name}</span>
-                  <span className="mt-1 block text-base leading-[1.4] text-navy/72">{s.promise}</span>
-                </span>
+                <span className="min-w-0 font-display text-[1.5rem] leading-[1.1] font-medium">{s.name}</span>
               </Link>
             </li>
           ))}

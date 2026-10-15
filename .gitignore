@@ -8,3 +8,6 @@ next-env.d.ts
 .claude/settings.local.json
 AGENTS.md
 .next-*
+
+# Large review screenshots stay local (too big for GitHub pushes)
+docs/design/shots/w11/

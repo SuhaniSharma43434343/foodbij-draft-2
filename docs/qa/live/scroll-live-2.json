@@ -1,0 +1,78 @@
+[
+  {
+    "net": "fast4g",
+    "run": 1,
+    "page": "/",
+    "loadMs": 1139,
+    "seen": 10,
+    "emptyOnce": 0,
+    "worstMs": 0,
+    "totalEmptyMs": 0,
+    "blankOnce": 0,
+    "worstBlankMs": 0,
+    "imgKB": 381,
+    "worstFrames": []
+  },
+  {
+    "net": "fast4g",
+    "run": 1,
+    "page": "/services/weddings",
+    "loadMs": 1376,
+    "seen": 7,
+    "emptyOnce": 1,
+    "worstMs": 159,
+    "totalEmptyMs": 159,
+    "blankOnce": 1,
+    "worstBlankMs": 159,
+    "imgKB": 359,
+    "worstFrames": [
+      {
+        "key": "/images/1-weddings/bangalore-wedding/bangalore-wedding-01.jpg",
+        "everEmpty": true,
+        "worst": 159,
+        "total": 159,
+        "why": "reveal hidden",
+        "everBlank": true,
+        "worstBlank": 159
+      }
+    ]
+  },
+  {
+    "net": "fast4g",
+    "run": 1,
+    "page": "/our-work",
+    "loadMs": 1461,
+    "seen": 13,
+    "emptyOnce": 0,
+    "worstMs": 0,
+    "totalEmptyMs": 0,
+    "blankOnce": 0,
+    "worstBlankMs": 0,
+    "imgKB": 352,
+    "worstFrames": []
+  },
+  {
+    "net": "fast4g",
+    "run": 1,
+    "page": "/our-work/boutique-evening",
+    "loadMs": 1143,
+    "seen": 2,
+    "emptyOnce": 1,
+    "worstMs": 144,
+    "totalEmptyMs": 144,
+    "blankOnce": 1,
+    "worstBlankMs": 144,
+    "imgKB": 73,
+    "worstFrames": [
+      {
+        "key": "/images/3-brand-launches-live-events/cartier/cartier-03.jpg",
+        "everEmpty": true,
+        "worst": 144,
+        "total": 144,
+        "why": "reveal hidden",
+        "everBlank": true,
+        "worstBlank": 144
+      }
+    ]
+  }
+]

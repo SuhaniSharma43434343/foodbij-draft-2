@@ -13,7 +13,7 @@ import "./home-motion-a.css";
  * Desktop keeps the white split layout.
  */
 export function StoryShort() {
-  const { label, quote, quoteBy, body, linkLabel, image } = home.storyShort;
+  const { quote, quoteBy, body, linkLabel, image } = home.storyShort;
   return (
     <section
       aria-labelledby="story-title"
@@ -22,8 +22,7 @@ export function StoryShort() {
       <Grain className="lg:hidden" />
       <div className="site-container relative z-[2] grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-center lg:gap-12">
         <div className="lg:col-span-5" data-reveal-stagger>
-          <p className="t-label text-copper lg:text-copper-deep">{label}</p>
-          <h2 id="story-title" className="t-display-m mt-4 italic max-lg:text-[2.375rem] max-lg:leading-[1.06]">
+          <h2 id="story-title" className="t-display-m italic max-lg:text-[2.375rem] max-lg:leading-[1.06]">
             {quote}
           </h2>
           {quoteBy ? <p className="mt-4 text-[14px] leading-[1.5] text-white/72 lg:text-navy/72">{quoteBy}</p> : null}

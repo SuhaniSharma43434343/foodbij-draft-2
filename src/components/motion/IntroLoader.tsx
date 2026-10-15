@@ -1,10 +1,9 @@
 import Image from "next/image";
-import { site } from "@/content/site";
 import "./intro-loader.css";
 
 /**
  * First-visit intro (W10.1). A navy panel: a copper hairline, slanted like the "/" in FOODB/Z, sweeps across
- * and reveals the white logo, the strapline settles in under it, a thin copper line fills with real loading
+ * and reveals the white logo, a thin copper line fills with real loading
  * progress (DOM, web fonts, the page's priority photo), then the panel lifts away while the opening headline
  * rises. Shown on the first page view of a visit only (sessionStorage); later pages use the PageCurtain.
  *
@@ -49,7 +48,6 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
 }catch(e){el.removeAttribute("data-state")}})();`;
 
 export function IntroLoader() {
-  const [before, after] = site.strapline.split("|").map((s) => s.trim());
   return (
     <>
       <div id="intro" className="il" aria-hidden="true" suppressHydrationWarning>
@@ -66,15 +64,6 @@ export function IntroLoader() {
             />
             <span className="il-sweep" />
           </div>
-          <p className="il-line">
-            {before}
-            {after ? (
-              <>
-                <span className="il-dot"> / </span>
-                {after}
-              </>
-            ) : null}
-          </p>
           <span className="il-track">
             <span className="il-bar" />
           </span>

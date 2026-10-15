@@ -128,49 +128,13 @@
   }
 }
 
-/* Strapline: Cormorant italic, settles in once the logo is half drawn. */
-.il-line {
-  margin-top: 22px;
-  font-family: var(--font-display);
-  font-style: italic;
-  font-weight: 500;
-  font-size: 17px;
-  line-height: 1.2;
-  letter-spacing: 0.02em;
-  color: rgb(255 255 255 / 0.78);
-  opacity: 0;
-}
-.il-dot {
-  color: var(--color-copper, #b87333);
-  font-style: normal;
-}
-.il[data-run] .il-line {
-  animation: il-fade-up 600ms var(--ease-out) 560ms both;
-}
-@media (min-width: 1024px) {
-  .il-line {
-    margin-top: 26px;
-    font-size: 19px;
-  }
-}
-@keyframes il-fade-up {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 8px, 0);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
 /* Progress: a thin copper line on a faint track, filled by the script (--il-p 0..1). */
 .il-track {
   position: relative;
   display: block;
   width: 96px;
   height: 1px;
-  margin-top: 30px;
+  margin-top: 36px;
   overflow: hidden;
   background: rgb(255 255 255 / 0.14);
   opacity: 0;

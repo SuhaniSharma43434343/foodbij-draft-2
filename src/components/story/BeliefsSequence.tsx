@@ -4,7 +4,7 @@ import { useRef, type CSSProperties } from "react";
 import { useScrollProgress } from "@/components/motion/useScrollProgress";
 import { SectionHeading } from "@/components/SectionHeading";
 
-type Belief = { title: string; text: string };
+type Belief = { title: string };
 
 /**
  * Our story, "What we hold to", as a scroll-driven sequence (CSS: .pm-values in components/work/pages-motion.css).
@@ -14,7 +14,7 @@ type Belief = { title: string; text: string };
  *   (the line has its own --p, in "view" mode).
  * Without JS or under reduced motion: a plain list, everything lit, the line fully drawn.
  */
-export function BeliefsSequence({ id, label, heading, items }: { id: string; label: string; heading: string; items: Belief[] }) {
+export function BeliefsSequence({ id, heading, items }: { id: string; heading: string; items: Belief[] }) {
   const section = useRef<HTMLElement>(null);
   const line = useRef<HTMLSpanElement>(null);
   useScrollProgress(section, { mode: "pin" });
@@ -29,7 +29,7 @@ export function BeliefsSequence({ id, label, heading, items }: { id: string; lab
       <div className="pm-values-pin">
         <div className="site-container grid grid-cols-1 lg:grid-cols-12 lg:gap-12">
           <div className="lg:col-span-5">
-            <SectionHeading id={id} label={label} heading={heading} headingClassName="max-w-[20ch]" reveal />
+            <SectionHeading id={id} heading={heading} headingClassName="max-w-[20ch] text-balance" reveal />
             <span aria-hidden="true" className="pm-values-track">
               <span className="pm-values-fill" />
             </span>
@@ -46,7 +46,6 @@ export function BeliefsSequence({ id, label, heading, items }: { id: string; lab
                 >
                   <div className="pm-value-body">
                     <h3 className="font-display text-[1.5rem] leading-[1.18] font-medium text-navy lg:text-[1.75rem]">{b.title}</h3>
-                    <p className="t-body mt-3 text-navy/80">{b.text}</p>
                   </div>
                 </li>
               ))}

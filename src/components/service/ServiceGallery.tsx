@@ -12,7 +12,7 @@ import "@/app/_home/gallery-motion.css";
 /** Art direction for one photo: `zoom` > 1 enlarges it in its frame, anchored to the bottom; `position` is object-position. */
 export type GalleryCrop = { zoom?: number; position?: string };
 
-type Props = { id: string; label: string; heading: string; images: Img[]; crops?: Record<string, GalleryCrop> };
+type Props = { id: string; heading: string; images: Img[]; crops?: Record<string, GalleryCrop> };
 
 const sizes = [
   "(min-width: 1024px) 58vw, 78vw",
@@ -25,7 +25,6 @@ const sizes = [
 
 const DESKTOP = "(min-width: 1024px)";
 const REDUCED = "(prefers-reduced-motion: reduce)";
-const pad = (n: number) => String(n).padStart(2, "0");
 
 /**
  * The service page food band, same behaviour as the homepage gallery (src/app/_home/gallery/GalleryMotion.tsx)
@@ -33,10 +32,10 @@ const pad = (n: number) => String(n).padStart(2, "0");
  * - Desktop (>=1024px, JS + motion allowed): the band pins, the row travels sideways with --p
  *   (useScrollProgress), each photo drifts against its frame, a copper line fills along the bottom.
  * - Phone: native scroll-snap carousel; the centred slide is full size, its neighbours scale down and dim;
- *   "01 / 05" counter below.
+ *   position dots below.
  * - No JS / reduced motion: static asymmetric grid on desktop, plain swipe row on phone.
  */
-export function ServiceGallery({ id, label, heading, images, crops = {} }: Props) {
+export function ServiceGallery({ id, heading, images, crops = {} }: Props) {
   const sectionRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const rowRef = useRef<HTMLUListElement>(null);
@@ -136,8 +135,7 @@ export function ServiceGallery({ id, label, heading, images, crops = {} }: Props
       <div className="fg-pin">
         <div ref={trackRef} className="fg-track">
           <div className="fg-intro" data-reveal-stagger="">
-            <p className="t-label text-copper">{label}</p>
-            <h2 id={`${id}-food`} className="fg-title t-display-m mt-4 text-balance text-white">
+            <h2 id={`${id}-food`} className="fg-title t-display-m text-balance text-white">
               {heading}
             </h2>
           </div>
@@ -166,9 +164,6 @@ export function ServiceGallery({ id, label, heading, images, crops = {} }: Props
           </ul>
         </div>
         <div className="fg-ui" aria-hidden="true">
-          <span className="fg-count t-label">
-            {pad(active + 1)} / {pad(images.length)}
-          </span>
           <span className="fg-dots">
             {images.map((img, i) => (
               <span key={img.src} className={i === active ? "is-on" : undefined} />

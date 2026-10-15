@@ -10,10 +10,6 @@ const foodbizLinks = [
 
 const linkClass = "inline-flex min-h-11 items-center text-[16px] text-white/80 transition-colors hover:text-white";
 
-function ColumnLabel({ children }: { children: React.ReactNode }) {
-  return <p className="t-label text-copper">{children}</p>;
-}
-
 /** Site footer (navy), all copy from src/content/site.ts. */
 export function SiteFooter() {
   const { contact, footer } = site;
@@ -31,10 +27,9 @@ export function SiteFooter() {
           />
         </Link>
 
-        <div className="mt-12 grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-12">
+        <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-12">
           <nav aria-label="Services" className="lg:col-span-4">
-            <ColumnLabel>Services</ColumnLabel>
-            <ul className="mt-3">
+            <ul>
               {services.map((s) => (
                 <li key={s.slug}>
                   <Link href={s.href} className={linkClass}>
@@ -46,8 +41,7 @@ export function SiteFooter() {
           </nav>
 
           <nav aria-label="Foodbiz" className="lg:col-span-4">
-            <ColumnLabel>{site.name}</ColumnLabel>
-            <ul className="mt-3">
+            <ul>
               {foodbizLinks.map((l) => (
                 <li key={l.href}>
                   <Link href={l.href} className={linkClass}>
@@ -59,8 +53,7 @@ export function SiteFooter() {
           </nav>
 
           <div className="lg:col-span-4">
-            <ColumnLabel>Contact</ColumnLabel>
-            <ul className="mt-3 text-[16px] leading-[1.6] text-white/80">
+            <ul className="text-[16px] leading-[1.6] text-white/80">
               <li className="py-[10px]">{contact.phone}</li>
               <li className="py-[10px]">{contact.email}</li>
               <li className="py-[10px]">{contact.address}</li>
@@ -73,11 +66,7 @@ export function SiteFooter() {
           </div>
         </div>
 
-        <p className="mt-16 font-display text-[1.5rem] leading-[1.2] font-medium text-white/90 italic">
-          {footer.closer}
-        </p>
-
-        <div className="mt-8 flex flex-col gap-2 border-t border-white/12 pt-6 text-[14px] text-white/72 lg:flex-row lg:items-center lg:justify-between">
+        <div className="mt-16 flex flex-col gap-2 border-t border-white/12 pt-6 text-[14px] text-white/72 lg:flex-row lg:items-center lg:justify-between">
           <p>{footer.copyright}</p>
           <ul className="flex gap-6">
             {footer.legal.map((l) => (

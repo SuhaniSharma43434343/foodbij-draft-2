@@ -7,32 +7,6 @@
    and fully visible. Shared primitives (data-reveal, data-parallax, .media-zoom, .hero-*) live in globals.css.
    --------------------------------------------------------------------------- */
 
-/* ----- Copper slash beside the page label (draws in on first paint) ----- */
-.pm-slash {
-  display: inline-block;
-  flex: none;
-  width: 10px;
-  height: 19px;
-  overflow: visible;
-  fill: none;
-  stroke: var(--color-copper);
-  stroke-width: 2.2;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 0;
-  animation: pm-slash-draw 700ms var(--ease-out) both;
-}
-@media (min-width: 1024px) {
-  .pm-slash {
-    width: 12px;
-    height: 23px;
-  }
-}
-@keyframes pm-slash-draw {
-  from {
-    stroke-dashoffset: 1;
-  }
-}
-
 /* ----- Scroll-lit words (ScrollLit.tsx) ----- */
 .pm-lit {
   --q: clamp(0, (var(--p, 0) - 0.15) / 0.35, 1);

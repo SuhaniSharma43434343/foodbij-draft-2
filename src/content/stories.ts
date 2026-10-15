@@ -37,7 +37,7 @@ export type EventStoryFull = {
   slug: string;
   service: ServiceSlug;
   title: string;
-  /** One line: the KEEP-ADAPT teaser where one exists. */
+  /** One line under the card title (and the page description): the KEEP-ADAPT teaser where one exists. */
   summary: string;
   /** Two or three sentences from the client; a [NEEDS CLIENT] placeholder until then. */
   brief: string;
@@ -215,6 +215,7 @@ export const stories: EventStoryFull[] = [
       "A ramen counter built as a wooden stall and hung with red paper lanterns, with the kitchen team cooking behind it.",
     // Counter name from the event signage in the photographs (CONTENT-EXPORT.md section 7).
     liveStation: "Ramen, cooked to order through the evening.",
+    // Counter name from the event signage in the photographs (CONTENT-EXPORT.md section 7).
     images: [
       {
         // The client's banner sits above the counter: zoomed from the bottom until it leaves the frame.
@@ -321,12 +322,9 @@ export function getStory(slug: string): EventStoryFull | undefined {
   return stories.find((s) => s.slug === slug);
 }
 
-/** Intro and closing copy for /our-work (intro and closer adapted from CONTENT-EXPORT.md section 4). */
+/** Heading, filter and closing copy for /our-work (closer adapted from CONTENT-EXPORT.md section 4). */
 export const work = {
-  label: "Our work",
   heading: "Every event starts with a brief.",
-  intro:
-    "Weddings, birthdays, brand launches, festival grounds and office lunches. This is a selection; the full list is longer, and quieter.",
   filterLabel: "Show stories for",
   allLabel: "All",
   empty: "No stories for this service yet.",
@@ -334,7 +332,6 @@ export const work = {
     heading: "Brief us on something similar.",
     lead: "A date, a rough guest count and the kind of event is enough to start.",
     cta: "Plan your event",
-    phoneLine: "Or call [NEEDS CLIENT: phone]",
   },
   story: {
     briefLabel: "The brief",

@@ -6,8 +6,6 @@ type PlanBandProps = {
   lead: string;
   /** Button label, e.g. "Plan your event". */
   cta: string;
-  /** Small line under the button, e.g. "Or call ...". */
-  phoneLine: string;
   /** Button target (default "/plan-your-event"; a service page may add a preset query). */
   href?: string;
 };
@@ -15,9 +13,9 @@ type PlanBandProps = {
 /**
  * The navy closing band. Carries id="plan" (the sticky bar and header links jump here) and
  * data-hide-sticky (the sticky phone bar hides while it is on screen). Use once per page.
- * Motion: heading, lead, button and phone line cascade in on scroll (data-reveal-stagger).
+ * Motion: heading, lead and button cascade in on scroll (data-reveal-stagger).
  */
-export function PlanBand({ heading, lead, cta, phoneLine, href = PLAN_HREF }: PlanBandProps) {
+export function PlanBand({ heading, lead, cta, href = PLAN_HREF }: PlanBandProps) {
   return (
     <section id="plan" data-hide-sticky aria-labelledby="plan-title" className="section-y bg-navy text-white">
       <div className="site-container" data-reveal-stagger>
@@ -28,7 +26,6 @@ export function PlanBand({ heading, lead, cta, phoneLine, href = PLAN_HREF }: Pl
         <div className="mt-8">
           <ButtonLink href={href}>{cta}</ButtonLink>
         </div>
-        <p className="mt-5 text-[14px] leading-[1.5] text-white/72">{phoneLine}</p>
       </div>
     </section>
   );

@@ -48,14 +48,10 @@
 .fg-ui {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   margin-top: 20px;
   padding-inline: 11vw;
   color: var(--color-copper);
-}
-.fg-count {
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.2em;
 }
 .fg-dots {
   display: flex;

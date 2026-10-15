@@ -11,7 +11,7 @@ import "./motion-extras.css";
  *
  * States (CSS in motion-extras.css):
  * - dot: an 8px copper dot.
- * - view: an 84px copper disc reading "View" over images and cards. Triggers: `[data-cursor="view"]`
+ * - view: the same 28px copper ring as links, over images and cards. Triggers: `[data-cursor="view"]`
  *   (use this on new photos/cards), plus `a img`, `.group` (card links) and `.svc-frame` (home services photo).
  * - link: a 28px copper ring over links, buttons, labels and summaries (`[data-cursor="link"]` forces it).
  * - hidden: pointer outside the window, over form fields, while the phone menu is open
@@ -140,7 +140,6 @@ export function CopperCursor() {
     <div ref={el} className="cc" data-hidden="" data-state="dot" aria-hidden="true">
       <span className="cc-dot" />
       <span className="cc-ring" />
-      <span className="cc-disc">View</span>
     </div>
   );
 }

@@ -316,14 +316,10 @@ function FullEnquiryForm({ values, setValues }: FormStateProps) {
           <label htmlFor="enquiry-guests" className={labelClass}>
             {fields.guests.label}
           </label>
-          <p id="enquiry-guests-hint" className={hintClass}>
-            {fields.guests.hint}
-          </p>
           <div className="relative mt-2">
             <select
               id="enquiry-guests"
               name="guests"
-              aria-describedby="enquiry-guests-hint"
               value={values.guests}
               onChange={set("guests")}
               className={`${control} ${controlBorder(false)} h-12 appearance-none pr-11`}
@@ -345,15 +341,11 @@ function FullEnquiryForm({ values, setValues }: FormStateProps) {
         <label htmlFor="enquiry-city" className={labelClass}>
           {fields.city.label}
         </label>
-        <p id="enquiry-city-hint" className={hintClass}>
-          {fields.city.hint}
-        </p>
         <input
           id="enquiry-city"
           name="city"
           type="text"
           autoComplete="address-level2"
-          aria-describedby="enquiry-city-hint"
           value={values.city}
           onChange={set("city")}
           className={`${control} ${controlBorder(false)} mt-2 h-12`}
@@ -365,14 +357,10 @@ function FullEnquiryForm({ values, setValues }: FormStateProps) {
         <label htmlFor="enquiry-brief" className={labelClass}>
           {fields.brief.label}
         </label>
-        <p id="enquiry-brief-hint" className={hintClass}>
-          {fields.brief.hint}
-        </p>
         <textarea
           id="enquiry-brief"
           name="brief"
           rows={5}
-          aria-describedby="enquiry-brief-hint"
           value={values.brief}
           onChange={set("brief")}
           className={`${control} ${controlBorder(false)} mt-2 min-h-36 resize-y py-3`}
@@ -408,7 +396,6 @@ function FullEnquiryForm({ values, setValues }: FormStateProps) {
           <div className="pm-status-in border-l-2 border-copper bg-mist px-5 py-5 lg:px-6">
             <p className="t-label text-copper-deep">{copy.status.heading}</p>
             <p className="mt-3 text-[16px] leading-[1.55] text-navy">{copy.status.message}</p>
-            <p className="mt-2 text-[15px] leading-[1.5] text-navy/72">{copy.status.kept}</p>
           </div>
         ) : null}
       </div>
