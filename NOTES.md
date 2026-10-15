@@ -1,6 +1,8 @@
 # Foodbiz v2, editorial redesign: hand-in notes
 
-Branch `redesign-editorial`, 2026-10-15. The first draft stays untouched on `main` (deployed at foodbiz-v2.vercel.app).
+2026-10-15. Source: https://github.com/SuhaniSharma43434343/foodbij-draft-2 (`main` = this redesign,
+`first-draft` = the earlier version, which is also what foodbiz-v2.vercel.app shows). Locally the work is on branch
+`redesign-editorial` of `v-my-apps/foodbiz-v2`.
 Brief: `docs/brief/01-BRIEF.md`. Screenshots: `docs/handin/`.
 
 ## Design concept
@@ -82,7 +84,17 @@ of event), shows an error summary that takes focus, and on a valid brief says pl
 "Copy my brief" button. The button reads "Check my brief", not "Send". The type of event is preset from
 `?type=<service>` on every service page's actions.
 
-## Testing done (production build, local, headless Chrome)
+## Second pass (after review against the first draft)
+
+- No service page repeats a photograph: story cards and the gallery skip any image already used higher on the page
+  (`ServicePage.tsx`). Galleries were re-chosen so each still has three to six frames.
+- Story pages led by a portrait photo now set the photo beside the title and brief instead of cropping it to a
+  letterbox; landscape-led stories keep the wide image.
+- Brand launches: the "what we cover" photo no longer repeats the first story's photo.
+- Homepage corporate spread: larger 4:5 frame so the four spreads carry equal weight.
+- Headings use balanced wrapping and paragraphs avoid single-word last lines (no "with / us" orphans).
+
+## Testing done (production build, local, headless Chrome; re-run after the second pass)
 
 - `npm run build`: passes, 27 static pages, no type errors.
 - Crawl of every internal link from the homepage: 23 pages, all 200, no failed images, no console errors, one `h1`
@@ -95,17 +107,20 @@ of event), shows an error summary that takes focus, and on a valid brief says pl
   following a link. Desktop Services panel opens and closes on Escape.
 - Sticky phone action: hidden while scrolling down, shown on scroll up, hidden over closing invitations and the footer,
   absent on the enquiry page.
-- Motion: reveals fire on scroll and again after client navigation; with reduced motion and with JavaScript off, no
-  photo is clipped and no text is hidden.
+- Motion: 36 of 37 reveal elements fire on a desktop scroll-through (the one left is a phone-only photo that is
+  hidden at desktop width), and they fire again after client navigation; with reduced motion and with JavaScript
+  off, no photo is clipped and no text is hidden.
+- Not verified: the "Copy my brief" clipboard button (headless Chrome blocks clipboard access; it falls back to a
+  message telling the visitor to copy by hand).
 - Speed, measured with Chrome's own LCP/CLS observers (phone viewport, 4x CPU slowdown, about 1.6 Mbps and 150ms
-  latency): home LCP 1.3s, CLS 0, about 295 KB transferred; Weddings LCP 1.3s, CLS 0. **This is not Lighthouse.**
+  latency): home LCP 1.3s, CLS 0, about 295 KB transferred; Weddings LCP 1.5s, CLS 0. **This is not Lighthouse.**
   Lighthouse is not installed on this machine and I did not install it; run PageSpeed Insights on the preview URL.
 - Not done: real iPhone and Android devices, a TV, a fresh-eyes test, PageSpeed Insights. No preview deployment yet.
 
 ## Unfinished
 
 - AI images for the two slots above.
-- Preview deployment (the config is ready; deploying needs the owner's go-ahead).
+- Preview deployment: the noindex config is ready; not deployed.
 - `docs/design/` and `docs/qa/` still describe the first draft; this file is the record for this version.
 
 ## [NEEDS CLIENT] items

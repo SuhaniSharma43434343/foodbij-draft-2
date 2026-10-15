@@ -13,7 +13,16 @@ const d = (ms: number) => ({ "--d": `${ms}ms` }) as CSSProperties;
 /** The shared service page: same order on all four, varied by photography and which side things sit. */
 export function ServicePage({ data, flip = false }: { data: ServicePageData; flip?: boolean }) {
   const service = getService(data.slug);
-  const stories = storiesBySlug(data.stories).slice(0, 3);
+  // One page never shows the same photograph twice: story cards and the gallery skip anything already used.
+  const used = new Set([data.hero.image.src, data.cover.image.src]);
+  const stories = storiesBySlug(data.stories)
+    .slice(0, 3)
+    .map((s) => {
+      const card = s.images.find((im) => !used.has(im.src)) ?? s.images[0];
+      used.add(card.src);
+      return { ...s, card };
+    });
+  const gallery = data.gallery.filter((im) => !used.has(im.src));
   const others = services.filter((s) => s.slug !== data.slug);
   const planHref = `${PLAN_HREF}?type=${data.slug}`;
 
@@ -106,7 +115,7 @@ export function ServicePage({ data, flip = false }: { data: ServicePageData; fli
                       aria-hidden="true"
                       className={`lift block lg:row-start-1 ${i === 0 ? "lg:col-span-7" : "lg:col-span-6"} ${right ? (i === 0 ? "lg:col-start-6" : "lg:col-start-7") : "lg:col-start-1"}`}
                     >
-                      <Photo img={s.images[0]} ratio={i === 0 ? "3 / 2" : "4 / 3"} sizes="(min-width: 1024px) 55vw, 100vw" />
+                      <Photo img={s.card} ratio={i === 0 ? "3 / 2" : "4 / 3"} sizes="(min-width: 1024px) 55vw, 100vw" />
                     </Link>
                     <div className={`lg:row-start-1 lg:col-span-4 ${right ? "lg:col-start-1" : "lg:col-start-9"}`}>
                       <h3 className="t-h3" data-reveal="up">
@@ -130,7 +139,7 @@ export function ServicePage({ data, flip = false }: { data: ServicePageData; fli
 
       {/* 7. Photographs. */}
       <section className="pb-[var(--section)]" aria-label="Photographs">
-        <Gallery images={data.gallery} label={`${service.name}: photographs`} />
+        <Gallery images={gallery} label={`${service.name}: photographs`} />
         {data.galleryNote && (
           <p className="wrap mt-6">
             <Txt>{data.galleryNote}</Txt>

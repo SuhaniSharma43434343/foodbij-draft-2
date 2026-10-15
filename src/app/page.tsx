@@ -197,7 +197,7 @@ function ServiceSpread({ service, layout }: { service: Service; layout: Layout }
 
   return (
     <div className="wrap mt-24 grid gap-10 lg:mt-40 lg:grid-cols-12 lg:items-center lg:gap-8">
-      {image("3 / 4", "(min-width: 1024px) 30vw, 82vw", "mr-[18%] lg:col-span-4 lg:col-start-3 lg:mr-0")}
+      {image("4 / 5", "(min-width: 1024px) 38vw, 82vw", "mr-[18%] lg:col-span-5 lg:col-start-2 lg:mr-0")}
       <div className="lg:col-span-4 lg:col-start-8">{text}</div>
     </div>
   );

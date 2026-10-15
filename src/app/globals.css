@@ -60,6 +60,16 @@
 }
 
 @layer base {
+  /* No orphaned last words in headings, at any width. */
+  h1,
+  h2,
+  h3,
+  blockquote p {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
 html {
   background: #fff;
   color: var(--navy);
