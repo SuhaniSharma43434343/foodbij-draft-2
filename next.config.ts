@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
     // so none waits on the on-demand optimiser. Widths match the pre-built set.
     loader: "custom",
     loaderFile: "./src/lib/image-loader.ts",
-    deviceSizes: [640, 1080, 1600, 2400],
+    deviceSizes: [480, 828, 1200, 1600, 2048],
     imageSizes: [240],
   },
   // A second dev server can run beside the main one with its own build dir: NEXT_DIST_DIR=.next-alt npx next dev -p 3011

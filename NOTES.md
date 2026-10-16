@@ -12,7 +12,17 @@ spreads, so the visitor moves through a sequence of scenes rather than a stack o
 photographs layered over each other's edges and a few precise motions (masked words, rising photos) carry the
 luxury; the copy stays short and factual.
 
-## Fourth pass: interaction and motion system (current version)
+## Fifth pass: faster photos
+
+Reported: photos took 2-3 seconds to appear. Changes: photos re-encoded lighter (WebP quality 62, six widths from
+240 to 2048 instead of five from 240 to 2400, so phones get an in-between size instead of jumping up a size);
+photo reveals now take 0.6s instead of 1.1s and start just before a photo scrolls into view; hero open-out 1s instead
+of 1.6s; the homepage opening is shorter (about 0.9s). Measured on a throttled phone profile (4x CPU, about 1.6 Mbps,
+cache off), live site before vs local build after: homepage first-screen photos 90 KB to 55 KB, all loaded by 1.2s
+instead of 2.0s, LCP 3.5s to 2.9s; Celebrations 278 KB to 158 KB, loaded by 2.4s instead of 3.0s, LCP 3.2s to 2.5s;
+Weddings unchanged at about 1.3s. Crawl after the change: 23 pages, no broken images, no console errors.
+
+## Fourth pass: interaction and motion system
 
 **Audit of the deployed site before this pass** (Playwright driving Chrome against foodbij-draft-2.vercel.app):
 worked: back/forward, the phone menu (open, close, Escape), the gallery's Next button, the hover photo on the

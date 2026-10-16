@@ -57,7 +57,7 @@ const motionScript = [
   "var n=performance.getEntriesByType&&performance.getEntriesByType('navigation')[0];",
   "if(!rm&&location.pathname==='/'&&!(n&&n.type==='back_forward')&&!sessionStorage.getItem('fb-intro')){",
   "sessionStorage.setItem('fb-intro','1');d.classList.add('intro');",
-  "setTimeout(function(){d.classList.remove('intro')},2300)}}catch(e){}",
+  "setTimeout(function(){d.classList.remove('intro')},1900)}}catch(e){}",
 ].join("");
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

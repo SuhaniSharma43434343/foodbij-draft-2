@@ -12,7 +12,7 @@ import path from "node:path";
 const ROOT = path.resolve(import.meta.dirname, "..");
 const SRC = path.join(ROOT, "public");
 const OUT = path.join(ROOT, "public", "o");
-const WIDTHS = [240, 640, 1080, 1600, 2400];
+const WIDTHS = [240, 480, 828, 1200, 1600, 2048];
 
 // Every /images/... path referenced in the content files.
 const content = ["site.ts"].map((f) => fs.readFileSync(path.join(ROOT, "src", "content", f), "utf8")).join("\n");
@@ -26,10 +26,10 @@ for (const r of rel) {
   const name = crypto.createHash("sha1").update(r).digest("hex").slice(0, 10);
   const img = sharp(file).rotate();
   const { width } = await img.metadata();
-  const widths = WIDTHS.filter((w) => w < width).concat(width > 2400 ? [] : [width]).filter((w, i, a) => a.indexOf(w) === i);
+  const widths = WIDTHS.filter((w) => w < width).concat(width > 2048 ? [] : [width]).filter((w, i, a) => a.indexOf(w) === i);
   for (const w of widths) {
     const out = path.join(OUT, `${name}-${w}.webp`);
-    if (!fs.existsSync(out)) await sharp(file).rotate().resize({ width: w }).webp({ quality: 72, effort: 5 }).toFile(out);
+    if (!fs.existsSync(out)) await sharp(file).rotate().resize({ width: w }).webp({ quality: 62, effort: 6, smartSubsample: true }).toFile(out);
   }
   const { dominant } = await sharp(file).stats();
   const hex = "#" + [dominant.r, dominant.g, dominant.b].map((v) => v.toString(16).padStart(2, "0")).join("");
