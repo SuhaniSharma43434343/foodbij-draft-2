@@ -1,7 +1,9 @@
+import { PageTransition } from "@/components/PageTransition";
 import type { Metadata } from "next";
-import Link from "next/link";
+import Link from "@/components/Link";
 import { notFound } from "next/navigation";
 import { Close } from "@/components/Close";
+import { LightboxScope, LightboxTrigger } from "@/components/Lightbox";
 import { Photo } from "@/components/Photo";
 import { Txt } from "@/components/Txt";
 import { getService } from "@/content/site";
@@ -56,7 +58,7 @@ export default async function StoryPage({ params }: { params: Promise<Params> })
   const next = siblings[(siblings.findIndex((s) => s.slug === story.slug) + 1) % siblings.length];
 
   return (
-    <>
+    <PageTransition>
       <article>
         {portrait ? (
           /* A portrait lead photograph sits beside the words instead of being cropped to a letterbox. */
@@ -92,18 +94,20 @@ export default async function StoryPage({ params }: { params: Promise<Params> })
         )}
 
         {rest.length > 0 && (
-          <div className={`wrap grid gap-3 pb-[var(--section)] md:grid-cols-2 md:gap-8 `}>
+          <LightboxScope images={rest} label={`${story.title}: photographs`}>
+          <div className="wrap grid gap-3 pb-[var(--section)] md:grid-cols-2 md:gap-8">
             {rest.map((im, i) => (
-              <Photo
+              <LightboxTrigger
                 key={im.src}
-                img={im}
-                ratio={im.height > im.width ? "4 / 5" : "4 / 3"}
-                sizes="(min-width: 768px) 46vw, 100vw"
+                index={i}
+                alt={im.alt}
                 className={rest.length === 1 ? "md:col-span-2 md:mx-auto md:w-2/3" : i % 2 === 1 ? "md:mt-24" : ""}
-                delay={i * 120}
-              />
+              >
+                <Photo img={im} ratio={im.height > im.width ? "4 / 5" : "4 / 3"} sizes="(min-width: 768px) 46vw, 100vw" delay={i * 120} />
+              </LightboxTrigger>
             ))}
           </div>
+          </LightboxScope>
         )}
       </article>
 
@@ -122,6 +126,6 @@ export default async function StoryPage({ params }: { params: Promise<Params> })
       )}
 
       <Close heading="Brief us on something similar." lead="A date, a rough guest count and the kind of event is enough to start." service={story.service} />
-    </>
+    </PageTransition>
   );
 }

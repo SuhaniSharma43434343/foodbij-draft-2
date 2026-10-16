@@ -1,9 +1,10 @@
-import Link from "next/link";
+import Link from "@/components/Link";
 import type { CSSProperties, ReactNode } from "react";
 import type { ServicePageData, Variant } from "@/content/services";
 import { getService, PLAN_HREF, services } from "@/content/site";
 import { storiesBySlug } from "@/content/stories";
 import { Gallery } from "./Gallery";
+import { PageTransition } from "./PageTransition";
 import { Photo } from "./Photo";
 import { RevealText } from "./RevealText";
 import { Txt } from "./Txt";
@@ -52,15 +53,17 @@ export function ServicePage({ data }: { data: ServicePageData }) {
       Services <span className={dark ? "text-[var(--copper-soft)]" : "text-[var(--copper)]"} aria-hidden="true">/</span>
     </Link>
   );
+  // Each mood has its own tempo: slow and warm for weddings, quick and punchy for launches.
+  const stagger = { cinematic: 75, intimate: 55, stage: 32, precise: 40 }[data.variant];
   const title = (cls: string) => (
-    <RevealText as="h1" id="svc-title" text={service.name} trigger="load" delay={250} className={cls} />
+    <RevealText as="h1" id="svc-title" text={service.name} trigger="load" delay={250} stagger={stagger} className={cls} />
   );
 
   let hero: ReactNode;
   if (data.variant === "cinematic") {
     // Full-bleed, dark and warm: the photograph is the page.
     hero = (
-      <section className="hero" aria-labelledby="svc-title">
+      <section data-variant={data.variant} className="hero" aria-labelledby="svc-title">
         <div className="hero-media">
           <Photo img={data.hero.image} sizes="100vw" className="h-full w-full" preload />
         </div>
@@ -84,10 +87,10 @@ export function ServicePage({ data }: { data: ServicePageData }) {
     // Linen and close: a tall photograph with a second one set into its corner.
     const [small] = data.hero.extra ?? [];
     hero = (
-      <section className="bg-[var(--linen)] pb-24 pt-[var(--header-h)] lg:pb-32" style={{ "--inset-bg": "var(--linen)" } as CSSProperties} aria-labelledby="svc-title">
+      <section data-variant={data.variant} className="bg-[var(--linen)] pb-24 pt-[var(--header-h)] lg:pb-32" style={{ "--inset-bg": "var(--linen)" } as CSSProperties} aria-labelledby="svc-title">
         <div className="lg:grid lg:grid-cols-12 lg:gap-8">
           <div className="relative lg:col-span-6 lg:col-start-7 lg:row-start-1">
-            <Photo img={data.hero.image} sizes="(min-width: 1024px) 50vw, 100vw" preload className="aspect-[4/5] lg:aspect-auto lg:h-[calc(100svh-var(--header-h))]" />
+            <Photo img={data.hero.image} sizes="(min-width: 1024px) 50vw, 100vw" preload className="sv-wipe-l aspect-[4/5] lg:aspect-auto lg:h-[calc(100svh-var(--header-h))]" drift />
             {small && (
               <div className="hero-inset absolute -bottom-16 left-[var(--gutter)] w-[40%] lg:-bottom-20 lg:-left-[16%] lg:w-[36%]">
                 <Photo img={small} ratio="3 / 4" sizes="(min-width: 1024px) 18vw, 40vw" className="inset-frame" reveal={false} eager />
@@ -111,7 +114,7 @@ export function ServicePage({ data }: { data: ServicePageData }) {
     // Navy and big: the name across the page, then a row of photographs at different scales.
     const [a, b] = data.hero.extra ?? [];
     hero = (
-      <section className="on-dark overflow-hidden pb-20 pt-[calc(var(--header-h)+40px)] lg:pb-28 lg:pt-[calc(var(--header-h)+72px)]" aria-labelledby="svc-title">
+      <section data-variant={data.variant} className="on-dark overflow-hidden pb-20 pt-[calc(var(--header-h)+40px)] lg:pb-28 lg:pt-[calc(var(--header-h)+72px)]" aria-labelledby="svc-title">
         <div className="wrap grid gap-8 lg:grid-cols-12 lg:items-end">
           <div className="lg:col-span-8">
             {crumb(true)}
@@ -127,20 +130,21 @@ export function ServicePage({ data }: { data: ServicePageData }) {
           </div>
         </div>
         <div className="mt-12 grid grid-cols-12 items-end gap-3 px-[var(--gutter)] lg:mt-16 lg:gap-6">
-          <Photo img={data.hero.image} ratio="3 / 4" sizes="(min-width: 1024px) 30vw, 46vw" preload className="col-span-5 lg:col-span-4" />
-          {a && <Photo img={a} ratio="4 / 3" sizes="(min-width: 1024px) 40vw, 54vw" className="col-span-7 lg:col-span-5" preload />}
-          {b && <Photo img={b} ratio="1 / 1" sizes="22vw" className="hidden lg:col-span-3 lg:mb-24 lg:block" preload />}
+          <Photo img={data.hero.image} ratio="3 / 4" sizes="(min-width: 1024px) 30vw, 46vw" preload className="sv-rise col-span-5 lg:col-span-4" delay={250} />
+          {a && <Photo img={a} ratio="4 / 3" sizes="(min-width: 1024px) 40vw, 54vw" className="sv-rise col-span-7 lg:col-span-5" preload delay={400} />}
+          {b && <Photo img={b} ratio="1 / 1" sizes="22vw" className="sv-rise hidden lg:col-span-3 lg:mb-24 lg:block" preload delay={550} />}
         </div>
       </section>
     );
   } else {
     // White and exact: the name, a ruled line of facts, one wide photograph.
     hero = (
-      <section className="pt-[calc(var(--header-h)+40px)] lg:pt-[calc(var(--header-h)+72px)]" aria-labelledby="svc-title">
+      <section data-variant={data.variant} className="pt-[calc(var(--header-h)+40px)] lg:pt-[calc(var(--header-h)+72px)]" aria-labelledby="svc-title">
         <div className="wrap grid gap-8 lg:grid-cols-12 lg:items-end">
           <div className="lg:col-span-7">
             {crumb(false)}
             {title("t-big max-w-[11ch]")}
+            <span className="copper-rule sv-rule mt-8 w-24" aria-hidden="true" />
           </div>
           <div className="lg:col-span-4 lg:col-start-9 lg:pb-2">
             <p className="t-lead muted hero-in max-w-[34ch]" style={d(600)}>
@@ -152,18 +156,18 @@ export function ServicePage({ data }: { data: ServicePageData }) {
           </div>
         </div>
         <div className="mt-12 lg:mt-16">
-          <Photo img={data.hero.image} sizes="100vw" preload className="aspect-[4/3] md:aspect-[21/9]" />
+          <Photo img={data.hero.image} sizes="100vw" preload className="sv-wipe-r aspect-[4/3] md:aspect-[21/9]" drift />
         </div>
       </section>
     );
   }
 
   return (
-    <>
+    <PageTransition>
       {hero}
 
       {/* What we cover. */}
-      <section className={`${theme.cover} py-[var(--section)]`} aria-labelledby="cover-title">
+      <section className={`${theme.cover} ${theme.cover === "on-dark" ? "tone-in" : ""} py-[var(--section)]`} aria-labelledby="cover-title">
         <div className="wrap grid gap-12 lg:grid-cols-12 lg:gap-8">
           <div className={`lg:col-span-6 lg:row-start-1 ${data.variant === "intimate" || data.variant === "precise" ? "lg:col-start-7" : "lg:col-start-1"}`}>
             <RevealText id="cover-title" text={data.cover.heading} className="t-h1 max-w-[16ch]" />
@@ -187,18 +191,35 @@ export function ServicePage({ data }: { data: ServicePageData }) {
         </div>
       </section>
 
-      {/* How it works: numbered, because the order is the point. */}
-      <section className={`${theme.steps} py-[var(--section)]`} aria-labelledby="steps-title">
-        <div className="wrap">
-          <RevealText id="steps-title" text={data.steps.heading} className="t-h1 max-w-[18ch]" />
-          <ol className="mt-12 grid gap-10 md:grid-cols-2 lg:mt-16 lg:grid-cols-4 lg:gap-8">
+      {/* How it works: the heading stays in place while the steps scroll past it (desktop), and a copper
+          rule fills as you read. Native sticky positioning: the page scrolls normally. */}
+      <section
+        className={`steps-scope ${theme.steps} ${theme.steps === "on-dark" ? "tone-in" : ""} py-[var(--section)]`}
+        aria-labelledby="steps-title"
+      >
+        <div className="wrap lg:grid lg:grid-cols-12 lg:gap-8">
+          <div className="lg:col-span-5">
+            <div className="lg:sticky lg:top-[calc(var(--header-h)+56px)]">
+              <RevealText id="steps-title" text={data.steps.heading} className="t-h1 max-w-[14ch]" />
+              <span className="steps-progress mt-10 hidden lg:block" aria-hidden="true">
+                <span />
+              </span>
+            </div>
+          </div>
+          <ol className="steps-list mt-12 lg:col-span-6 lg:col-start-7 lg:mt-0">
             {data.steps.items.map((s, i) => (
-              <li key={s.title} className={`border-t pt-6 ${theme.steps === "on-dark" ? "border-[var(--line-dark)]" : "border-[var(--line)]"}`} data-reveal="up" style={d(i * 90)}>
-                <span className={`serif text-[3rem] leading-none ${theme.steps === "on-dark" ? "text-[var(--copper-soft)]" : "text-[var(--copper-ink)]"}`} aria-hidden="true">
+              <li
+                key={s.title}
+                className={`grid grid-cols-[3.25rem_1fr] gap-x-5 border-t py-8 lg:grid-cols-[6rem_1fr] lg:py-14 ${theme.steps === "on-dark" ? "border-[var(--line-dark)]" : "border-[var(--line)]"}`}
+                data-reveal="up"
+              >
+                <span className={`serif text-[3rem] leading-[0.9] lg:text-[4.5rem] ${theme.steps === "on-dark" ? "text-[var(--copper-soft)]" : "text-[var(--copper-ink)]"}`} aria-hidden="true">
                   {i + 1}
                 </span>
-                <h3 className="serif mt-4 text-[1.625rem] leading-tight">{s.title}</h3>
-                <p className="muted mt-3 max-w-[32ch]">{s.text}</p>
+                <div>
+                  <h3 className="serif text-[1.625rem] leading-tight lg:text-[2.125rem]">{s.title}</h3>
+                  <p className="muted mt-3 max-w-[40ch]">{s.text}</p>
+                </div>
               </li>
             ))}
           </ol>
@@ -245,7 +266,7 @@ export function ServicePage({ data }: { data: ServicePageData }) {
 
       {/* Photographs: a film strip at one height. */}
       {gallery.length > 0 && (
-        <section className={`${data.variant === "stage" ? "on-dark py-[var(--section)]" : "pb-[var(--section)]"}`} aria-label="Photographs">
+        <section className={`${data.variant === "stage" ? "on-dark tone-in py-[var(--section)]" : "pb-[var(--section)]"}`} aria-label="Photographs">
           <Gallery images={gallery} label={`${service.name}: photographs`} dark={data.variant === "stage"} />
           {data.galleryNote && (
             <p className="wrap mt-6">
@@ -279,7 +300,7 @@ export function ServicePage({ data }: { data: ServicePageData }) {
 
       {/* Plan your event, preset to this service: the hero photograph returns to close the page. */}
       <section
-        className={`on-dark relative isolate overflow-hidden ${closeImg ? "flex min-h-[80svh] items-end pb-16 pt-40 lg:pb-24" : "py-[var(--section)]"}`}
+        className={`on-dark tone-in relative isolate overflow-hidden ${closeImg ? "flex min-h-[80svh] items-end pb-16 pt-40 lg:pb-24" : "py-[var(--section)]"}`}
         data-cta-zone
         aria-labelledby="close-title"
       >
@@ -301,6 +322,6 @@ export function ServicePage({ data }: { data: ServicePageData }) {
           </div>
         </div>
       </section>
-    </>
+    </PageTransition>
   );
 }

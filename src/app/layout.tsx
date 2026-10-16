@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Instrument_Serif, Manrope } from "next/font/google";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+import { HeroPrefetch } from "@/components/HeroPrefetch";
+import { HistoryEntrance } from "@/components/HistoryEntrance";
 import { RevealObserver } from "@/components/RevealObserver";
 import { StickyCta } from "@/components/StickyCta";
 import "./globals.css";
@@ -42,9 +44,21 @@ export const viewport: Viewport = {
   themeColor: "#0B1C2D",
 };
 
-// Runs before first paint: turns on the scroll-reveal states only when motion is welcome,
-// so without JavaScript (or with reduced motion) every element is simply visible.
-const motionScript = `try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches&&'IntersectionObserver' in window)document.documentElement.classList.add('mo')}catch(e){}`;
+// Runs before first paint.
+// 1. Turns on the scroll-reveal states only when motion is welcome, so without JavaScript (or with reduced
+//    motion) every element is simply visible.
+// 2. Plays the opening (.opening, html.intro) on the homepage once per visit: not on back/forward, not on a reload in the same
+//    session, not with reduced motion. It never blocks the page (pointer-events: none) and ends on its own
+//    in CSS even if nothing else runs; the class is cleared afterwards so later visits to the homepage
+//    within the visit use the lighter entrance.
+const motionScript = [
+  "try{var d=document.documentElement,rm=matchMedia('(prefers-reduced-motion: reduce)').matches;",
+  "if(!rm&&'IntersectionObserver' in window)d.classList.add('mo');",
+  "var n=performance.getEntriesByType&&performance.getEntriesByType('navigation')[0];",
+  "if(!rm&&location.pathname==='/'&&!(n&&n.type==='back_forward')&&!sessionStorage.getItem('fb-intro')){",
+  "sessionStorage.setItem('fb-intro','1');d.classList.add('intro');",
+  "setTimeout(function(){d.classList.remove('intro')},2300)}}catch(e){}",
+].join("");
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -59,6 +73,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         >
           Skip to content
         </a>
+        <div className="opening" aria-hidden="true">
+          <div className="opening-panel">
+            <span className="opening-mark">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img className="opening-logo" src="/logos/foodbiz-2026-white-400w.webp" alt="" width={400} height={91} />
+              <span className="opening-rule" />
+            </span>
+          </div>
+        </div>
         <Header />
         <main id="main" tabIndex={-1} className="outline-none">
           {children}
@@ -66,6 +89,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Footer />
         <StickyCta />
         <RevealObserver />
+        <HistoryEntrance />
+        <HeroPrefetch />
       </body>
     </html>
   );

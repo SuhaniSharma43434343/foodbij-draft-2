@@ -12,7 +12,76 @@ spreads, so the visitor moves through a sequence of scenes rather than a stack o
 photographs layered over each other's edges and a few precise motions (masked words, rising photos) carry the
 luxury; the copy stays short and factual.
 
-## Third pass: the radical visual redesign (current version)
+## Fourth pass: interaction and motion system (current version)
+
+**Audit of the deployed site before this pass** (Playwright driving Chrome against foodbij-draft-2.vercel.app):
+worked: back/forward, the phone menu (open, close, Escape), the gallery's Next button, the hover photo on the
+service index, no console errors, no failed requests, no layout shift. Missing or weak: no opening; internal
+navigation was an instant swap with no transition; gallery photos could not be opened; the header stayed white over
+navy sections; the `/#services` link on every service page pointed at an anchor the third pass had removed.
+
+**What was built.** No new dependencies: GSAP is not installed and was not added. Page transitions use React 19.3's
+`<ViewTransition>` with Next.js 16's own client-side navigation; everything else is CSS plus small components.
+Timing tokens: 0.3s for feedback, about 0.6s for page transitions, 1-1.6s for photographs and display type, one
+easing family (`--ease`, `--ease-io`).
+
+1. **Opening** (homepage, first visit of a session): navy panel, the logo draws left to right over a copper rule,
+   the panel wipes upward onto the hero photo, which opens out from a frame; the headline rises word by word, then the
+   line and the button. About 1.2s to settled. It never blocks clicks or scrolling (`pointer-events: none`), and it does
+   not play on a reload in the same session, on back/forward, with reduced motion, or without JavaScript.
+   (`layout.tsx` inline script, `.opening` in `globals.css`.)
+2. **Page transitions**: every internal link (`src/components/Link.tsx`, next/link tagged `transitionTypes={["page"]}`,
+   pages wrapped in `PageTransition.tsx`) runs a view transition. The old page lifts and fades (0.24s), the document
+   behind it turns navy, and the new page rises in behind a clean edge (0.44s from 0.14s). The header stays anchored.
+   Back/forward: Next.js restores those pages without a view transition, so `HistoryEntrance.tsx` fades the arriving
+   page in (0.32s). Ctrl/Cmd-click, new tabs, external links and downloads are left to the browser (next/link does not
+   run client navigation for them). Browsers without view transitions swap pages instantly. `HeroPrefetch.tsx`
+   warms the destination's first photograph when a link is pointed at, focused or touched, so the transition starts
+   sooner.
+3. **Scroll**: navy chapters open from a framed card to full bleed as they enter (`.tone-in`); layered photos move at
+   a different speed from the page (`.depth`); on service pages the "how it works" heading stays in place (CSS sticky)
+   while the steps scroll past and a copper rule fills; photo mask reveals, word reveals and drift as before. Native
+   scrolling throughout; nothing is pinned or hijacked.
+4. **Service heroes, one reveal each**: Weddings opens from a frame with a slow word stagger; Celebrations' photo opens
+   from the right like a door, then the inset photo rises; Brand launches' three photos rise one after another with a
+   fast word stagger; Corporate draws a copper rule and wipes its wide photo left to right.
+5. **Lightbox** on the service film strips, the homepage food spread and story photos: the photo grows out of the one
+   clicked (a view transition), arrows, keys and swipes step through, Escape, the close button or a downward swipe
+   return, focus is trapped while open and returned afterwards, page scroll is locked.
+6. **Header** reads what is under it: transparent over full-bleed photos, navy over navy sections, white elsewhere.
+7. **Feedback**: buttons lift on hover and press in on click; arrows extend on hover and on keyboard focus.
+8. **Fixed on the way**: the `/#services` anchor. And a bug in the first build of the opening, caught by the
+   screenshot test before shipping: the overlay and the `<html>` element shared the class `intro`, which hid the whole
+   homepage for 2.6s.
+
+**Tested** (production build on a local server, Chrome driven by Playwright; scripts kept outside the repo):
+- Opening: shows at once, does not block clicks, clears itself, settled hero; not on reload, not on back/forward.
+- Page transitions: a view transition with the `page` type starts 22-116ms after a click, the animation starts
+  85-290ms after the click (with a brief hover first), and the page is settled 0.7-1.05s after the click. No transition
+  overlay remains afterwards; the new page is interactive. Checked frame by frame at reduced playback speed: old page
+  lifts onto navy, new page rises.
+- The four service links on the homepage index, the header's Our work link, the phone menu's Weddings link, a story
+  card and a service page's enquiry button each reach the right page with a transition; back and forward return to the right pages with the fade; Ctrl-click opens a new tab and leaves the page
+  alone; the Instagram link goes straight to the browser with no transition; `/#services` lands on the index; a nested
+  route (`/our-work/boutique-evening`) loads directly with status 200.
+- Lightbox: opens with a morph, focus on Close, ArrowRight/ArrowLeft step, Tab stays inside, Escape closes and returns
+  focus, scroll unlocks; on a phone a swipe steps and the close button closes.
+- Phone menu: opens, links navigate with a transition and close the menu, scroll unlocks. Header turns navy over navy
+  sections on a phone.
+- Reduced motion: no opening, no reveal states, transitions do not animate, content visible.
+- Crawl of all 23 pages: all 200, no failed images, no console errors, one `h1` each, alt text, noindex; no horizontal
+  overflow at 360, 375, 390, 768, 1024, 1280 and 1920px; tap targets at least 44px at 360px.
+- Form: errors and focus, bad email caught, "not sent" status, no success claim, service preset from the URL.
+- Speed (Chrome's own LCP observer, phone viewport, 4x CPU slowdown, about 1.6 Mbps, cache off): Weddings LCP 1.3s,
+  Our work 2.9s, homepage 3.7s. The homepage is slower because the opening holds the hero text back by design; repeat
+  visits in a session skip it. CLS 0 on the homepage and Weddings. Not Lighthouse.
+- Not tested: Safari and Firefox (only Chrome is available here), real phones.
+
+**Limits**: where `animation-timeline` is unsupported (Firefox today), the scroll-linked effects (drift, depth, tone
+shift, steps rule) stay still; page transitions and the lightbox morph need view-transition support and otherwise swap
+instantly; back/forward get a fade rather than the curtain.
+
+## Third pass: the radical visual redesign
 
 Why: the review recording showed too much empty space, repeated layouts and large blank image areas.
 

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/Link";
 import { PLAN_HREF, services, site } from "@/content/site";
 
 function Needs({ children }: { children: string }) {

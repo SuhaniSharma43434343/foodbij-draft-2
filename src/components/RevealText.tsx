@@ -11,20 +11,22 @@ type Props = {
   delay?: number;
   /** Force a line break after these words (1-based word index), for set display lines. */
   breakAfter?: number[];
+  /** Milliseconds between words. */
+  stagger?: number;
 };
 
 /**
  * Display type that rises word by word out of a mask. The words are real text in the HTML, so
  * screen readers, search and no-JS visitors get the plain heading; only the motion is extra.
  */
-export function RevealText({ text, as: Tag = "h2", className = "", id, trigger = "scroll", delay = 0, breakAfter = [] }: Props) {
+export function RevealText({ text, as: Tag = "h2", className = "", id, trigger = "scroll", delay = 0, breakAfter = [], stagger }: Props) {
   const words = text.split(" ");
   return (
     <Tag
       id={id}
       className={`rt ${trigger === "load" ? "rt-load" : ""} ${className}`}
       data-reveal={trigger === "scroll" ? "text" : undefined}
-      style={{ "--d": `${delay}ms` } as CSSProperties}
+      style={{ "--d": `${delay}ms`, ...(stagger ? { "--stagger": `${stagger}ms` } : {}) } as CSSProperties}
     >
       {words.map((w, i) => (
         <span key={i}>

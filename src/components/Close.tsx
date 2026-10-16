@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/Link";
 import { PLAN_HREF, type Img, type ServiceSlug } from "@/content/site";
 import { Photo } from "./Photo";
 

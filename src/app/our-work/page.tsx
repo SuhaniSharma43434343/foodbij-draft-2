@@ -1,3 +1,4 @@
+import { PageTransition } from "@/components/PageTransition";
 import type { Metadata } from "next";
 import { Close } from "@/components/Close";
 import { RevealText } from "@/components/RevealText";
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
 
 export default function OurWorkPage() {
   return (
-    <>
+    <PageTransition>
       <section className="pb-[var(--section)] pt-[calc(var(--header-h)+56px)] lg:pt-[calc(var(--header-h)+96px)]">
         <div className="wrap">
           <RevealText as="h1" text="Every event starts with a brief." trigger="load" delay={150} className="t-big max-w-[13ch]" />
@@ -21,6 +22,6 @@ export default function OurWorkPage() {
         </div>
       </section>
       <Close heading="Brief us on something similar." lead="A date, a rough guest count and the kind of event is enough to start." />
-    </>
+    </PageTransition>
   );
 }

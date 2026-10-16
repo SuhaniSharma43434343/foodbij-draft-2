@@ -1,11 +1,25 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/Link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { PLAN_HREF, services, site } from "@/content/site";
 import { Photo } from "./Photo";
+
+type Tone = "over" | "dark" | "solid";
+
+/** What sits under the middle of the header: a full-bleed photograph, a navy section, or a light one. */
+function toneUnderHeader(): Tone {
+  const header = document.querySelector<HTMLElement>(".site-header");
+  const y = Math.max(1, (header?.offsetHeight ?? 64) / 2);
+  const under = document
+    .elementsFromPoint(window.innerWidth / 2, y)
+    .find((el) => !el.closest(".site-header, .opening, .menu-sheet, .sticky-cta, .lb"));
+  if (under?.closest(".hero")) return "over";
+  if (under?.closest(".on-dark")) return "dark";
+  return "solid";
+}
 
 const LINKS = [
   { label: "Our work", href: "/our-work" },
@@ -14,15 +28,18 @@ const LINKS = [
 
 /**
  * One header for every page.
- * - Over the homepage photograph it is transparent with the white logo; elsewhere, white with the navy logo.
+ * - It reads what is under it: transparent over a full-bleed photograph (.hero), navy over navy sections
+ *   (.on-dark), white everywhere else, with a short colour transition between them.
  * - It slides away while you scroll down and returns as soon as you scroll up.
+ * - It keeps its place during page transitions (view-transition-name: site-header).
  * - Desktop: Services opens a panel of the four services. Phone: Menu opens a full-screen sheet.
  */
 export function Header() {
   const pathname = usePathname();
-  // Pages that open on a dark full-width hero: the header starts transparent over it.
-  const isHome = ["/", "/services/weddings", "/services/brand-launches"].includes(pathname);
-  const [over, setOver] = useState(isHome);
+  // First paint guess (server render), corrected from what is actually under the header on mount.
+  const initialTone: Tone =
+    pathname === "/" || pathname === "/services/weddings" ? "over" : pathname === "/services/brand-launches" ? "dark" : "solid";
+  const [tone, setTone] = useState<Tone>(initialTone);
   const [hidden, setHidden] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [panelOpen, setPanelOpen] = useState(false);
@@ -44,8 +61,7 @@ export function Header() {
     const update = () => {
       raf = 0;
       const y = window.scrollY;
-      const heroEnd = isHome ? window.innerHeight * 0.6 : 0;
-      setOver(isHome && y < heroEnd);
+      setTone(toneUnderHeader());
       if (Math.abs(y - last) > 6) {
         setHidden(y > last && y > 240);
         last = y;
@@ -60,7 +76,7 @@ export function Header() {
       window.removeEventListener("scroll", onScroll);
       cancelAnimationFrame(raf);
     };
-  }, [isHome]);
+  }, [pathname]);
 
   // Phone menu: lock scroll, keep focus inside, close on Escape, return focus.
   useEffect(() => {
@@ -112,12 +128,13 @@ export function Header() {
     };
   }, [panelOpen]);
 
-  const theme = over && !panelOpen ? "over" : "solid";
+  const theme: Tone = panelOpen ? "solid" : tone;
 
   return (
     <>
       <header
         className="site-header"
+        style={{ viewTransitionName: "site-header" }}
         data-theme={theme}
         data-hidden={hidden && !panelOpen && !menuOpen ? "true" : "false"}
       >

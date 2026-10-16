@@ -1,5 +1,7 @@
-import Link from "next/link";
+import { PageTransition } from "@/components/PageTransition";
+import Link from "@/components/Link";
 import type { CSSProperties } from "react";
+import { LightboxScope, LightboxTrigger } from "@/components/Lightbox";
 import { Photo } from "@/components/Photo";
 import { RevealText } from "@/components/RevealText";
 import { StoryCard } from "@/components/StoryCard";
@@ -10,6 +12,14 @@ import { storiesBySlug } from "@/content/stories";
 
 const d = (ms: number) => ({ "--d": `${ms}ms` }) as CSSProperties;
 const [weddings, celebrations, launches, corporate] = services;
+const foodPhotos = [
+  photos.livePlating,
+  photos.rocaDesserts,
+  photos.aurangabadThali,
+  photos.cartierCocktails,
+  photos.defenderBoard,
+  photos.bayviewChai,
+];
 
 function More({ href, label, dark }: { href: string; label: string; dark?: boolean }) {
   return (
@@ -36,7 +46,7 @@ export default function HomePage() {
   ]);
 
   return (
-    <>
+    <PageTransition>
       {/* ── 1. Opening: one cinematic photograph, oversized type, one action. */}
       <section className="hero" aria-labelledby="hero-title">
         <div className="hero-media">
@@ -69,7 +79,7 @@ export default function HomePage() {
       {/* ── 2. Introduction: a typographic statement, one photograph rising out of the hero, the four services as an index. */}
       <section aria-labelledby="intro-title" className="relative pb-[var(--section)]">
         <div className="wrap grid gap-12 lg:grid-cols-12 lg:gap-8">
-          <div className="relative z-10 -mt-8 w-[46%] justify-self-end lg:col-span-4 lg:col-start-9 lg:row-start-1 lg:-mt-48 lg:w-full">
+          <div className="depth relative z-10 -mt-8 w-[46%] justify-self-end lg:col-span-4 lg:col-start-9 lg:row-start-1 lg:-mt-48 lg:w-full">
             <Photo img={photos.cartierFlowers} ratio="4 / 5" sizes="(min-width: 1024px) 30vw, 52vw" className="inset-frame hero-inset" reveal={false} eager />
           </div>
           <div className="lg:col-span-7 lg:row-start-1 lg:pt-28">
@@ -82,7 +92,7 @@ export default function HomePage() {
           </div>
         </div>
 
-        <nav aria-label="Services" className="wrap mt-16 lg:mt-24">
+        <nav id="services" aria-label="Services" className="wrap mt-16 lg:mt-24">
           <ul>
             {services.map((s, i) => (
               <li key={s.slug}>
@@ -103,7 +113,7 @@ export default function HomePage() {
       </section>
 
       {/* ── 3a. Weddings: warm and rich. A full-height gold photograph, the name set large on navy. */}
-      <section className="on-dark relative overflow-hidden" aria-labelledby="ch-weddings">
+      <section className="on-dark tone-in relative overflow-hidden" aria-labelledby="ch-weddings">
         <div className="lg:grid lg:min-h-[100svh] lg:grid-cols-12">
           <div className="relative lg:col-span-6">
             <Photo img={photos.bangaloreBuffet} sizes="(min-width: 1024px) 50vw, 100vw" className="aspect-[4/5] lg:aspect-auto lg:h-full" drift />
@@ -116,7 +126,7 @@ export default function HomePage() {
             <div className="mt-8" data-reveal="up" style={d(250)}>
               <More href={weddings.href} label={weddings.linkLabel} dark />
             </div>
-            <div className="mt-14 hidden w-[46%] self-end lg:block">
+            <div className="depth mt-14 hidden w-[46%] self-end lg:block">
               <Photo img={photos.bayviewPots} ratio="3 / 4" sizes="22vw" delay={200} />
             </div>
           </div>
@@ -128,7 +138,7 @@ export default function HomePage() {
         <div className="wrap grid gap-14 lg:grid-cols-12 lg:items-center lg:gap-8">
           <div className="relative lg:col-span-6 lg:col-start-7 lg:row-start-1">
             <Photo img={photos.glasshouseBoards} ratio="4 / 5" sizes="(min-width: 1024px) 46vw, 88vw" drift className="mr-[12%] lg:mr-0" />
-            <div className="absolute -bottom-10 right-0 w-[44%] lg:-bottom-16 lg:-left-[18%] lg:right-auto lg:w-[42%]">
+            <div className="depth absolute -bottom-10 right-0 w-[44%] lg:-bottom-16 lg:-left-[18%] lg:right-auto lg:w-[42%]">
               <Photo img={photos.ninjaOranges} ratio="3 / 4" sizes="(min-width: 1024px) 20vw, 40vw" className="inset-frame" delay={250} />
             </div>
           </div>
@@ -145,7 +155,7 @@ export default function HomePage() {
       </section>
 
       {/* ── 3c. Brand launches: energy and scale. Navy, the name across the page, three photographs at three sizes. */}
-      <section className="on-dark overflow-hidden py-[var(--section)]" aria-labelledby="ch-launches">
+      <section className="on-dark tone-in overflow-hidden py-[var(--section)]" aria-labelledby="ch-launches">
         <div className="wrap">
           <RevealText id="ch-launches" text={launches.name} className="t-mega max-w-[12ch]" />
         </div>
@@ -198,7 +208,7 @@ export default function HomePage() {
       </section>
 
       {/* ── 4. Brand statement: the founders' own line, set as large as the page allows. */}
-      <section className="on-dark relative overflow-hidden py-[var(--section)]" aria-labelledby="story-title">
+      <section className="on-dark tone-in relative overflow-hidden py-[var(--section)]" aria-labelledby="story-title">
         <div className="wrap grid gap-12 lg:grid-cols-12 lg:gap-8">
           <div className="lg:col-span-9">
             <h2 id="story-title" className="sr-only">
@@ -224,14 +234,28 @@ export default function HomePage() {
         <div className="wrap">
           <RevealText id="food-title" text={home.food.heading} className="t-big max-w-[12ch]" />
         </div>
+        <LightboxScope images={foodPhotos} label="Food and hospitality photographs">
         <div className="wrap mt-12 grid grid-cols-6 items-start gap-3 lg:mt-20 lg:grid-cols-12 lg:gap-x-8 lg:gap-y-0">
-          <Photo img={photos.livePlating} ratio="4 / 3" sizes="(min-width: 1024px) 58vw, 100vw" className="col-span-6 lg:col-span-7" drift />
-          <Photo img={photos.rocaDesserts} ratio="3 / 4" sizes="(min-width: 1024px) 28vw, 48vw" className="col-span-3 mt-3 lg:col-span-4 lg:col-start-9 lg:mt-40" delay={120} />
-          <Photo img={photos.aurangabadThali} ratio="1 / 1" sizes="(min-width: 1024px) 30vw, 48vw" className="col-span-3 mt-16 lg:col-span-4 lg:col-start-2 lg:-mt-10" delay={200} />
-          <Photo img={photos.cartierCocktails} ratio="16 / 10" sizes="(min-width: 1024px) 48vw, 100vw" className="col-span-6 mt-3 lg:col-span-6 lg:col-start-7 lg:mt-28" drift />
-          <Photo img={photos.defenderBoard} ratio="3 / 4" sizes="(min-width: 1024px) 22vw, 48vw" className="col-span-3 mt-3 lg:col-span-3 lg:col-start-1 lg:-mt-16" delay={150} />
-          <Photo img={photos.bayviewChai} ratio="3 / 2" sizes="(min-width: 1024px) 44vw, 48vw" className="col-span-3 mt-24 lg:col-span-6 lg:col-start-5 lg:mt-24" delay={250} />
+          <LightboxTrigger index={0} alt={photos.livePlating.alt} className="col-span-6 lg:col-span-7">
+            <Photo img={photos.livePlating} ratio="4 / 3" sizes="(min-width: 1024px) 58vw, 100vw" drift />
+          </LightboxTrigger>
+          <LightboxTrigger index={1} alt={photos.rocaDesserts.alt} className="col-span-3 mt-3 lg:col-span-4 lg:col-start-9 lg:mt-40">
+            <Photo img={photos.rocaDesserts} ratio="3 / 4" sizes="(min-width: 1024px) 28vw, 48vw" delay={120} />
+          </LightboxTrigger>
+          <LightboxTrigger index={2} alt={photos.aurangabadThali.alt} className="col-span-3 mt-16 lg:col-span-4 lg:col-start-2 lg:-mt-10">
+            <Photo img={photos.aurangabadThali} ratio="1 / 1" sizes="(min-width: 1024px) 30vw, 48vw" delay={200} />
+          </LightboxTrigger>
+          <LightboxTrigger index={3} alt={photos.cartierCocktails.alt} className="col-span-6 mt-3 lg:col-span-6 lg:col-start-7 lg:mt-28">
+            <Photo img={photos.cartierCocktails} ratio="16 / 10" sizes="(min-width: 1024px) 48vw, 100vw" drift />
+          </LightboxTrigger>
+          <LightboxTrigger index={4} alt={photos.defenderBoard.alt} className="col-span-3 mt-3 lg:col-span-3 lg:col-start-1 lg:-mt-16">
+            <Photo img={photos.defenderBoard} ratio="3 / 4" sizes="(min-width: 1024px) 22vw, 48vw" delay={150} />
+          </LightboxTrigger>
+          <LightboxTrigger index={5} alt={photos.bayviewChai.alt} className="col-span-3 mt-24 lg:col-span-6 lg:col-start-5 lg:mt-24">
+            <Photo img={photos.bayviewChai} ratio="3 / 2" sizes="(min-width: 1024px) 44vw, 48vw" delay={250} />
+          </LightboxTrigger>
         </div>
+        </LightboxScope>
       </section>
 
       {/* ── 6. Recent work: a horizontal sequence, swiped on phones, stepped with buttons on desktop. */}
@@ -253,7 +277,7 @@ export default function HomePage() {
       </section>
 
       {/* ── 7. Closing: the evening photograph, the invitation set large. */}
-      <section className="on-dark relative isolate flex min-h-[92svh] items-end overflow-hidden pb-16 pt-40 lg:pb-24" data-cta-zone aria-labelledby="close-title">
+      <section className="on-dark tone-in relative isolate flex min-h-[92svh] items-end overflow-hidden pb-16 pt-40 lg:pb-24" data-cta-zone aria-labelledby="close-title">
         <div className="absolute inset-0 -z-10">
           <Photo img={close.image} sizes="100vw" className="h-full w-full" drift reveal={false} />
           <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(11,28,45,0.94)_0%,rgba(11,28,45,0.55)_50%,rgba(11,28,45,0.2)_100%)]" />
@@ -275,6 +299,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-    </>
+    </PageTransition>
   );
 }

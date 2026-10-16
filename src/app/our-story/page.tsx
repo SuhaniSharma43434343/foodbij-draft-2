@@ -1,3 +1,4 @@
+import { PageTransition } from "@/components/PageTransition";
 import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 import { Close } from "@/components/Close";
@@ -12,7 +13,7 @@ const d = (ms: number) => ({ "--d": `${ms}ms` }) as CSSProperties;
 
 export default function OurStoryPage() {
   return (
-    <>
+    <PageTransition>
       <section className="pt-[calc(var(--header-h)+56px)] lg:pt-[calc(var(--header-h)+96px)]">
         <div className="wrap grid gap-10 lg:grid-cols-12 lg:gap-8">
           <RevealText as="h1" text={p.heading} trigger="load" delay={150} className="t-big max-w-[12ch] lg:col-span-7" />
@@ -95,6 +96,6 @@ export default function OurStoryPage() {
       </section>
 
       <Close heading={p.close.heading} lead={p.close.lead} />
-    </>
+    </PageTransition>
   );
 }

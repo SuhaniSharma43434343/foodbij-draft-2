@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/Link";
 import { getService, type Img } from "@/content/site";
 import type { Story } from "@/content/stories";
 import { Photo } from "./Photo";
